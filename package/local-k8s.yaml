@@ -1,0 +1,73 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: local-k8s-postgresql
+  labels:
+    provider: local-k8s
+    db: postgresql
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQL
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: helm
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: InjectedIdentity
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    readinessChecks:
+      - type: None
+  - name: server
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          chart:
+            name: postgresql
+            repository: https://charts.bitnami.com/bitnami
+            version: "12.1.2"
+          set:
+          - name: auth.postgresPassword
+            value: postgres
+          - name: global.persistence.enabled
+            value: "false"
+          - name: primary.initdb.scripts.00_init_script\.sh
+            value: |
+              export PGPASSWORD=$POSTGRES_PASSWORD
+              psql -U postgres -c 'CREATE DATABASE "cncf-demo";'
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-postgresql"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.forProvider.namespace
+    connectionDetails:
+    - type: FromValue
+      name: username
+      value: postgres
+    - type: FromValue
+      name: password
+      value: postgres # I'm doing this only because it's for dev envs!!!
+    - type: FromFieldPath
+      fromFieldPath: metadata.name
+      name: endpoint
+    - type: FromValue
+      name: port
+      value: "5432"

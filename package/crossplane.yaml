@@ -1,0 +1,28 @@
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: dot-sql
+  annotations:
+    meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
+    meta.crossplane.io/source: github.com/vfarcic/devops-toolkit-crossplane/tree/master/packages/sql
+    meta.crossplane.io/license: MIT
+    meta.crossplane.io/description: Fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
+    meta.crossplane.io/readme: A Configuration package that defines a SQL and SQLClaim types that can be used to create and provision fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
+spec:
+  crossplane:
+    version: ">=v1.5.1"
+  dependsOn:
+  - provider: xpkg.upbound.io/upbound/provider-aws-ec2
+    version: ">=v0.36.0"
+  - provider: xpkg.upbound.io/upbound/provider-aws-rds
+    version: ">=v0.36.0"
+  - provider: xpkg.upbound.io/upbound/provider-azure-dbforpostgresql
+    version: ">=v0.33.0"
+  - provider: xpkg.upbound.io/upbound/provider-gcp-sql
+    version: ">=v0.33.0"
+  - provider: crossplane/provider-sql
+    version: ">=v0.5.0"
+  - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
+    version: ">=v0.14.0"
+  - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+    version: ">=v0.7.0"
