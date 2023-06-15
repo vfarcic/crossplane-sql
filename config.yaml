@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-k8s
 spec:
-  package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.8.0
+  package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.8.1
