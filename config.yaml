@@ -3,6 +3,6 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: crossplane-k8s
+  name: crossplane-sql
 spec:
   package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.8.2
