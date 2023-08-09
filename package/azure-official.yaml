@@ -61,9 +61,9 @@ spec:
       transforms:
       - type: map
         map:
-          small: B_Gen5_2
-          medium: B_Gen5_4
-          large: B_Gen5_8
+          small: B_Gen5_1
+          medium: GP_Gen5_2
+          large: GP_Gen5_8
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.engineVersion
     - fromFieldPath: spec.id
