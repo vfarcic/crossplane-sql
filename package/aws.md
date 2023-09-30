@@ -29,12 +29,9 @@ kubectl --namespace crossplane-system \
     --from-file creds=./aws-creds.conf
 
 kubectl apply \
-    --filename ../../crossplane-config/provider-kubernetes-incluster.yaml
+    --filename ../providers/provider-kubernetes-incluster.yaml
 
-kubectl apply \
-    --filename ../../crossplane-config/provider-aws-official.yaml
-
-kubectl apply --filename ../../crossplane-config/config-sql.yaml
+kubectl apply --filename ../config.yaml
 
 kubectl create namespace infra
 
