@@ -39,8 +39,7 @@ kubectl get pkgrev
 
 # Wait until all the packages are healthy
 
-kubectl apply \
-    --filename ../../crossplane-config/provider-config-aws-official.yaml
+kubectl apply --filename ../examples/provider-config-aws.yaml
 ```
 
 ## Create an EKS Cluster
