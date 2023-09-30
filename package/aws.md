@@ -45,7 +45,7 @@ kubectl apply --filename ../examples/provider-config-aws.yaml
 ## Create an EKS Cluster
 
 ```bash
-cat ../../examples/sql/aws-official.yaml
+cat ../examples/aws.yaml
 
 kubectl --namespace infra apply \
     --filename ../../examples/sql/aws-official.yaml
