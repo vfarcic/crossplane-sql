@@ -47,8 +47,7 @@ kubectl apply --filename ../examples/provider-config-aws.yaml
 ```bash
 cat ../examples/aws.yaml
 
-kubectl --namespace infra apply \
-    --filename ../../examples/sql/aws-official.yaml
+kubectl --namespace infra apply --filename ../examples/aws.yaml
     
 kubectl --namespace infra get sqlclaims
 
@@ -58,8 +57,7 @@ kubectl get managed
 ## Destroy 
 
 ```bash
-kubectl --namespace infra delete \
-    --filename ../../examples/sql/aws-official.yaml
+kubectl --namespace infra delete --filename ../examples/aws.yaml
 
 kubectl get managed
 
