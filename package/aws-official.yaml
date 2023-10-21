@@ -22,7 +22,7 @@ spec:
       spec:
         forProvider:
           region: us-east-1
-          cidrBlock: 10.0.0.0/16
+          cidrBlock: 11.0.0.0/16
           enableDnsSupport: true
           enableDnsHostnames: true
     patches:
@@ -39,7 +39,7 @@ spec:
         forProvider:
           region: us-east-1
           availabilityZone: us-east-1a
-          cidrBlock: 10.0.0.0/24
+          cidrBlock: 11.0.0.0/24
           vpcIdSelector:
             matchControllerRef: true
     patches:
@@ -60,7 +60,7 @@ spec:
         forProvider:
           region: us-east-1
           availabilityZone: us-east-1b
-          cidrBlock: 10.0.1.0/24
+          cidrBlock: 11.0.1.0/24
           vpcIdSelector:
             matchControllerRef: true
     patches:
@@ -81,7 +81,7 @@ spec:
         forProvider:
           region: us-east-1
           availabilityZone: us-east-1c
-          cidrBlock: 10.0.2.0/24
+          cidrBlock: 11.0.2.0/24
           vpcIdSelector:
             matchControllerRef: true
     patches:
