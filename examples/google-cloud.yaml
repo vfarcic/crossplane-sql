@@ -17,7 +17,7 @@ spec:
   id: my-db
   compositionSelector:
     matchLabels:
-      provider: google-official
+      provider: google
       db: postgresql
   parameters:
     version: "13"

@@ -14,7 +14,7 @@ spec:
   id: my-db
   compositionSelector:
     matchLabels:
-      provider: aws-official
+      provider: aws
       db: postgresql
   parameters:
     version: "13.4"

@@ -41,7 +41,7 @@ kubectl apply \
     --filename ../../crossplane-config/provider-kubernetes-incluster.yaml
 
 kubectl apply \
-    --filename ../../crossplane-config/provider-gcp-official.yaml
+    --filename ../../crossplane-config/provider-google.yaml
 
 kubectl apply \
     --filename ../../crossplane-config/config-sql.yaml
@@ -70,10 +70,10 @@ spec:
 ## Create a PostgreSQL Instance
 
 ```bash
-cat ../../examples/sql/gcp-official.yaml
+cat ../../examples/sql/google.yaml
 
 kubectl --namespace infra apply \
-    --filename ../../examples/sql/gcp-official.yaml
+    --filename ../../examples/sql/google.yaml
 
 kubectl --namespace infra get sqlclaims
 
@@ -84,7 +84,7 @@ kubectl get managed
 
 ```bash
 kubectl --namespace infra delete \
-    --filename ../../examples/sql/gcp-official.yaml
+    --filename ../../examples/sql/google.yaml
 
 kubectl get managed
 

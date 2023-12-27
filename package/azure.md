@@ -27,7 +27,7 @@ kubectl apply \
     --filename ../../crossplane-config/provider-kubernetes-incluster.yaml
 
 kubectl apply \
-    --filename ../../crossplane-config/provider-azure-official.yaml
+    --filename ../../crossplane-config/provider-azure.yaml
 
 kubectl apply --filename ../../crossplane-config/config-sql.yaml
 
@@ -38,17 +38,17 @@ kubectl get pkgrev
 # Wait until all the packages are healthy
 
 kubectl apply \
-    --filename ../../crossplane-config/provider-config-azure-official.yaml
+    --filename ../../crossplane-config/provider-config-azure.yaml
 ```
 
 ## Create a PostgreSQL Instance
 
 ```bash
-cat ../../examples/sql/azure-official.yaml
+cat ../../examples/sql/azure.yaml
 
 export NAME_RAND=my-db-$(date +%Y%m%d%H%M%S)
 
-cat ../../examples/sql/azure-official.yaml \
+cat ../../examples/sql/azure.yaml \
     | sed -e "s@my-db@$NAME_RAND@g" \
     | kubectl --namespace infra apply --filename -
 
@@ -60,7 +60,7 @@ kubectl get managed
 ## Destroy 
 
 ```bash
-cat ../../examples/sql/azure-official.yaml \
+cat ../../examples/sql/azure.yaml \
     | sed -e "s@my-db@$NAME_RAND@g" \
     | kubectl --namespace infra delete --filename -
 
