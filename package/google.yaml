@@ -51,7 +51,7 @@ spec:
         string:
           fmt: POSTGRES_%s
     - fromFieldPath: spec.parameters.size
-      toFieldPath: spec.settings.tier
+      toFieldPath: spec.forProvider.settings[0].tier
       transforms:
       - type: map
         map:
