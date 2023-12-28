@@ -16,6 +16,11 @@ spec:
   - name: metadata
     patches:
     - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
   resources:
   - name: sql
     base:
@@ -42,8 +47,8 @@ spec:
         writeConnectionSecretToRef:
           namespace: crossplane-system
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.databaseVersion
       transforms:
@@ -79,8 +84,8 @@ spec:
           instanceSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.passwordSecretRef.name
       transforms:
@@ -97,6 +102,10 @@ spec:
         credentials:
           source: InjectedIdentity
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -118,8 +127,8 @@ spec:
             namespace: crossplane-system
         sslMode: require
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.connectionSecretRef.name
     - fromFieldPath: spec.claimRef.namespace
@@ -134,8 +143,8 @@ spec:
       spec:
         forProvider: {}
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:
@@ -175,8 +184,8 @@ spec:
             data:
               port: NTQzMg==
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.references[0].patchesFrom.name
     - fromFieldPath: spec.id

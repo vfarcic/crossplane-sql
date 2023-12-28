@@ -14,6 +14,11 @@ spec:
   - name: metadata
     patches:
     - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
   resources:
   - name: resourcegroup
     base:
@@ -23,8 +28,8 @@ spec:
         forProvider:
           location: eastus
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: server
     base:
       apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
@@ -46,8 +51,8 @@ spec:
         writeConnectionSecretToRef:
           namespace: crossplane-system
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
     - fromFieldPath: spec.claimRef.namespace
@@ -88,8 +93,8 @@ spec:
           serverNameSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: sql-config
     base:
       apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -103,8 +108,8 @@ spec:
             namespace: crossplane-system
         sslMode: require
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.connectionSecretRef.name
     - fromFieldPath: spec.claimRef.namespace
@@ -119,8 +124,8 @@ spec:
       spec:
         forProvider: {}
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:

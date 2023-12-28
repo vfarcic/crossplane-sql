@@ -14,6 +14,11 @@ spec:
   - name: metadata
     patches:
     - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
   resources:
   - name: vpc
     base:
@@ -26,8 +31,8 @@ spec:
           enableDnsSupport: true
           enableDnsHostnames: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: subnet-a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -43,6 +48,10 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -64,6 +73,10 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -85,6 +98,10 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -102,8 +119,8 @@ spec:
           subnetIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: gateway
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -114,8 +131,8 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: routeTable
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -126,8 +143,8 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: route
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -141,8 +158,8 @@ spec:
           gatewayIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: mainRouteTableAssociation
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -155,8 +172,8 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: routeTableAssociation1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -171,6 +188,10 @@ spec:
             matchLabels:
               zone: us-east-1a
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -191,6 +212,10 @@ spec:
             matchLabels:
               zone: us-east-1b
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -211,6 +236,10 @@ spec:
             matchLabels:
               zone: us-east-1c
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -228,8 +257,8 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: securityGroupRule
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -247,8 +276,8 @@ spec:
           securityGroupIdSelector:
             matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
   - name: rdsinstance
     base:
       apiVersion: rds.aws.upbound.io/v1beta1
@@ -271,8 +300,8 @@ spec:
             namespace: crossplane-system
             key: password
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.parameters.size
       toFieldPath: spec.forProvider.instanceClass
       transforms:
@@ -304,8 +333,8 @@ spec:
             namespace: crossplane-system
         sslMode: require
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.connectionSecretRef.name
     - fromFieldPath: spec.claimRef.namespace
@@ -321,8 +350,8 @@ spec:
       spec:
         forProvider: {}
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
     # TODO: Remove
@@ -336,6 +365,10 @@ spec:
         credentials:
           source: InjectedIdentity
     patches:
+    - fromFieldPath: metadata.labels
+      toFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
@@ -380,8 +413,8 @@ spec:
             data:
               port: NTQzMg==
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
+    - type: PatchSet
+      patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.references[0].patchesFrom.name
     - fromFieldPath: spec.id
