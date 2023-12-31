@@ -6,7 +6,6 @@ metadata:
     provider: aws
     db: postgresql
 spec:
-  writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
     kind: SQL
@@ -289,10 +288,8 @@ spec:
             matchControllerRef: true
           vpcSecurityGroupIdSelector:
             matchControllerRef: true
-          instanceClass: db.m5.large
           username: masteruser
           engine: postgres
-          engineVersion: "15.3"
           skipFinalSnapshot: true
           publiclyAccessible: true
           allocatedStorage: 200
@@ -339,9 +336,6 @@ spec:
       toFieldPath: spec.credentials.connectionSecretRef.name
     - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.credentials.connectionSecretRef.namespace
-    # TODO: Remove
-    readinessChecks:
-      - type: None
   # TODO: Switch to a list of databases
   - name: sql-db
     base:
@@ -354,9 +348,6 @@ spec:
       patchSetName: metadata
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-    # TODO: Remove
-    readinessChecks:
-      - type: None
   - name: kubernetes
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -375,9 +366,6 @@ spec:
       - type: string
         string:
           fmt: "%s-sql"
-    # TODO: Remove
-    readinessChecks:
-      - type: None
   - name: sql-secret
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
