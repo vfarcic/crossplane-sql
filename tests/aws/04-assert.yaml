@@ -1,0 +1,47 @@
+---
+apiVersion: kubernetes.crossplane.io/v1alpha1
+kind: Object
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-schema
+    crossplane.io/external-name: my-db-schema
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-schema
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    manifest:
+      apiVersion: db.atlasgo.io/v1alpha1
+      kind: AtlasSchema
+      metadata:
+        name: my-db
+      spec:
+        credentials:
+          database: my-db
+          hostFrom:
+            secretKeyRef:
+              key: endpoint
+              name: my-db
+          parameters:
+            sslmode: disable
+          passwordFrom:
+            secretKeyRef:
+              key: password
+              name: my-db
+          port: 5432
+          scheme: postgres
+          userFrom:
+            secretKeyRef:
+              key: username
+              name: my-db
+        schema:
+          sql: 'create table videos ( id varchar(50) not null, description text, primary key (id) ); create table comments ( id serial, video_id varchar(50) not null, description text not null, primary key (id), CONSTRAINT fk_videos FOREIGN KEY(video_id) REFERENCES videos(id) ); '
+  managementPolicy: Default
+  providerConfigRef:
+    name: my-db-sql

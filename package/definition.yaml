@@ -41,6 +41,9 @@ spec:
                     description: "Supported sizes: small, medium, large"
                     type: string
                     default: small
+                  schema:
+                    description: Database schema. Atlas operator (https://atlasgo.io/integrations/kubernetes/operator) needs to be installed in the cluster. Leave empty if schema should NOT be applied.
+                    type: string
                 required:
                 - version
             required:

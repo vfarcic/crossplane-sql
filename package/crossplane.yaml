@@ -22,6 +22,12 @@ spec:
     version: ">=v0.33.0"
   - provider: crossplane/provider-sql
     version: ">=v0.5.0"
+  - function: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform
+    version: ">=v0.1.4"
+  - function: xpkg.upbound.io/upbound/function-go-templating
+    version: ">=v0.3.0"
+  - function: xpkg.upbound.io/upbound/function-auto-ready
+    version: ">=v0.2.1"
   # - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
   #   version: ">=v0.14.0"
   # - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
