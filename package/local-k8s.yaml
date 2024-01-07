@@ -13,7 +13,10 @@ spec:
   patchSets:
   - name: metadata
     patches:
-    - fromFieldPath: metadata.labels
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
   resources:
   - name: helm
     base:

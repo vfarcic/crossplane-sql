@@ -20,8 +20,6 @@ spec:
       patchSets:
       - name: metadata
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -55,8 +53,6 @@ spec:
               vpcIdSelector:
                 matchControllerRef: true
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -81,8 +77,6 @@ spec:
               vpcIdSelector:
                 matchControllerRef: true
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -107,8 +101,6 @@ spec:
               vpcIdSelector:
                 matchControllerRef: true
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -198,8 +190,6 @@ spec:
                 matchLabels:
                   zone: us-east-1a
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -223,8 +213,6 @@ spec:
                 matchLabels:
                   zone: us-east-1b
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -248,8 +236,6 @@ spec:
                 matchLabels:
                   zone: us-east-1c
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -308,7 +294,6 @@ spec:
               publiclyAccessible: true
               allocatedStorage: 200
               passwordSecretRef:
-                namespace: crossplane-system
                 key: password
         patches:
         - type: PatchSet
@@ -341,8 +326,6 @@ spec:
           spec:
             credentials:
               source: PostgreSQLConnectionSecret
-              connectionSecretRef:
-                namespace: crossplane-system
             sslMode: require
         patches:
         - type: PatchSet
@@ -351,6 +334,8 @@ spec:
           toFieldPath: spec.credentials.connectionSecretRef.name
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.credentials.connectionSecretRef.namespace
+      readinessChecks:
+      - type: None
       # TODO: Switch to a list of databases
       - name: sql-db
         base:
@@ -371,8 +356,6 @@ spec:
             credentials:
               source: InjectedIdentity
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
@@ -382,6 +365,8 @@ spec:
             string:
               fmt: "%s-sql"
               type: Format
+        readinessChecks:
+        - type: None
       - name: sql-secret
         base:
           apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -415,8 +400,6 @@ spec:
                 data:
                   port: NTQzMg==
         patches:
-        - fromFieldPath: metadata.labels
-          toFieldPath: metadata.labels
         - fromFieldPath: metadata.annotations
           toFieldPath: metadata.annotations
         - fromFieldPath: spec.id

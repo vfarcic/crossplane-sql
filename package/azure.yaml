@@ -13,8 +13,6 @@ spec:
   patchSets:
   - name: metadata
     patches:
-    - fromFieldPath: metadata.labels
-      toFieldPath: metadata.labels
     - fromFieldPath: metadata.annotations
       toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
@@ -98,8 +96,6 @@ spec:
       spec:
         credentials:
           source: PostgreSQLConnectionSecret
-          connectionSecretRef:
-            namespace: crossplane-system
         sslMode: require
     patches:
     - type: PatchSet
@@ -108,6 +104,8 @@ spec:
       toFieldPath: spec.credentials.connectionSecretRef.name
     - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.credentials.connectionSecretRef.namespace
+    readinessChecks:
+    - type: None
   # TODO: Switch to a list of databases
   - name: sql-db
     base:
