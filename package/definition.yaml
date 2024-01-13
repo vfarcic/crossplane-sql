@@ -41,9 +41,23 @@ spec:
                     description: "Supported sizes: small, medium, large"
                     type: string
                     default: small
-                  schema:
+                  databases:
+                    description: The list of databases to create inside the DB server.
+                    type: array
+                    items:
+                      type: string
+                  schemas:
                     description: Database schema. Atlas operator (https://atlasgo.io/integrations/kubernetes/operator) needs to be installed in the cluster. Leave empty if schema should NOT be applied.
-                    type: string
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        database:
+                          description: The name of the database where to apply the schema.
+                          type: string
+                        sql:
+                          description: The SQL to apply.
+                          type: string
                 required:
                 - version
             required:

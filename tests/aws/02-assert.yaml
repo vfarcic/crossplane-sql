@@ -409,33 +409,12 @@ spec:
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
-kind: Database
-metadata:
-  annotations:
-    crossplane.io/composition-resource-name: sql-db
-    crossplane.io/external-name: my-db
-  generation: 1
-  labels:
-    crossplane.io/claim-name: my-db
-  name: my-db
-  ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
-    blockOwnerDeletion: true
-    controller: true
-    kind: SQL
-spec:
-  forProvider: {}
-  providerConfigRef:
-    name: my-db
----
 apiVersion: rds.aws.upbound.io/v1beta1
 kind: Instance
 metadata:
   annotations:
     crossplane.io/composition-resource-name: rdsinstance
     crossplane.io/external-name: my-db
-  generation: 2
   labels:
     crossplane.io/claim-name: my-db
   name: my-db
@@ -476,7 +455,6 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: subnetgroup
     crossplane.io/external-name: my-db
-  generation: 2
   labels:
     crossplane.io/claim-name: my-db
   name: my-db

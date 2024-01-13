@@ -11,16 +11,29 @@ spec:
   parameters:
     version: "13.4"
     size: medium
-    schema: |
-      create table videos (
-        id varchar(50) not null,
-        description text,
-        primary key (id)
-      );
-      create table comments (
-        id serial,
-        video_id varchar(50) not null,
-        description text not null,
-        primary key (id),
-        CONSTRAINT fk_videos FOREIGN KEY(video_id) REFERENCES videos(id)
-      );
+    databases:
+      - db-01
+      - db-02
+      - db-03
+    schemas:
+      - database: db-01
+        sql: |
+          create table videos (
+            id varchar(50) not null,
+            description text,
+            primary key (id)
+          );
+          create table comments (
+            id serial,
+            video_id varchar(50) not null,
+            description text not null,
+            primary key (id),
+            CONSTRAINT fk_videos FOREIGN KEY(video_id) REFERENCES videos(id)
+          );
+      - database: db-02
+        sql: |
+          create table videos (
+            id varchar(50) not null,
+            description text,
+            primary key (id)
+          );

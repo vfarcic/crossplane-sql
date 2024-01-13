@@ -1,0 +1,71 @@
+version: '3'
+
+tasks:
+
+  # Package
+  package-apply:
+    desc: Applies Compositions and Composite Resource Definition.
+    cmds:
+      - for: ["definition.yaml", "aws.yaml"]
+        cmd: kubectl apply --filename package/{{ .ITEM }}
+  package-publish:
+    desc: Builds and pushes the package.
+    cmds:
+      - up login --token $UP_TOKEN
+      - up xpkg build --package-root package --name sql.xpkg
+      - up xpkg push --package package/sql.xpkg xpkg.upbound.io/$UP_ACCOUNT/dot-sql:$VERSION
+      - rm package/sql.xpkg
+      - yq --inplace ".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:$VERSION\"" config.yaml
+
+  # Test
+  test:
+    desc: Combines `cluster-create`, `test-watch` (without the watcher), and `cluster-destroy` tasks.
+    cmds:
+      - task: cluster-create
+      - task: test-watch
+      - defer: { task: cluster-destroy }
+  test-watch:
+    desc: Runs tests assuming that the cluster is already created and everything is installed.
+    deps:
+      - package-apply
+    cmds:
+      - kubectl kuttl test
+    watch: true
+    sources:
+      - tests/**/*.yaml
+      - package/*.yaml
+
+  # Cluster
+  cluster-create:
+    desc: Creates a kind cluster, installs Crossplane, providers, and packages, waits until they are healthy, and runs tests.
+    vars:
+      TIMEOUT: 300s
+      PROVIDERS:
+        sh: ls -1 providers | grep -v config
+    deps:
+      - cluster-create-kind
+      - helm-repo
+    cmds:
+      - helm upgrade --install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace --wait
+      - helm upgrade --install atlas-operator oci://ghcr.io/ariga/charts/atlas-operator --namespace atlas-operator --create-namespace --wait
+      - for: { var: PROVIDERS }
+        cmd: kubectl apply --filename providers/{{ .ITEM }}
+      - task: package-apply
+      - sleep 60
+      - kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout={{.TIMEOUT}}
+      - kubectl wait --for=condition=healthy function.pkg.crossplane.io --all --timeout={{.TIMEOUT}}
+  cluster-destroy:
+    desc: Destroys the cluster
+    cmds:
+      - kind delete cluster
+  cluster-create-kind:
+    desc: Creates a kind cluster
+    cmds:
+      - cmd: kind create cluster
+        ignore_error: true
+    internal: true
+  helm-repo:
+    cmds:
+      - helm repo add crossplane-stable https://charts.crossplane.io/stable
+      - helm repo update
+    internal: true

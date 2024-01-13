@@ -334,20 +334,8 @@ spec:
           toFieldPath: spec.credentials.connectionSecretRef.name
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.credentials.connectionSecretRef.namespace
-      readinessChecks:
-      - type: None
-      # TODO: Switch to a list of databases
-      - name: sql-db
-        base:
-          apiVersion: postgresql.sql.crossplane.io/v1alpha1
-          kind: Database
-          spec:
-            forProvider: {}
-        patches:
-        - type: PatchSet
-          patchSetName: metadata
-        - fromFieldPath: spec.id
-          toFieldPath: spec.providerConfigRef.name
+        readinessChecks:
+        - type: None
       - name: kubernetes
         base:
           apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -435,6 +423,28 @@ spec:
           toFieldPath: spec.forProvider.manifest.metadata.namespace
   - functionRef:
       name: upbound-function-go-templating
+    step: sql-db
+    input:
+      apiVersion: gotemplating.fn.crossplane.io/v1beta1
+      kind: GoTemplate
+      source: Inline
+      inline:
+        template: |
+          {{ range .observed.composite.resource.spec.parameters.databases }}
+          ---
+          apiVersion: postgresql.sql.crossplane.io/v1alpha1
+          kind: Database
+          metadata:
+            name: {{ . }}
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
+          spec:
+            providerConfigRef:
+              name: {{ $.observed.composite.resource.spec.id }}
+            forProvider: {}
+          {{ end }}
+  - functionRef:
+      name: upbound-function-go-templating
     step: schema
     input:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
@@ -442,23 +452,24 @@ spec:
       source: Inline
       inline:
         template: |
-          {{if .observed.composite.resource.spec.parameters.schema }}
+          {{ range .observed.composite.resource.spec.parameters.schemas }}
+          ---
           apiVersion: kubernetes.crossplane.io/v1alpha1
           kind: Object
           metadata:
-            name: {{ .observed.composite.resource.spec.id }}-schema
+            name: {{ $.observed.composite.resource.spec.id }}-schema-{{ .database }}
             annotations:
-              gotemplating.fn.crossplane.io/composition-resource-name: {{ .observed.composite.resource.spec.id }}-schema
+              gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-schema-{{ .database }}
           spec:
             providerConfigRef:
-              name: {{ .observed.composite.resource.spec.id }}-sql
+              name: {{ $.observed.composite.resource.spec.id }}-sql
             forProvider:
               manifest:
                 apiVersion: db.atlasgo.io/v1alpha1
                 kind: AtlasSchema
                 metadata:
-                  name: {{ .observed.composite.resource.spec.id }}
-                  namespace: {{ .observed.composite.resource.spec.claimRef.namespace }}
+                  name: {{ $.observed.composite.resource.spec.id }}
+                  namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
                 toFieldPath: spec.credentials.connectionSecretRef.namespace
                 spec:
                   credentials:
@@ -466,21 +477,21 @@ spec:
                     hostFrom:
                       secretKeyRef:
                         key: endpoint
-                        name: {{ .observed.composite.resource.spec.id }}
+                        name: {{ $.observed.composite.resource.spec.id }}
                     port: 5432
                     userFrom:
                       secretKeyRef:
                         key: username
-                        name: {{ .observed.composite.resource.spec.id }}
+                        name: {{ $.observed.composite.resource.spec.id }}
                     passwordFrom:
                       secretKeyRef:
                         key: password
-                        name: {{ .observed.composite.resource.spec.id }}
-                    database: {{ .observed.composite.resource.spec.id }}
+                        name: {{ $.observed.composite.resource.spec.id }}
+                    database: {{ .database }}
                     parameters:
                       sslmode: disable
-                  schema:
-                    sql: "{{ .observed.composite.resource.spec.parameters.schema }}"
+                  schema: 
+                    sql: "{{ .sql }}"
           {{ end }}
   - functionRef:
       name: upbound-function-auto-ready

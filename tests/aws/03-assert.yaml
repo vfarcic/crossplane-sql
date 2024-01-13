@@ -61,7 +61,10 @@ spec:
     name: my-db
   - apiVersion: kubernetes.crossplane.io/v1alpha1
     kind: Object
-    name: my-db-schema
+    name: my-db-schema-db-01
+  - apiVersion: kubernetes.crossplane.io/v1alpha1
+    kind: Object
+    name: my-db-schema-db-02
   - apiVersion: kubernetes.crossplane.io/v1alpha1
     kind: Object
     name: my-db-secret
@@ -70,7 +73,13 @@ spec:
     name: my-db-sql
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
     kind: Database
-    name: my-db
+    name: db-01
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: db-02
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: db-03
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
     kind: ProviderConfig
     name: my-db

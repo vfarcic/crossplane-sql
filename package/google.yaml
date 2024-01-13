@@ -1,5 +1,7 @@
 ---
-
+# TODO: Add tests
+# TODO: Switch to pipeline
+# TODO: Add patch and transform function
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:

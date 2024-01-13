@@ -66,9 +66,6 @@ spec:
     kind: ProviderConfig
     name: my-db-sql
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    kind: Database
-    name: my-db
-  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
     kind: ProviderConfig
     name: my-db
   - apiVersion: rds.aws.upbound.io/v1beta1
