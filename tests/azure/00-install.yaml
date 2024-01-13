@@ -1,18 +1,21 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-db-azure-password
+data:
+  password: cG9zdGdyZXM=
+---
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  compositionRef:
-    name: aws-postgresql
+  id: my-db-azure
   compositionSelector:
     matchLabels:
+      provider: azure
       db: postgresql
-      provider: aws
-  id: my-db-aws
   parameters:
-    size: medium
     version: "13.4"
-  resourceRef:
-    apiVersion: devopstoolkitseries.com/v1alpha1
-    kind: SQL
+    size: medium

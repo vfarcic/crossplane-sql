@@ -3,10 +3,10 @@ kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  id: my-db-aws
+  id: my-db-azure
   compositionSelector:
     matchLabels:
-      provider: aws
+      provider: azure
       db: postgresql
   parameters:
     version: "13.4"

@@ -435,8 +435,9 @@ spec:
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
           kind: Database
           metadata:
-            name: {{ . }}
+            name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
             annotations:
+              crossplane.io/external-name: {{ . }}
               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
           spec:
             providerConfigRef:
@@ -468,7 +469,7 @@ spec:
                 apiVersion: db.atlasgo.io/v1alpha1
                 kind: AtlasSchema
                 metadata:
-                  name: {{ $.observed.composite.resource.spec.id }}
+                  name: {{ $.observed.composite.resource.spec.id }}-{{ .database }}
                   namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
                 toFieldPath: spec.credentials.connectionSecretRef.namespace
                 spec:

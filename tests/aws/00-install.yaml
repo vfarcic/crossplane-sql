@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: my-db-password
+  name: my-db-aws-password
 data:
   password: cG9zdGdyZXM=
 ---
@@ -11,7 +11,7 @@ kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  id: my-db
+  id: my-db-aws
   compositionSelector:
     matchLabels:
       provider: aws
@@ -19,3 +19,4 @@ spec:
   parameters:
     version: "13.4"
     size: medium
+

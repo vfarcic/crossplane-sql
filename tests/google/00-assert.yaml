@@ -4,12 +4,12 @@ metadata:
   name: my-db
 spec:
   compositionRef:
-    name: aws-postgresql
+    name: google-postgresql
   compositionSelector:
     matchLabels:
       db: postgresql
-      provider: aws
-  id: my-db-aws
+      provider: google
+  id: my-db-google
   parameters:
     size: medium
     version: "13.4"

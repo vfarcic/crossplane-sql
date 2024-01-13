@@ -15,62 +15,62 @@ spec:
       db: postgresql
       provider: aws
   compositionUpdatePolicy: Automatic
-  id: my-db
+  id: my-db-aws
   parameters:
     size: medium
     version: "13.4"
   resourceRefs:
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: InternetGateway
-    name: my-db
+    name: my-db-aws
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: MainRouteTableAssociation
-    name: my-db
+    name: my-db-aws
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: RouteTableAssociation
-    name: my-db-1a
+    name: my-db-aws-1a
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: RouteTableAssociation
-    name: my-db-1b
+    name: my-db-aws-1b
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: RouteTableAssociation
-    name: my-db-1c
+    name: my-db-aws-1c
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: RouteTable
-    name: my-db
+    name: my-db-aws
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: Route
-    name: my-db
+    name: my-db-aws
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: SecurityGroupRule
-    name: my-db
+    name: my-db-aws
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: SecurityGroup
-    name: my-db
+    name: my-db-aws
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: Subnet
-    name: my-db-a
+    name: my-db-aws-a
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: Subnet
-    name: my-db-b
+    name: my-db-aws-b
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: Subnet
-    name: my-db-c
+    name: my-db-aws-c
   - apiVersion: ec2.aws.upbound.io/v1beta1
     kind: VPC
-    name: my-db
+    name: my-db-aws
   - apiVersion: kubernetes.crossplane.io/v1alpha1
     kind: Object
-    name: my-db-secret
+    name: my-db-aws-secret
   - apiVersion: kubernetes.crossplane.io/v1alpha1
     kind: ProviderConfig
-    name: my-db-sql
+    name: my-db-aws-sql
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
     kind: ProviderConfig
-    name: my-db
+    name: my-db-aws
   - apiVersion: rds.aws.upbound.io/v1beta1
     kind: Instance
-    name: my-db
+    name: my-db-aws
   - apiVersion: rds.aws.upbound.io/v1beta1
     kind: SubnetGroup
-    name: my-db
+    name: my-db-aws

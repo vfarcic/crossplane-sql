@@ -6,7 +6,7 @@ metadata:
     crossplane.io/composition-resource-name: gateway
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -18,7 +18,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: internetgateway.ec2.aws.upbound.io
-      crossplane-name: my-db
+      crossplane-name: my-db-aws
       crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
@@ -33,7 +33,7 @@ metadata:
     crossplane.io/composition-resource-name: mainRouteTableAssociation
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -58,7 +58,7 @@ metadata:
     crossplane.io/composition-resource-name: route
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -84,7 +84,7 @@ metadata:
     crossplane.io/composition-resource-name: routeTableAssociation1a
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-1a
+  name: my-db-aws-1a
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -111,7 +111,7 @@ metadata:
     crossplane.io/composition-resource-name: routeTableAssociation1b
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-1b
+  name: my-db-aws-1b
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -138,7 +138,7 @@ metadata:
     crossplane.io/composition-resource-name: routeTableAssociation1c
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-1c
+  name: my-db-aws-1c
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -165,7 +165,7 @@ metadata:
     crossplane.io/composition-resource-name: routeTable
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -177,7 +177,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: routetable.ec2.aws.upbound.io
-      crossplane-name: my-db
+      crossplane-name: my-db-aws
       crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
@@ -192,7 +192,7 @@ metadata:
     crossplane.io/composition-resource-name: securityGroupRule
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -222,7 +222,7 @@ metadata:
     crossplane.io/composition-resource-name: securityGroup
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -235,7 +235,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: securitygroup.ec2.aws.upbound.io
-      crossplane-name: my-db
+      crossplane-name: my-db-aws
       crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
@@ -250,7 +250,7 @@ metadata:
     crossplane.io/composition-resource-name: subnet-a
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-a
+  name: my-db-aws-a
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -264,7 +264,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: subnet.ec2.aws.upbound.io
-      crossplane-name: my-db-a
+      crossplane-name: my-db-aws-a
       crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
@@ -279,7 +279,7 @@ metadata:
     crossplane.io/composition-resource-name: subnet-b
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-b
+  name: my-db-aws-b
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -293,7 +293,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: subnet.ec2.aws.upbound.io
-      crossplane-name: my-db-b
+      crossplane-name: my-db-aws-b
       crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
@@ -308,7 +308,7 @@ metadata:
     crossplane.io/composition-resource-name: subnet-c
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-c
+  name: my-db-aws-c
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -322,7 +322,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: subnet.ec2.aws.upbound.io
-      crossplane-name: my-db-c
+      crossplane-name: my-db-aws-c
       crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
@@ -337,7 +337,7 @@ metadata:
     crossplane.io/composition-resource-name: vpc
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -352,7 +352,7 @@ spec:
     region: us-east-1
     tags:
       crossplane-kind: vpc.ec2.aws.upbound.io
-      crossplane-name: my-db
+      crossplane-name: my-db-aws
       crossplane-providerconfig: default
   managementPolicy: FullControl
   providerConfigRef:
@@ -363,10 +363,10 @@ kind: Object
 metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-secret
-    crossplane.io/external-name: my-db-secret
+    crossplane.io/external-name: my-db-aws-secret
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-secret
+  name: my-db-aws-secret
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -381,10 +381,10 @@ spec:
         port: NTQzMg==
       kind: Secret
       metadata:
-        name: my-db
+        name: my-db-aws
   managementPolicy: Default
   providerConfigRef:
-    name: my-db-sql
+    name: my-db-aws-sql
   readiness:
     policy: SuccessfulCreate
   references:
@@ -392,20 +392,20 @@ spec:
       apiVersion: rds.aws.upbound.io/v1beta1
       fieldPath: spec.forProvider.username
       kind: Instance
-      name: my-db
+      name: my-db-aws
       namespace: crossplane-system
     toFieldPath: stringData.username
   - patchesFrom:
       apiVersion: v1
       fieldPath: data.password
       kind: Secret
-      name: my-db-password
+      name: my-db-aws-password
     toFieldPath: data.password
   - patchesFrom:
       apiVersion: rds.aws.upbound.io/v1beta1
       fieldPath: status.atProvider.address
       kind: Instance
-      name: my-db
+      name: my-db-aws
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
@@ -414,10 +414,10 @@ kind: Instance
 metadata:
   annotations:
     crossplane.io/composition-resource-name: rdsinstance
-    crossplane.io/external-name: my-db
+    crossplane.io/external-name: my-db-aws
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -434,13 +434,13 @@ spec:
     instanceClass: db.m5.2xlarge
     passwordSecretRef:
       key: password
-      name: my-db-password
+      name: my-db-aws-password
     publiclyAccessible: true
     region: us-east-1
     skipFinalSnapshot: true
     tags:
       crossplane-kind: instance.rds.aws.upbound.io
-      crossplane-name: my-db
+      crossplane-name: my-db-aws
       crossplane-providerconfig: default
     username: masteruser
     vpcSecurityGroupIdSelector:
@@ -454,10 +454,10 @@ kind: SubnetGroup
 metadata:
   annotations:
     crossplane.io/composition-resource-name: subnetgroup
-    crossplane.io/external-name: my-db
+    crossplane.io/external-name: my-db-aws
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db
+  name: my-db-aws
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -472,7 +472,7 @@ spec:
       matchControllerRef: true
     tags:
       crossplane-kind: subnetgroup.rds.aws.upbound.io
-      crossplane-name: my-db
+      crossplane-name: my-db-aws
       crossplane-providerconfig: default
   managementPolicy: FullControl
   providerConfigRef:

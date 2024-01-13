@@ -4,12 +4,12 @@ metadata:
   name: my-db
 spec:
   compositionRef:
-    name: aws-postgresql
+    name: azure-postgresql
   compositionSelector:
     matchLabels:
       db: postgresql
-      provider: aws
-  id: my-db-aws
+      provider: azure
+  id: my-db-azure
   parameters:
     size: medium
     version: "13.4"

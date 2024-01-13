@@ -1,0 +1,34 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+spec:
+  claimRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQLClaim
+    name: my-db
+  compositionRef:
+    name: azure-postgresql
+  compositionSelector:
+    matchLabels:
+      db: postgresql
+      provider: azure
+  compositionUpdatePolicy: Automatic
+  id: my-db-azure
+  parameters:
+    size: medium
+    version: "13.4"
+  resourceRefs:
+  - apiVersion: azure.upbound.io/v1beta1
+    kind: ResourceGroup
+    name: my-db-azure
+  - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+    kind: FirewallRule
+    name: my-db-azure
+  - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+    kind: Server
+    name: my-db-azure
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: ProviderConfig
+    name: my-db-azure

@@ -6,7 +6,7 @@ tasks:
   package-apply:
     desc: Applies Compositions and Composite Resource Definition.
     cmds:
-      - for: ["definition.yaml", "aws.yaml"]
+      - for: ["definition.yaml", "aws.yaml", "azure.yaml", "google.yaml"]
         cmd: kubectl apply --filename package/{{ .ITEM }}
   package-publish:
     desc: Builds and pushes the package.
@@ -47,7 +47,6 @@ tasks:
       - helm-repo
     cmds:
       - helm upgrade --install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace --wait
-      - helm upgrade --install atlas-operator oci://ghcr.io/ariga/charts/atlas-operator --namespace atlas-operator --create-namespace --wait
       - for: { var: PROVIDERS }
         cmd: kubectl apply --filename providers/{{ .ITEM }}
       - task: package-apply
