@@ -7,6 +7,8 @@ task cluster-create
 
 task test-watch
 
+# Stop watching with `ctrl+c`
+
 task cluster-destroy
 ```
 

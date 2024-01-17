@@ -29,4 +29,4 @@ spec:
   - function: xpkg.upbound.io/crossplane-contrib/function-auto-ready
     version: ">=v0.2.1"
   # - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
-  #   version: ">=v0.10.0"
+  #   version: ">=v0.11.0"

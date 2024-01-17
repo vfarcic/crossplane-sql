@@ -30,10 +30,10 @@ spec:
   - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
     kind: Server
     name: my-db-azure
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-azure-schema-db-01
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-azure-schema-db-02
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1

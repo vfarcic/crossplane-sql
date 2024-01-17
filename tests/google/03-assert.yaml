@@ -21,13 +21,13 @@ spec:
     size: medium
     version: "13.4"
   resourceRefs:
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-google-schema-db-01
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-google-schema-db-02
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-google-secret
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1

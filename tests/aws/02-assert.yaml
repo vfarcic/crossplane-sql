@@ -358,7 +358,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: kubernetes.crossplane.io/v1alpha1
+apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object
 metadata:
   annotations:
@@ -382,7 +382,8 @@ spec:
       kind: Secret
       metadata:
         name: my-db-aws
-  managementPolicy: Default
+  managementPolicies:
+  - '*'
   providerConfigRef:
     name: my-db-aws-sql
   readiness:

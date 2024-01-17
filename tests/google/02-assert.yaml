@@ -1,4 +1,4 @@
-apiVersion: kubernetes.crossplane.io/v1alpha1
+apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object
 metadata:
   annotations:
@@ -22,7 +22,8 @@ spec:
       kind: Secret
       metadata:
         name: my-db-google
-  managementPolicy: Default
+  managementPolicies:
+  - '*'
   providerConfigRef:
     name: my-db-google-sql
   readiness:
