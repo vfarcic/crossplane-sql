@@ -116,7 +116,7 @@ spec:
         readinessChecks:
         - type: None
   - functionRef:
-      name: upbound-function-go-templating
+      name: crossplane-contrib-function-go-templating
     step: sql-db
     input:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
@@ -139,7 +139,7 @@ spec:
             forProvider: {}
           {{ end }}
   - functionRef:
-      name: upbound-function-go-templating
+      name: crossplane-contrib-function-go-templating
     step: schema
     input:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
@@ -189,6 +189,6 @@ spec:
                     sql: "{{ .sql }}"
           {{ end }}
   - functionRef:
-      name: upbound-function-auto-ready
+      name: crossplane-contrib-function-auto-ready
     step: automatically-detect-ready-composed-resources
 
