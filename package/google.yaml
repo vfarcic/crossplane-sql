@@ -120,6 +120,25 @@ spec:
           toFieldPath: spec.credentials.connectionSecretRef.namespace
         readinessChecks:
         - type: None
+      - name: kubernetes
+        base:
+          apiVersion: kubernetes.crossplane.io/v1alpha1
+          kind: ProviderConfig
+          spec:
+            credentials:
+              source: InjectedIdentity
+        patches:
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        - fromFieldPath: spec.id
+          toFieldPath: metadata.name
+          transforms:
+          - type: string
+            string:
+              fmt: "%s-sql"
+              type: Format
+        readinessChecks:
+        - type: None
       - name: sql-secret
         base:
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -259,6 +278,49 @@ spec:
                       sslmode: disable
                   schema: 
                     sql: "{{ .sql }}"
+          {{ end }}
+  - functionRef:
+      name: crossplane-contrib-function-go-templating
+    step: secret-pull
+    input:
+      apiVersion: gotemplating.fn.crossplane.io/v1beta1
+      kind: GoTemplate
+      source: Inline
+      inline:
+        template: |
+          {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullKey }}
+          ---
+          apiVersion: kubernetes.crossplane.io/v1alpha2
+          kind: Object
+          metadata:
+            name: {{ $.observed.composite.resource.spec.id }}-secret-pull
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-secret-pull
+          spec:
+            providerConfigRef:
+              name: {{ $.observed.composite.resource.spec.id }}-sql
+            forProvider:
+              manifest:
+                metadata:
+                  name: {{ $.observed.composite.resource.spec.id }}-password
+                  namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
+                apiVersion: external-secrets.io/v1beta1
+                kind: ExternalSecret
+                spec:
+                  dataFrom:
+                  - extract:
+                      conversionStrategy: Default
+                      decodingStrategy: None
+                      key: {{ $.observed.composite.resource.spec.parameters.secrets.pullKey }}
+                      metadataPolicy: None
+                  refreshInterval: 1h
+                  secretStoreRef:
+                    kind: ClusterSecretStore
+                    name: {{ $.observed.composite.resource.spec.parameters.secrets.storeName }}
+                  target:
+                    creationPolicy: Owner
+                    deletionPolicy: Retain
+                    name: {{ $.observed.composite.resource.spec.id }}-password
           {{ end }}
   - functionRef:
       name: crossplane-contrib-function-auto-ready

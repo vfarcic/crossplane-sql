@@ -58,6 +58,16 @@ spec:
                         sql:
                           description: The SQL to apply.
                           type: string
+                  secrets:
+                    description: Pushing and pulling secrets from a secret store. External Secrets Operator must be installed for this feature to work.
+                    type: object
+                    properties:
+                      storeName:
+                        description: The name of the secret store to use.
+                        type: string
+                      pullKey:
+                        description: The key in the secrets store with the secret with the root password.
+                        type: string
                 required:
                 - version
             required:

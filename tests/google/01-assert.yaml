@@ -1,3 +1,4 @@
+---
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQL
 metadata:
@@ -20,9 +21,27 @@ spec:
     size: medium
     version: "13.4"
   resourceRefs:
+  - apiVersion: kubernetes.crossplane.io/v1alpha1
+    kind: ProviderConfig
+    name: my-db-google-sql
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-schema-db-01
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-schema-db-02
   - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-google-secret
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-google-db-01
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-google-db-02
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-google-db-03
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
     kind: ProviderConfig
     name: my-db-google
@@ -32,3 +51,156 @@ spec:
   - apiVersion: sql.gcp.upbound.io/v1beta1
     kind: User
     name: my-db-google
+---
+apiVersion: postgresql.sql.crossplane.io/v1alpha1
+kind: Database
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-google-db-01
+    crossplane.io/external-name: db-01
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-google-db-01
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  forProvider: {}
+  providerConfigRef:
+    name: my-db-google
+---
+apiVersion: postgresql.sql.crossplane.io/v1alpha1
+kind: Database
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-google-db-02
+    crossplane.io/external-name: db-02
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-google-db-02
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  forProvider: {}
+  providerConfigRef:
+    name: my-db-google
+---
+apiVersion: postgresql.sql.crossplane.io/v1alpha1
+kind: Database
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-google-db-03
+    crossplane.io/external-name: db-03
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-google-db-03
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  forProvider: {}
+  providerConfigRef:
+    name: my-db-google
+---
+apiVersion: kubernetes.crossplane.io/v1alpha2
+kind: Object
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-google-schema-db-01
+    crossplane.io/external-name: my-db-google-schema-db-01
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-google-schema-db-01
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    manifest:
+      apiVersion: db.atlasgo.io/v1alpha1
+      kind: AtlasSchema
+      metadata:
+        name: my-db-google-db-01
+      spec:
+        credentials:
+          database: db-01
+          hostFrom:
+            secretKeyRef:
+              key: endpoint
+              name: my-db-google
+          parameters:
+            sslmode: disable
+          passwordFrom:
+            secretKeyRef:
+              key: password
+              name: my-db-google
+          port: 5432
+          scheme: postgres
+          userFrom:
+            secretKeyRef:
+              key: username
+              name: my-db-google
+        schema:
+          sql: 'create table videos ( id varchar(50) not null, description text, primary key (id) ); create table comments ( id serial, video_id varchar(50) not null, description text not null, primary key (id), CONSTRAINT fk_videos FOREIGN KEY(video_id) REFERENCES videos(id) ); '
+  managementPolicies:
+  - '*'
+  providerConfigRef:
+    name: my-db-google-sql
+---
+apiVersion: kubernetes.crossplane.io/v1alpha2
+kind: Object
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-google-schema-db-02
+    crossplane.io/external-name: my-db-google-schema-db-02
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-google-schema-db-02
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    manifest:
+      apiVersion: db.atlasgo.io/v1alpha1
+      kind: AtlasSchema
+      metadata:
+        name: my-db-google-db-02
+      spec:
+        credentials:
+          database: db-02
+          hostFrom:
+            secretKeyRef:
+              key: endpoint
+              name: my-db-google
+          parameters:
+            sslmode: disable
+          passwordFrom:
+            secretKeyRef:
+              key: password
+              name: my-db-google
+          port: 5432
+          scheme: postgres
+          userFrom:
+            secretKeyRef:
+              key: username
+              name: my-db-google
+        schema:
+          sql: 'create table videos ( id varchar(50) not null, description text, primary key (id) ); '
+  managementPolicies:
+  - '*'
+  providerConfigRef:
+    name: my-db-google-sql

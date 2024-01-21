@@ -1,119 +1,96 @@
-apiVersion: azure.upbound.io/v1beta1
-kind: ResourceGroup
-metadata:
-  annotations:
-    crossplane.io/composition-resource-name: resourcegroup
-    crossplane.io/external-name: my-db-azure
-  generation: 2
-  labels:
-    crossplane.io/claim-name: my-db
-  name: my-db-azure
-  ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
-    blockOwnerDeletion: true
-    controller: true
-    kind: SQL
-spec:
-  deletionPolicy: Delete
-  forProvider:
-    location: eastus
-  initProvider: {}
-  managementPolicies:
-  - '*'
-  providerConfigRef:
-    name: default
 ---
-apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
-kind: FirewallRule
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
 metadata:
-  annotations:
-    crossplane.io/composition-resource-name: firewall-rule
-    crossplane.io/external-name: my-db-azure
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-azure
-  ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
-    blockOwnerDeletion: true
-    controller: true
-    kind: SQL
 spec:
-  deletionPolicy: Delete
-  forProvider:
-    endIpAddress: 255.255.255.255
-    resourceGroupName: my-db-azure
-    resourceGroupNameRef:
-      name: my-db-azure
-    resourceGroupNameSelector:
-      matchControllerRef: true
-    serverName: my-db-azure
-    serverNameRef:
-      name: my-db-azure
-    serverNameSelector:
-      matchControllerRef: true
-    startIpAddress: 0.0.0.0
-  managementPolicy: FullControl
-  providerConfigRef:
-    name: default
----
-apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
-kind: Server
-metadata:
-  annotations:
-    crossplane.io/composition-resource-name: server
-    crossplane.io/external-name: my-db-azure
-  labels:
-    crossplane.io/claim-name: my-db
-  name: my-db-azure
-  ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
-    blockOwnerDeletion: true
-    controller: true
-    kind: SQL
-spec:
-  deletionPolicy: Delete
-  forProvider:
-    administratorLogin: postgres
-    administratorLoginPasswordSecretRef:
-      key: password
-      name: my-db-azure-password
-    autoGrowEnabled: true
-    location: eastus
-    publicNetworkAccessEnabled: true
-    resourceGroupName: my-db-azure
-    resourceGroupNameRef:
-      name: my-db-azure
-    resourceGroupNameSelector:
-      matchControllerRef: true
-    skuName: GP_Gen5_2
-    sslEnforcementEnabled: false
-    sslMinimalTlsVersionEnforced: TLSEnforcementDisabled
-    storageMb: 5120
+  claimRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQLClaim
+    name: my-db
+  compositionRef:
+    name: azure-postgresql
+  compositionSelector:
+    matchLabels:
+      db: postgresql
+      provider: azure
+  compositionUpdatePolicy: Automatic
+  id: my-db-azure
+  parameters:
+    size: medium
     version: "13.4"
-  managementPolicy: FullControl
-  providerConfigRef:
-    name: default
-  writeConnectionSecretToRef:
+  resourceRefs:
+  - apiVersion: azure.upbound.io/v1beta1
+    kind: ResourceGroup
+    name: my-db-azure
+  - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+    kind: FirewallRule
+    name: my-db-azure
+  - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+    kind: Server
+    name: my-db-azure
+  - apiVersion: kubernetes.crossplane.io/v1alpha1
+    kind: ProviderConfig
+    name: my-db-azure-sql
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-azure-schema-db-01
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-azure-schema-db-02
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-azure-secret-pull
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-azure-db-01
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-azure-db-02
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-azure-db-03
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: ProviderConfig
     name: my-db-azure
 ---
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
-kind: ProviderConfig
+apiVersion: kubernetes.crossplane.io/v1alpha2
+kind: Object
 metadata:
   annotations:
-    crossplane.io/composition-resource-name: sql-config
+    crossplane.io/composition-resource-name: my-db-azure-secret-pull
+    crossplane.io/external-name: my-db-azure-secret-pull
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-azure
+  name: my-db-azure-secret-pull
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
 spec:
-  credentials:
-    connectionSecretRef:
-      name: my-db-azure
-    source: PostgreSQLConnectionSecret
-  defaultDatabase: postgres
-  sslMode: require
-
+  deletionPolicy: Delete
+  forProvider:
+    manifest:
+      apiVersion: external-secrets.io/v1beta1
+      kind: ExternalSecret
+      metadata:
+        name: my-db-azure-password
+      spec:
+        dataFrom:
+        - extract:
+            conversionStrategy: Default
+            decodingStrategy: None
+            key: db-password
+            metadataPolicy: None
+        refreshInterval: 1h
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: azure
+        target:
+          creationPolicy: Owner
+          deletionPolicy: Retain
+          name: my-db-azure-password
+  providerConfigRef:
+    name: my-db-azure-sql
