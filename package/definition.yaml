@@ -65,10 +65,22 @@ spec:
                       storeName:
                         description: The name of the secret store to use.
                         type: string
-                      pullKey:
+                      pullRootPasswordKey:
                         description: The key in the secrets store with the secret with the root password.
                         type: string
+                      pushToStore:
+                        description: Whether to push DB credentials to the secret store.
+                        type: boolean
+                        default: false
+                      pullToCluster:
+                        description: To which cluster to push the DB credentials.
+                        type: string
+                      pullToClusterNamespace:
+                        description: To which Namespace to push the DB credentials.
+                        type: string
+                    required:
+                      - storeName
                 required:
-                - version
+                  - version
             required:
-            - parameters
+              - parameters

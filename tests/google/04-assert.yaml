@@ -1,0 +1,102 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+spec:
+  claimRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQLClaim
+    name: my-db
+  compositionRef:
+    name: google-postgresql
+  compositionSelector:
+    matchLabels:
+      db: postgresql
+      provider: google
+  compositionUpdatePolicy: Automatic
+  id: my-db-google
+  parameters:
+    size: medium
+    version: "13.4"
+  resourceRefs:
+  - apiVersion: kubernetes.crossplane.io/v1alpha1
+    kind: ProviderConfig
+    name: my-db-google-sql
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-schema-db-01
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-schema-db-02
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-secret
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-secret-pull
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-secret-pull-cluster
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-google-secret-push-store
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-google-db-01
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-google-db-02
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: Database
+    name: my-db-google-db-03
+  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    kind: ProviderConfig
+    name: my-db-google
+  - apiVersion: sql.gcp.upbound.io/v1beta1
+    kind: DatabaseInstance
+    name: my-db-google
+  - apiVersion: sql.gcp.upbound.io/v1beta1
+    kind: User
+    name: my-db-google
+---
+apiVersion: kubernetes.crossplane.io/v1alpha2
+kind: Object
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: my-db-google-secret-pull-cluster
+    crossplane.io/external-name: my-db-google-secret-pull-cluster
+  labels:
+    crossplane.io/claim-name: my-db
+  name: my-db-google-secret-pull-cluster
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    manifest:
+      apiVersion: external-secrets.io/v1beta1
+      kind: ExternalSecret
+      metadata:
+        name: my-db-google
+      spec:
+        dataFrom:
+        - extract:
+            conversionStrategy: Default
+            decodingStrategy: None
+            key: my-db-google
+            metadataPolicy: None
+        refreshInterval: 1h
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: google
+        target:
+          creationPolicy: Owner
+          deletionPolicy: Retain
+          name: my-db-google
+  providerConfigRef:
+    name: my-gke-cluster

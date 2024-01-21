@@ -75,6 +75,12 @@ spec:
   - apiVersion: kubernetes.crossplane.io/v1alpha2
     kind: Object
     name: my-db-aws-secret-pull
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-aws-secret-pull-cluster
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+    name: my-db-aws-secret-push-store
   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
     kind: Database
     name: my-db-aws-db-01
@@ -98,11 +104,11 @@ apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object
 metadata:
   annotations:
-    crossplane.io/composition-resource-name: my-db-aws-secret-pull
-    crossplane.io/external-name: my-db-aws-secret-pull
+    crossplane.io/composition-resource-name: my-db-aws-secret-pull-cluster
+    crossplane.io/external-name: my-db-aws-secret-pull-cluster
   labels:
     crossplane.io/claim-name: my-db
-  name: my-db-aws-secret-pull
+  name: my-db-aws-secret-pull-cluster
   ownerReferences:
   - apiVersion: devopstoolkitseries.com/v1alpha1
     blockOwnerDeletion: true
@@ -115,13 +121,13 @@ spec:
       apiVersion: external-secrets.io/v1beta1
       kind: ExternalSecret
       metadata:
-        name: my-db-aws-password
+        name: my-db-aws
       spec:
         dataFrom:
         - extract:
             conversionStrategy: Default
             decodingStrategy: None
-            key: db-password
+            key: my-db-aws
             metadataPolicy: None
         refreshInterval: 1h
         secretStoreRef:
@@ -130,7 +136,6 @@ spec:
         target:
           creationPolicy: Owner
           deletionPolicy: Retain
-          name: my-db-aws-password
+          name: my-db-aws
   providerConfigRef:
-    name: my-db-aws-sql
-
+    name: my-eks-cluster
