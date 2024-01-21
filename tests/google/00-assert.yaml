@@ -101,7 +101,7 @@ spec:
       name: my-db-google-password
     toFieldPath: data.password
   - patchesFrom:
-      apiVersion: sql.gcp.upbound.io/my-db
+      apiVersion: sql.gcp.upbound.io/v1beta1
       fieldPath: status.atProvider.publicIpAddress
       kind: DatabaseInstance
       name: my-db-google

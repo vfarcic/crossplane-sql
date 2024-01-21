@@ -159,7 +159,7 @@ spec:
                 fieldPath: data.password
               toFieldPath: data.password
             - patchesFrom:
-                apiVersion: sql.gcp.upbound.io/my-db
+                apiVersion: sql.gcp.upbound.io/v1beta1
                 kind: DatabaseInstance
                 namespace: crossplane-system
                 fieldPath: status.atProvider.publicIpAddress
