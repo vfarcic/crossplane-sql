@@ -555,6 +555,7 @@ spec:
           kind: Object
           metadata:
             name: [[ $.observed.composite.resource.spec.id ]]-secret-push-store
+            namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
             annotations:
               gotemplating.fn.crossplane.io/composition-resource-name: [[ $.observed.composite.resource.spec.id ]]-secret-push-store
           spec:
