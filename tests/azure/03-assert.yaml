@@ -91,7 +91,16 @@ spec:
             name: my-db-azure
         template:
           data:
-            endpoint: "{ \"endpoint\": \"{{ .endpoint }}\", \"port\": \"{{ .port }}\", \"username\": \"{{ .username }}\", \"password\": \"{{ .password }}\" }"
+            endpoint: |
+              {
+                "endpoint": "{{ .endpoint }}",
+                "port": "{{ .port }}",
+                "username": "{{ .username }}",
+                "password": "{{ .password }}",
+                "conn-db-01": "host={{ .endpoint }} user={{ .username }} password={{ .password }} port={{ .port }} connect_timeout=10 database=db-01",
+                "conn-db-02": "host={{ .endpoint }} user={{ .username }} password={{ .password }} port={{ .port }} connect_timeout=10 database=db-02",
+                "conn-db-03": "host={{ .endpoint }} user={{ .username }} password={{ .password }} port={{ .port }} connect_timeout=10 database=db-03"
+              }
         data:
           - match:
               secretKey: endpoint
