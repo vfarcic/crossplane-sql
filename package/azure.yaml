@@ -375,6 +375,7 @@ spec:
                 kind: Component
                 metadata:
                   name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
+                  namespace: {{ $.observed.composite.resource.spec.parameters.secrets.pullToClusterNamespace }}
                 spec:
                   type: state.postgresql
                   version: v1

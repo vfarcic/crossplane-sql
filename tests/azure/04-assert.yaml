@@ -139,6 +139,7 @@ spec:
       kind: Component
       metadata:
         name: my-db-azure-db-01
+        namespace: production
       spec:
         type: state.postgresql
         version: v1
@@ -172,6 +173,7 @@ spec:
       kind: Component
       metadata:
         name: my-db-azure-db-02
+        namespace: production
       spec:
         type: state.postgresql
         version: v1
@@ -205,6 +207,7 @@ spec:
       kind: Component
       metadata:
         name: my-db-azure-db-03
+        namespace: production
       spec:
         type: state.postgresql
         version: v1
