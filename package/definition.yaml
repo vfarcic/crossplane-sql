@@ -78,6 +78,9 @@ spec:
                       pullToClusterNamespace:
                         description: To which Namespace to push the DB credentials.
                         type: string
+                      daprComponents:
+                        description: Whether to create a Dapr components for the DBs. `pullToCluster` needs to be set to `true` to use this feature. If enabled, Dapr needs to installed in the destination cluster (directly or through OpenFunction).
+                        type: boolean
                     required:
                       - storeName
                 required:
