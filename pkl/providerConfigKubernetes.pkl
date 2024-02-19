@@ -1,5 +1,3 @@
-module providerConfigKubernetes
-
 name = "kubernetes"
 base {
     apiVersion = "kubernetes.crossplane.io/v1alpha1"

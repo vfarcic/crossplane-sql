@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: azure-postgresql
+  name: google-postgresql
   labels:
-    provider: azure
+    provider: google
     db: postgresql
 spec:
   compositeTypeRef:
@@ -16,7 +16,7 @@ spec:
     step: patch-and-transform
     input:
       apiVersion: pt.fn.crossplane.io/v1beta1
-      kind: Resources
+      kind: Resources      
       patchSets:
       - name: metadata
         patches:
@@ -25,76 +25,76 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
       resources:
-      - base:
-          apiVersion: azure.upbound.io/v1beta1
-          kind: ResourceGroup
+      - name: sql
+        base:
+          apiVersion: sql.gcp.upbound.io/v1beta1
+          kind: DatabaseInstance
           spec:
             forProvider:
-              location: eastus
-        patches:
-        - type: PatchSet
-          patchSetName: metadata
-        name: resourcegroup
-      - base:
-          apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
-          kind: Server
-          spec:
-            forProvider:
-              location: eastus
-              resourceGroupNameSelector:
-                matchControllerRef: true
-              storageMb: 5120
-              autoGrowEnabled: true
-              sslEnforcementEnabled: false
-              sslMinimalTlsVersionEnforced: TLSEnforcementDisabled
-              administratorLogin: postgres
-              administratorLoginPasswordSecretRef:
+              region: us-east1
+              rootPasswordSecretRef:
+                namespace: crossplane-system
                 key: password
-              publicNetworkAccessEnabled: true
-            writeConnectionSecretToRef:
-              namespace: crossplane-system
+              settings:
+              - availabilityType: REGIONAL
+                backupConfiguration:
+                - enabled: true
+                  binaryLogEnabled: false
+                ipConfiguration:
+                - ipv4Enabled: true
+                  authorizedNetworks:
+                  - name: all
+                    value: 0.0.0.0/0
+              deletionProtection: false
         patches:
         - type: PatchSet
           patchSetName: metadata
-        - fromFieldPath: spec.id
-          toFieldPath: spec.writeConnectionSecretToRef.name
-        - fromFieldPath: spec.claimRef.namespace
-          toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: spec.parameters.version
-          toFieldPath: spec.forProvider.version
-        - fromFieldPath: spec.parameters.size
-          toFieldPath: spec.forProvider.skuName
-          transforms:
-          - type: map
-            map:
-              small: B_Gen5_1
-              medium: GP_Gen5_2
-              large: GP_Gen5_8
-        - fromFieldPath: spec.id
-          toFieldPath: spec.forProvider.administratorLoginPasswordSecretRef.name
+          toFieldPath: spec.forProvider.databaseVersion
           transforms:
           - type: string
             string:
-              fmt: '%s-password'
+              fmt: POSTGRES_%s
+              type: Format
+        - fromFieldPath: spec.parameters.size
+          toFieldPath: spec.forProvider.settings[0].tier
+          transforms:
+          - type: map
+            map:
+              small: db-custom-1-3840
+              medium: db-custom-16-61440
+              large: db-custom-64-245760
+        - fromFieldPath: spec.id
+          toFieldPath: spec.forProvider.rootPasswordSecretRef.name
+          transforms:
+          - type: string
+            string:
+              fmt: "%s-password"
               type: Format
         - fromFieldPath: spec.claimRef.namespace
-          toFieldPath: spec.forProvider.administratorLoginPasswordSecretRef.namespace
-        name: server
-      - base:
-          apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
-          kind: FirewallRule
+          toFieldPath: spec.forProvider.rootPasswordSecretRef.namespace
+      - name: user
+        base:
+          apiVersion: sql.gcp.upbound.io/v1beta1
+          kind: User
           spec:
             forProvider:
-              startIpAddress: 0.0.0.0
-              endIpAddress: 255.255.255.255
-              resourceGroupNameSelector:
-                matchControllerRef: true
-              serverNameSelector:
+              passwordSecretRef:
+                key: password
+              instanceSelector:
                 matchControllerRef: true
         patches:
         - type: PatchSet
           patchSetName: metadata
-        name: firewall-rule
+        - fromFieldPath: spec.id
+          toFieldPath: spec.forProvider.passwordSecretRef.name
+          transforms:
+          - type: string
+            string:
+              fmt: "%s-password"
+              type: Format
+        - fromFieldPath: spec.claimRef.namespace
+          toFieldPath: spec.forProvider.passwordSecretRef.namespace
       - name: sql-config
         base:
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -104,6 +104,8 @@ spec:
           spec:
             credentials:
               source: PostgreSQLConnectionSecret
+              connectionSecretRef:
+                namespace: crossplane-system
             sslMode: require
         patches:
         - type: PatchSet
@@ -129,10 +131,77 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: '%s-sql'
+              fmt: "%s-sql"
               type: Format
         readinessChecks:
         - type: None
+      - name: sql-secret
+        base:
+          apiVersion: kubernetes.crossplane.io/v1alpha2
+          kind: Object
+          metadata:
+            name: sql-secret
+          spec:
+            references:
+            - patchesFrom:
+                apiVersion: sql.gcp.upbound.io/v1beta1
+                kind: User
+                namespace: crossplane-system
+                fieldPath: metadata.name
+              toFieldPath: stringData.username
+            - patchesFrom:
+                apiVersion: v1
+                kind: Secret
+                fieldPath: data.password
+              toFieldPath: data.password
+            - patchesFrom:
+                apiVersion: sql.gcp.upbound.io/v1beta1
+                kind: DatabaseInstance
+                namespace: crossplane-system
+                fieldPath: status.atProvider.publicIpAddress
+              toFieldPath: stringData.endpoint
+            forProvider:
+              manifest:
+                apiVersion: v1
+                kind: Secret
+                metadata:
+                  namespace: crossplane-system
+                data:
+                  port: NTQzMg==
+        patches:
+        - fromFieldPath: spec.id
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-secret"
+                type: Format
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        - fromFieldPath: spec.id
+          toFieldPath: spec.references[0].patchesFrom.name
+        - fromFieldPath: spec.id
+          toFieldPath: spec.references[1].patchesFrom.name
+          transforms:
+          - type: string
+            string:
+              fmt: "%s-password"
+              type: Format
+        - fromFieldPath: spec.claimRef.namespace
+          toFieldPath: spec.references[1].patchesFrom.namespace
+        - fromFieldPath: spec.id
+          toFieldPath: spec.references[2].patchesFrom.name
+        - fromFieldPath: spec.id
+          toFieldPath: spec.forProvider.manifest.metadata.name
+        - fromFieldPath: spec.id
+          toFieldPath: spec.providerConfigRef.name
+          transforms:
+          - type: string
+            string:
+              fmt: "%s-sql"
+              type: Format
+        - fromFieldPath: spec.claimRef.namespace
+          toFieldPath: spec.forProvider.manifest.metadata.namespace
   - functionRef:
       name: crossplane-contrib-function-go-templating
     step: sql-db
@@ -140,11 +209,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -166,11 +232,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ range .observed.composite.resource.spec.parameters.schemas }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -219,11 +282,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullRootPasswordKey }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -266,10 +326,10 @@ spec:
       kind: GoTemplate
       source: Inline
       delims:
-        left: '[['
-        right: ']]'
+        left: "[["
+        right: "]]"
       inline:
-        template: |-
+        template: |
           [[ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pushToStore ]]
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -320,11 +380,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -366,11 +423,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ if and .observed.composite.resource.spec.parameters.secrets.daprComponents .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---

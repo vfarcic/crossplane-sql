@@ -25,19 +25,19 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
       resources:
-      - name: vpc
-        base:
+      - base:
           apiVersion: ec2.aws.upbound.io/v1beta1
-          kind: VPC
           spec:
             forProvider:
               region: us-east-1
               cidrBlock: 11.0.0.0/16
               enableDnsSupport: true
               enableDnsHostnames: true
+          kind: VPC
         patches:
         - type: PatchSet
           patchSetName: metadata
+        name: vpc
       - name: subnet-a
         base:
           apiVersion: ec2.aws.upbound.io/v1beta1
@@ -58,10 +58,10 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
           transforms:
-            - type: string
-              string:
-                fmt: "%s-a"
-                type: Format
+          - type: string
+            string:
+              fmt: '%s-a'
+              type: Format
       - name: subnet-b
         base:
           apiVersion: ec2.aws.upbound.io/v1beta1
@@ -82,10 +82,10 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
           transforms:
-            - type: string
-              string:
-                fmt: "%s-b"
-                type: Format
+          - type: string
+            string:
+              fmt: '%s-b'
+              type: Format
       - name: subnet-c
         base:
           apiVersion: ec2.aws.upbound.io/v1beta1
@@ -106,51 +106,49 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
           transforms:
-            - type: string
-              string:
-                fmt: "%s-c"
-                type: Format
-      - name: subnetgroup
-        base:
+          - type: string
+            string:
+              fmt: '%s-c'
+              type: Format
+      - base:
           apiVersion: rds.aws.upbound.io/v1beta1
-          kind: SubnetGroup
           spec:
             forProvider:
               region: us-east-1
               description: I'm too lazy to write a good description
               subnetIdSelector:
                 matchControllerRef: true
+          kind: SubnetGroup
         patches:
         - type: PatchSet
           patchSetName: metadata
-      - name: gateway
-        base:
+        name: subnetgroup
+      - base:
           apiVersion: ec2.aws.upbound.io/v1beta1
+          spec:
+            forProvider:
+              region: us-east-1
+              vpcIdSelector:
+                matchControllerRef: true
           kind: InternetGateway
+        patches:
+        - type: PatchSet
+          patchSetName: metadata
+        name: gateway
+      - base:
+          apiVersion: ec2.aws.upbound.io/v1beta1
           spec:
             forProvider:
               region: us-east-1
               vpcIdSelector:
                 matchControllerRef: true
-        patches:
-        - type: PatchSet
-          patchSetName: metadata
-      - name: routeTable
-        base:
-          apiVersion: ec2.aws.upbound.io/v1beta1
           kind: RouteTable
-          spec:
-            forProvider:
-              region: us-east-1
-              vpcIdSelector:
-                matchControllerRef: true
         patches:
         - type: PatchSet
           patchSetName: metadata
-      - name: route
-        base:
+        name: routeTable
+      - base:
           apiVersion: ec2.aws.upbound.io/v1beta1
-          kind: Route
           spec:
             forProvider:
               region: us-east-1
@@ -159,13 +157,13 @@ spec:
               destinationCidrBlock: 0.0.0.0/0
               gatewayIdSelector:
                 matchControllerRef: true
+          kind: Route
         patches:
         - type: PatchSet
           patchSetName: metadata
-      - name: mainRouteTableAssociation
-        base:
+        name: route
+      - base:
           apiVersion: ec2.aws.upbound.io/v1beta1
-          kind: MainRouteTableAssociation
           spec:
             forProvider:
               region: us-east-1
@@ -173,9 +171,11 @@ spec:
                 matchControllerRef: true
               vpcIdSelector:
                 matchControllerRef: true
+          kind: MainRouteTableAssociation
         patches:
         - type: PatchSet
           patchSetName: metadata
+        name: mainRouteTableAssociation
       - name: routeTableAssociation1a
         base:
           apiVersion: ec2.aws.upbound.io/v1beta1
@@ -245,42 +245,40 @@ spec:
             string:
               fmt: '%s-1c'
               type: Format
-      - name: securityGroup
-        base:
+      - base:
           apiVersion: ec2.aws.upbound.io/v1beta1
-          kind: SecurityGroup
           spec:
             forProvider:
-              description: I am too lazy to write descriptions
               region: us-east-1
+              description: I am too lazy to write descriptions
               vpcIdSelector:
                 matchControllerRef: true
+          kind: SecurityGroup
         patches:
         - type: PatchSet
           patchSetName: metadata
-      - name: securityGroupRule
-        base:
+        name: securityGroup
+      - base:
           apiVersion: ec2.aws.upbound.io/v1beta1
-          kind: SecurityGroupRule
           spec:
             forProvider:
-              description: I am too lazy to write descriptions
               region: us-east-1
+              description: I am too lazy to write descriptions
               type: ingress
               fromPort: 5432
               toPort: 5432
               protocol: tcp
               cidrBlocks:
-                - 0.0.0.0/0
+              - 0.0.0.0/0
               securityGroupIdSelector:
                 matchControllerRef: true
+          kind: SecurityGroupRule
         patches:
         - type: PatchSet
           patchSetName: metadata
-      - name: rdsinstance
-        base:
+        name: securityGroupRule
+      - base:
           apiVersion: rds.aws.upbound.io/v1beta1
-          kind: Instance
           spec:
             forProvider:
               region: us-east-1
@@ -295,7 +293,10 @@ spec:
               allocatedStorage: 200
               passwordSecretRef:
                 key: password
+          kind: Instance
         patches:
+        - type: PatchSet
+          patchSetName: metadata
         - type: PatchSet
           patchSetName: metadata
         - fromFieldPath: spec.parameters.size
@@ -313,10 +314,11 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-password"
+              fmt: '%s-password'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.passwordSecretRef.namespace
+        name: rdsinstance
       - name: sql-config
         base:
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -351,7 +353,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-sql"
+              fmt: '%s-sql'
               type: Format
         readinessChecks:
         - type: None
@@ -393,10 +395,10 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
           transforms:
-            - type: string
-              string:
-                fmt: "%s-secret"
-                type: Format
+          - type: string
+            string:
+              fmt: '%s-secret'
+              type: Format
         - fromFieldPath: spec.id
           toFieldPath: spec.references[0].patchesFrom.name
         - fromFieldPath: spec.id
@@ -404,7 +406,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-password"
+              fmt: '%s-password'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.references[1].patchesFrom.namespace
@@ -417,7 +419,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-sql"
+              fmt: '%s-sql'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.manifest.metadata.namespace
@@ -428,8 +430,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -451,8 +456,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ range .observed.composite.resource.spec.parameters.schemas }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -501,8 +509,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullRootPasswordKey }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -545,10 +556,10 @@ spec:
       kind: GoTemplate
       source: Inline
       delims:
-        left: "[["
-        right: "]]"
+        left: '[['
+        right: ']]'
       inline:
-        template: |
+        template: |-
           [[ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pushToStore ]]
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -599,8 +610,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -642,8 +656,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ if and .observed.composite.resource.spec.parameters.secrets.daprComponents .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---

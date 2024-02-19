@@ -1,5 +1,13 @@
 import "providerConfigSql.pkl"
 import "providerConfigKubernetes.pkl"
+import "secretSql.pkl"
+import "sqlDb.pkl"
+import "schema.pkl"
+import "secretPull.pkl"
+import "secretPush.pkl"
+import "secretPullCluster.pkl"
+import "daprComponents.pkl"
+import "autoReady.pkl"
 
 class Subnet {
     hidden zoneVar: String
@@ -44,8 +52,10 @@ class RouteTableAssociation {
         spec { forProvider {
             region = "us-east-1"
             routeTableIdSelector { matchControllerRef = true }
-            subnetIdSelector { matchControllerRef = true }
-            matchLabels { zone = "us-east-1\(zoneVar)" }
+            subnetIdSelector {
+                matchControllerRef = true
+                matchLabels { zone = "us-east-1\(zoneVar)" }
+            }
         } }
     }
     patches {
@@ -229,7 +239,7 @@ spec {
                                 passwordSecretRef { key = "password" }
                             } }
                         }
-                        patch {
+                        patches {
                             new {
                                 type = "PatchSet"
                                 patchSetName = "metadata"
@@ -269,329 +279,23 @@ spec {
                     }
                     (providerConfigSql)
                     (providerConfigKubernetes)
-//       - name: sql-secret
-//         base:
-//           apiVersion: kubernetes.crossplane.io/v1alpha2
-//           kind: Object
-//           spec:
-//             references:
-//             - patchesFrom:
-//                 apiVersion: rds.aws.upbound.io/v1beta1
-//                 kind: Instance
-//                 namespace: crossplane-system
-//                 fieldPath: spec.forProvider.username
-//               toFieldPath: stringData.username
-//             - patchesFrom:
-//                 apiVersion: v1
-//                 kind: Secret
-//                 namespace: crossplane-system
-//                 fieldPath: data.password
-//               toFieldPath: data.password
-//             - patchesFrom:
-//                 apiVersion: rds.aws.upbound.io/v1beta1
-//                 kind: Instance
-//                 namespace: crossplane-system
-//                 fieldPath: status.atProvider.address
-//               toFieldPath: stringData.endpoint
-//             forProvider:
-//               manifest:
-//                 apiVersion: v1
-//                 kind: Secret
-//                 metadata:
-//                   namespace: crossplane-system
-//                 data:
-//                   port: NTQzMg==
-//         patches:
-//         - fromFieldPath: metadata.annotations
-//           toFieldPath: metadata.annotations
-//         - fromFieldPath: spec.id
-//           toFieldPath: metadata.name
-//           transforms:
-//             - type: string
-//               string:
-//                 fmt: "%s-secret"
-//                 type: Format
-//         - fromFieldPath: spec.id
-//           toFieldPath: spec.references[0].patchesFrom.name
-//         - fromFieldPath: spec.id
-//           toFieldPath: spec.references[1].patchesFrom.name
-//           transforms:
-//           - type: string
-//             string:
-//               fmt: "%s-password"
-//               type: Format
-//         - fromFieldPath: spec.claimRef.namespace
-//           toFieldPath: spec.references[1].patchesFrom.namespace
-//         - fromFieldPath: spec.id
-//           toFieldPath: spec.references[2].patchesFrom.name
-//         - fromFieldPath: spec.id
-//           toFieldPath: spec.forProvider.manifest.metadata.name
-//         - fromFieldPath: spec.id
-//           toFieldPath: spec.providerConfigRef.name
-//           transforms:
-//           - type: string
-//             string:
-//               fmt: "%s-sql"
-//               type: Format
-//         - fromFieldPath: spec.claimRef.namespace
-//           toFieldPath: spec.forProvider.manifest.metadata.namespace
+                    (secretSql) {
+                        userFromApi     = "rds.aws.upbound.io/v1beta1"
+                        userFromKind    = "Instance"
+                        userFromPath    = "spec.forProvider.username"
+                        addressFromApi  = "rds.aws.upbound.io/v1beta1"
+                        addressFromKind = "Instance"
+                        addressFromPath = "status.atProvider.address"
+                    }
                 }
             }
         }
-//   - functionRef:
-//       name: crossplane-contrib-function-go-templating
-//     step: sql-db
-//     input:
-//       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-//       kind: GoTemplate
-//       source: Inline
-//       inline:
-//         template: |
-//           {{ range .observed.composite.resource.spec.parameters.databases }}
-//           ---
-//           apiVersion: postgresql.sql.crossplane.io/v1alpha1
-//           kind: Database
-//           metadata:
-//             name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
-//             annotations:
-//               crossplane.io/external-name: {{ . }}
-//               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
-//           spec:
-//             providerConfigRef:
-//               name: {{ $.observed.composite.resource.spec.id }}
-//             forProvider: {}
-//           {{ end }}
-//   - functionRef:
-//       name: crossplane-contrib-function-go-templating
-//     step: schema
-//     input:
-//       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-//       kind: GoTemplate
-//       source: Inline
-//       inline:
-//         template: |
-//           {{ range .observed.composite.resource.spec.parameters.schemas }}
-//           ---
-//           apiVersion: kubernetes.crossplane.io/v1alpha2
-//           kind: Object
-//           metadata:
-//             name: {{ $.observed.composite.resource.spec.id }}-schema-{{ .database }}
-//             annotations:
-//               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-schema-{{ .database }}
-//           spec:
-//             providerConfigRef:
-//               name: {{ $.observed.composite.resource.spec.id }}-sql
-//             forProvider:
-//               manifest:
-//                 apiVersion: db.atlasgo.io/v1alpha1
-//                 kind: AtlasSchema
-//                 metadata:
-//                   name: {{ $.observed.composite.resource.spec.id }}-{{ .database }}
-//                   namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
-//                 toFieldPath: spec.credentials.connectionSecretRef.namespace
-//                 spec:
-//                   credentials:
-//                     scheme: postgres
-//                     hostFrom:
-//                       secretKeyRef:
-//                         key: endpoint
-//                         name: {{ $.observed.composite.resource.spec.id }}
-//                     port: 5432
-//                     userFrom:
-//                       secretKeyRef:
-//                         key: username
-//                         name: {{ $.observed.composite.resource.spec.id }}
-//                     passwordFrom:
-//                       secretKeyRef:
-//                         key: password
-//                         name: {{ $.observed.composite.resource.spec.id }}
-//                     database: {{ .database }}
-//                     parameters:
-//                       sslmode: disable
-//                   schema: 
-//                     sql: "{{ .sql }}"
-//           {{ end }}
-//   - functionRef:
-//       name: crossplane-contrib-function-go-templating
-//     step: secret-pull
-//     input:
-//       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-//       kind: GoTemplate
-//       source: Inline
-//       inline:
-//         template: |
-//           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullRootPasswordKey }}
-//           ---
-//           apiVersion: kubernetes.crossplane.io/v1alpha2
-//           kind: Object
-//           metadata:
-//             name: {{ $.observed.composite.resource.spec.id }}-secret-pull
-//             annotations:
-//               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-secret-pull
-//           spec:
-//             providerConfigRef:
-//               name: {{ $.observed.composite.resource.spec.id }}-sql
-//             forProvider:
-//               manifest:
-//                 metadata:
-//                   name: {{ $.observed.composite.resource.spec.id }}-password
-//                   namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
-//                 apiVersion: external-secrets.io/v1beta1
-//                 kind: ExternalSecret
-//                 spec:
-//                   dataFrom:
-//                   - extract:
-//                       conversionStrategy: Default
-//                       decodingStrategy: None
-//                       key: {{ $.observed.composite.resource.spec.parameters.secrets.pullRootPasswordKey }}
-//                       metadataPolicy: None
-//                   refreshInterval: 1h
-//                   secretStoreRef:
-//                     kind: ClusterSecretStore
-//                     name: {{ $.observed.composite.resource.spec.parameters.secrets.storeName }}
-//                   target:
-//                     creationPolicy: Owner
-//                     deletionPolicy: Retain
-//                     name: {{ $.observed.composite.resource.spec.id }}-password
-//           {{ end }}
-//   - functionRef:
-//       name: crossplane-contrib-function-go-templating
-//     step: secret-push-store
-//     input:
-//       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-//       kind: GoTemplate
-//       source: Inline
-//       delims:
-//         left: "[["
-//         right: "]]"
-//       inline:
-//         template: |
-//           [[ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pushToStore ]]
-//           ---
-//           apiVersion: kubernetes.crossplane.io/v1alpha2
-//           kind: Object
-//           metadata:
-//             name: [[ $.observed.composite.resource.spec.id ]]-secret-push-store
-//             annotations:
-//               gotemplating.fn.crossplane.io/composition-resource-name: [[ $.observed.composite.resource.spec.id ]]-secret-push-store
-//           spec:
-//             providerConfigRef:
-//               name: [[ $.observed.composite.resource.spec.id ]]-sql
-//             forProvider:
-//               manifest:
-//                 apiVersion: external-secrets.io/v1alpha1
-//                 kind: PushSecret
-//                 metadata:
-//                   name: [[ $.observed.composite.resource.spec.id ]]
-//                   namespace: [[ $.observed.composite.resource.spec.claimRef.namespace ]]
-//                 spec:
-//                   deletionPolicy: Delete
-//                   refreshInterval: 1h
-//                   secretStoreRefs:
-//                     - name: [[ $.observed.composite.resource.spec.parameters.secrets.storeName ]]
-//                       kind: ClusterSecretStore
-//                   selector:
-//                     secret:
-//                       name: [[ $.observed.composite.resource.spec.id ]]
-//                   template:
-//                     data:
-//                       endpoint: |
-//                         {
-//                           "endpoint": "{{ .endpoint }}",
-//                           "port": "{{ .port }}",
-//                           "username": "{{ .username }}",
-//                           "password": "{{ .password }}"[[ range .observed.composite.resource.spec.parameters.databases ]],
-//                           "conn-[[ . ]]": "host={{ .endpoint }} user={{ .username }} password={{ .password }} port={{ .port }} connect_timeout=10 database=[[ . ]]"[[ end ]]
-//                         }
-//                   data:
-//                     - match:
-//                         secretKey: endpoint
-//                         remoteRef:
-//                           remoteKey: [[ $.observed.composite.resource.spec.id ]]
-//           [[ end ]]
-//   - functionRef:
-//       name: crossplane-contrib-function-go-templating
-//     step: secret-pull-cluster
-//     input:
-//       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-//       kind: GoTemplate
-//       source: Inline
-//       inline:
-//         template: |
-//           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-//           ---
-//           apiVersion: kubernetes.crossplane.io/v1alpha2
-//           kind: Object
-//           metadata:
-//             name: {{ $.observed.composite.resource.spec.id }}-secret-pull-cluster
-//             annotations:
-//               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-secret-pull-cluster
-//           spec:
-//             providerConfigRef:
-//               name: {{ $.observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-//             forProvider:
-//               manifest:
-//                 metadata:
-//                   name: {{ $.observed.composite.resource.spec.id }}
-//                   namespace: {{ $.observed.composite.resource.spec.parameters.secrets.pullToClusterNamespace }}
-//                 apiVersion: external-secrets.io/v1beta1
-//                 kind: ExternalSecret
-//                 spec:
-//                   dataFrom:
-//                   - extract:
-//                       conversionStrategy: Default
-//                       decodingStrategy: None
-//                       key: {{ $.observed.composite.resource.spec.id }}
-//                       metadataPolicy: None
-//                   refreshInterval: 1h
-//                   secretStoreRef:
-//                     kind: ClusterSecretStore
-//                     name: {{ $.observed.composite.resource.spec.parameters.secrets.storeName }}
-//                   target:
-//                     creationPolicy: Owner
-//                     deletionPolicy: Retain
-//                     name: {{ $.observed.composite.resource.spec.id }}
-//           {{ end }}
-//   - functionRef:
-//       name: crossplane-contrib-function-go-templating
-//     step: dapr-components
-//     input:
-//       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-//       kind: GoTemplate
-//       source: Inline
-//       inline:
-//         template: |
-//           {{ if and .observed.composite.resource.spec.parameters.secrets.daprComponents .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-//           {{ range .observed.composite.resource.spec.parameters.databases }}
-//           ---
-//           apiVersion: kubernetes.crossplane.io/v1alpha2
-//           kind: Object
-//           metadata:
-//             name: {{ $.observed.composite.resource.spec.id }}-dapr-component-{{ . }}
-//             annotations:
-//               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-dapr-component-{{ . }}
-//           spec:
-//             providerConfigRef:
-//               name: {{ $.observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-//             forProvider:
-//               manifest:
-//                 apiVersion: dapr.io/v1alpha1
-//                 kind: Component
-//                 metadata:
-//                   name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
-//                   namespace: {{ $.observed.composite.resource.spec.parameters.secrets.pullToClusterNamespace }}
-//                 spec:
-//                   type: state.postgresql
-//                   version: v1
-//                   metadata:
-//                     - name: connectionString
-//                       secretKeyRef:
-//                         name: {{ $.observed.composite.resource.spec.id }}
-//                         key: conn-{{ . }}
-//           {{ end }}
-//           {{ end }}
-//   - functionRef:
-//       name: crossplane-contrib-function-auto-ready
-//     step: automatically-detect-ready-composed-resources
+        (sqlDb)
+        (schema)
+        (secretPull)
+        (secretPush)
+        (secretPullCluster)
+        (daprComponents)
+        (autoReady)
     }
 }

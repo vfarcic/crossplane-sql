@@ -3,6 +3,11 @@ version: '3'
 tasks:
 
   # Package
+  package-generate:
+    desc: Generates package files.
+    cmds:
+      - for: ["aws", "google", "azure"]
+        cmd: pkl eval --format yaml pkl/{{ .ITEM }}.pkl --output-path package/{{ .ITEM }}.yaml
   package-apply:
     desc: Applies Compositions and Composite Resource Definition.
     cmds:
@@ -10,6 +15,8 @@ tasks:
         cmd: kubectl apply --filename package/{{ .ITEM }}
   package-publish:
     desc: Builds and pushes the package.
+    deps:
+      - package-generate
     cmds:
       - up login --token $UP_TOKEN
       - up xpkg build --package-root package --name sql.xpkg
@@ -27,13 +34,24 @@ tasks:
   test-watch:
     desc: Runs tests assuming that the cluster is already created and everything is installed.
     deps:
-      - package-apply
+      - task: package-generate
     cmds:
-      - kubectl kuttl test
+      - task: package-apply
+      # - kubectl kuttl test
+      - chainsaw test
     watch: true
     sources:
+      - pkl/*.pkl
       - tests/**/*.yaml
+    generates:
       - package/*.yaml
+  test-once:
+    desc: Runs tests once assuming that the cluster is already created and everything is installed.
+    deps:
+      - task: package-generate
+    cmds:
+      - task: package-apply
+      - kubectl kuttl test
 
   # Cluster
   cluster-create:
@@ -43,6 +61,7 @@ tasks:
       PROVIDERS:
         sh: ls -1 providers | grep -v config
     deps:
+      - package-generate
       - cluster-create-kind
       - helm-repo
     cmds:

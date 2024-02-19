@@ -1,0 +1,159 @@
+import "providerConfigSql.pkl"
+import "providerConfigKubernetes.pkl"
+import "secretSql.pkl"
+import "sqlDb.pkl"
+import "schema.pkl"
+import "secretPull.pkl"
+import "secretPush.pkl"
+import "secretPullCluster.pkl"
+import "daprComponents.pkl"
+import "autoReady.pkl"
+
+apiVersion = "apiextensions.crossplane.io/v1"
+kind       = "Composition"
+metadata {
+    name = "azure-postgresql"
+    labels {
+        provider = "azure"
+        db       = "postgresql"
+    }
+}
+spec {
+    compositeTypeRef {
+        apiVersion = "devopstoolkitseries.com/v1alpha1"
+        kind       = "SQL"
+    }
+    mode = "Pipeline"
+    pipeline {
+        new {
+            functionRef { name = "crossplane-contrib-function-patch-and-transform" }
+            step = "patch-and-transform"
+            input {
+                apiVersion = "pt.fn.crossplane.io/v1beta1"
+                kind       = "Resources"
+                patchSets {
+                    new {
+                        name = "metadata"
+                        patches {
+                            new {
+                                fromFieldPath = "metadata.annotations"
+                                toFieldPath   = "metadata.annotations"
+                            }
+                            new {
+                                fromFieldPath = "spec.id"
+                                toFieldPath   = "metadata.name"
+                            }
+                        }
+                    }
+                }
+                resources {
+                    default {
+                        base {
+                            apiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+                        }
+                        patches { new {
+                            type = "PatchSet"
+                            patchSetName = "metadata"
+                        } }
+                    }
+                    new {
+                        name = "resourcegroup"
+                        base {
+                            apiVersion = "azure.upbound.io/v1beta1"
+                            kind = "ResourceGroup"
+                            spec { forProvider { location = "eastus" } }
+                        }
+                    }
+                    new {
+                        name = "server"
+                        base {
+                            kind = "Server"
+                            spec {
+                                forProvider {
+                                    location = "eastus"
+                                    resourceGroupNameSelector { matchControllerRef = true }
+                                    storageMb = 5120
+                                    autoGrowEnabled = true
+                                    sslEnforcementEnabled = false
+                                    sslMinimalTlsVersionEnforced = "TLSEnforcementDisabled"
+                                    administratorLogin = "postgres"
+                                    administratorLoginPasswordSecretRef { key = "password" }
+                                    publicNetworkAccessEnabled = true
+                                }
+                                writeConnectionSecretToRef {
+                                    namespace = "crossplane-system"
+                                }
+                            }
+                        }
+                        patches {
+                            new {
+                                fromFieldPath = "spec.id"
+                                toFieldPath   = "spec.writeConnectionSecretToRef.name"
+                            }
+                            new {
+                                fromFieldPath = "spec.claimRef.namespace"
+                                toFieldPath   = "spec.writeConnectionSecretToRef.namespace"
+                            }
+                            new {
+                                fromFieldPath = "spec.parameters.version"
+                                toFieldPath   = "spec.forProvider.version"
+                            }
+                            new {
+                                fromFieldPath = "spec.parameters.size"
+                                toFieldPath   = "spec.forProvider.skuName"
+                                transforms {
+                                    new {
+                                        type = "map"
+                                        map {
+                                            small  = "B_Gen5_1"
+                                            medium = "GP_Gen5_2"
+                                            large  = "GP_Gen5_8"
+                                        }
+                                    }
+                                }
+                            }
+                            new {
+                                fromFieldPath = "spec.id"
+                                toFieldPath   = "spec.forProvider.administratorLoginPasswordSecretRef.name"
+                                transforms {
+                                    new {
+                                        type = "string"
+                                        string {
+                                            fmt = "%s-password"
+                                            type = "Format"
+                                        }
+                                    }
+                                }
+                            }
+                            new {
+                                fromFieldPath = "spec.claimRef.namespace"
+                                toFieldPath   = "spec.forProvider.administratorLoginPasswordSecretRef.namespace"
+                            }
+                        }
+                    }
+                    new {
+                        name = "firewall-rule"
+                        base {
+                            kind = "FirewallRule"
+                            spec { forProvider {
+                                startIpAddress = "0.0.0.0"
+                                endIpAddress = "255.255.255.255"
+                                resourceGroupNameSelector { matchControllerRef = true }
+                                serverNameSelector { matchControllerRef = true }
+                            } }
+                        }
+                    }
+                    (providerConfigSql)
+                    (providerConfigKubernetes)
+                }
+            }
+        }
+        (sqlDb)
+        (schema)
+        (secretPull)
+        (secretPush)
+        (secretPullCluster)
+        (daprComponents)
+        (autoReady)
+    }
+}

@@ -1,0 +1,89 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: sqls.devopstoolkitseries.com
+spec:
+  defaultCompositionRef:
+    name: google-postgres
+  group: devopstoolkitseries.com
+  names:
+    kind: SQL
+    plural: sqls
+  claimNames:
+    kind: SQLClaim
+    plural: sqlclaims
+  connectionSecretKeys:
+  - username
+  - password
+  - endpoint
+  - port
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Database ID
+              parameters:
+                type: object
+                properties:
+                  version:
+                    description: The DB version depends on the DB type and versions available in the selected provider.
+                    type: string
+                  size:
+                    description: "Supported sizes: small, medium, large"
+                    type: string
+                    default: small
+                  databases:
+                    description: The list of databases to create inside the DB server.
+                    type: array
+                    items:
+                      type: string
+                  schemas:
+                    description: Database schema. Atlas operator (https://atlasgo.io/integrations/kubernetes/operator) needs to be installed in the cluster. Leave empty if schema should NOT be applied.
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        database:
+                          description: The name of the database where to apply the schema.
+                          type: string
+                        sql:
+                          description: The SQL to apply.
+                          type: string
+                  secrets:
+                    description: Pushing and pulling secrets from a secret store. External Secrets Operator must be installed for this feature to work.
+                    type: object
+                    properties:
+                      storeName:
+                        description: The name of the secret store to use.
+                        type: string
+                      pullRootPasswordKey:
+                        description: The key in the secrets store with the secret with the root password.
+                        type: string
+                      pushToStore:
+                        description: Whether to push DB credentials to the secret store.
+                        type: boolean
+                        default: false
+                      pullToCluster:
+                        description: To which cluster to push the DB credentials.
+                        type: string
+                      pullToClusterNamespace:
+                        description: To which Namespace to push the DB credentials.
+                        type: string
+                      daprComponents:
+                        description: Whether to create a Dapr components for the DBs. `pullToCluster` needs to be set to `true` to use this feature. If enabled, Dapr needs to installed in the destination cluster (directly or through OpenFunction).
+                        type: boolean
+                    required:
+                      - storeName
+                required:
+                  - version
+            required:
+              - parameters

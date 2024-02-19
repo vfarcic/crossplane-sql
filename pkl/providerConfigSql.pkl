@@ -1,5 +1,3 @@
-module providerConfigSql
-
 name = "sql-config"
 base {
     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"

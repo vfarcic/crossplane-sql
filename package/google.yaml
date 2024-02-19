@@ -1,4 +1,3 @@
----
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
@@ -17,7 +16,7 @@ spec:
     step: patch-and-transform
     input:
       apiVersion: pt.fn.crossplane.io/v1beta1
-      kind: Resources      
+      kind: Resources
       patchSets:
       - name: metadata
         patches:
@@ -26,8 +25,7 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
       resources:
-      - name: sql
-        base:
+      - base:
           apiVersion: sql.gcp.upbound.io/v1beta1
           kind: DatabaseInstance
           spec:
@@ -70,12 +68,12 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-password"
+              fmt: '%s-password'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.rootPasswordSecretRef.namespace
-      - name: user
-        base:
+        name: sql
+      - base:
           apiVersion: sql.gcp.upbound.io/v1beta1
           kind: User
           spec:
@@ -92,10 +90,11 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-password"
+              fmt: '%s-password'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.passwordSecretRef.namespace
+        name: user
       - name: sql-config
         base:
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -105,8 +104,6 @@ spec:
           spec:
             credentials:
               source: PostgreSQLConnectionSecret
-              connectionSecretRef:
-                namespace: crossplane-system
             sslMode: require
         patches:
         - type: PatchSet
@@ -132,7 +129,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-sql"
+              fmt: '%s-sql'
               type: Format
         readinessChecks:
         - type: None
@@ -140,8 +137,6 @@ spec:
         base:
           apiVersion: kubernetes.crossplane.io/v1alpha2
           kind: Object
-          metadata:
-            name: sql-secret
           spec:
             references:
             - patchesFrom:
@@ -153,6 +148,7 @@ spec:
             - patchesFrom:
                 apiVersion: v1
                 kind: Secret
+                namespace: crossplane-system
                 fieldPath: data.password
               toFieldPath: data.password
             - patchesFrom:
@@ -170,15 +166,15 @@ spec:
                 data:
                   port: NTQzMg==
         patches:
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
           transforms:
-            - type: string
-              string:
-                fmt: "%s-secret"
-                type: Format
-        - fromFieldPath: metadata.annotations
-          toFieldPath: metadata.annotations
+          - type: string
+            string:
+              fmt: '%s-secret'
+              type: Format
         - fromFieldPath: spec.id
           toFieldPath: spec.references[0].patchesFrom.name
         - fromFieldPath: spec.id
@@ -186,7 +182,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-password"
+              fmt: '%s-password'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.references[1].patchesFrom.namespace
@@ -199,7 +195,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: "%s-sql"
+              fmt: '%s-sql'
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.manifest.metadata.namespace
@@ -210,8 +206,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -233,8 +232,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ range .observed.composite.resource.spec.parameters.schemas }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -283,8 +285,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullRootPasswordKey }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -327,10 +332,10 @@ spec:
       kind: GoTemplate
       source: Inline
       delims:
-        left: "[["
-        right: "]]"
+        left: '[['
+        right: ']]'
       inline:
-        template: |
+        template: |-
           [[ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pushToStore ]]
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -381,8 +386,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -424,8 +432,11 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
       inline:
-        template: |
+        template: |-
           {{ if and .observed.composite.resource.spec.parameters.secrets.daprComponents .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---

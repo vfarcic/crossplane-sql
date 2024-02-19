@@ -1,0 +1,2 @@
+functionRef { name = "crossplane-contrib-function-auto-ready" }
+step = "automatically-detect-ready-composed-resources"

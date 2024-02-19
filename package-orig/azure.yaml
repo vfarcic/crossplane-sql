@@ -16,7 +16,7 @@ spec:
     step: patch-and-transform
     input:
       apiVersion: pt.fn.crossplane.io/v1beta1
-      kind: Resources
+      kind: Resources      
       patchSets:
       - name: metadata
         patches:
@@ -25,7 +25,8 @@ spec:
         - fromFieldPath: spec.id
           toFieldPath: metadata.name
       resources:
-      - base:
+      - name: resourcegroup
+        base:
           apiVersion: azure.upbound.io/v1beta1
           kind: ResourceGroup
           spec:
@@ -34,8 +35,8 @@ spec:
         patches:
         - type: PatchSet
           patchSetName: metadata
-        name: resourcegroup
-      - base:
+      - name: server
+        base:
           apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
           kind: Server
           spec:
@@ -75,12 +76,12 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: '%s-password'
+              fmt: "%s-password"
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.administratorLoginPasswordSecretRef.namespace
-        name: server
-      - base:
+      - name: firewall-rule
+        base:
           apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
           kind: FirewallRule
           spec:
@@ -94,7 +95,6 @@ spec:
         patches:
         - type: PatchSet
           patchSetName: metadata
-        name: firewall-rule
       - name: sql-config
         base:
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -129,7 +129,7 @@ spec:
           transforms:
           - type: string
             string:
-              fmt: '%s-sql'
+              fmt: "%s-sql"
               type: Format
         readinessChecks:
         - type: None
@@ -140,11 +140,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---
           apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -166,11 +163,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ range .observed.composite.resource.spec.parameters.schemas }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -219,11 +213,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullRootPasswordKey }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -266,10 +257,10 @@ spec:
       kind: GoTemplate
       source: Inline
       delims:
-        left: '[['
-        right: ']]'
+        left: "[["
+        right: "]]"
       inline:
-        template: |-
+        template: |
           [[ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pushToStore ]]
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -320,11 +311,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           ---
           apiVersion: kubernetes.crossplane.io/v1alpha2
@@ -366,11 +354,8 @@ spec:
       apiVersion: gotemplating.fn.crossplane.io/v1beta1
       kind: GoTemplate
       source: Inline
-      delims:
-        left: '{{'
-        right: '}}'
       inline:
-        template: |-
+        template: |
           {{ if and .observed.composite.resource.spec.parameters.secrets.daprComponents .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
           {{ range .observed.composite.resource.spec.parameters.databases }}
           ---
@@ -403,3 +388,4 @@ spec:
   - functionRef:
       name: crossplane-contrib-function-auto-ready
     step: automatically-detect-ready-composed-resources
+
