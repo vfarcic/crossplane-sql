@@ -3,14 +3,7 @@ kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  id: my-db-aws
-  compositionSelector:
-    matchLabels:
-      provider: aws
-      db: postgresql
   parameters:
-    version: "13.4"
-    size: medium
     databases:
       - db-01
       - db-02
