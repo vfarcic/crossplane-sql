@@ -16,5 +16,11 @@ pkgs.mkShell {
     kubernetes-helm
     upbound
     yq-go
+    go
   ];
+  shellHook =
+  ''
+    go install github.com/kyverno/chainsaw@latest
+    export PATH=$PATH:$GOPATH/bin
+  '';
 }

@@ -1,0 +1,35 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: azure
+spec:
+  steps:
+    - try:
+        - apply:
+            file: install.yaml
+        - assert:
+            file: assert-install.yaml
+        - patch:
+            file: ../common/db.yaml
+        - patch:
+            file: ../common/schemas.yaml
+        - assert:
+            file: assert-db.yaml
+        - patch:
+            file: secret-pull.yaml
+        - assert:
+            file: assert-secret-pull.yaml
+        - patch:
+            file: ../common/secret-push.yaml
+        - assert:
+            file: assert-secret-push.yaml
+        - patch:
+            file: secret-pull-cluster.yaml
+        - assert:
+            file: assert-secret-pull-cluster.yaml
+      catch:
+        - get:
+            resource: managed
+        - describe:
+            resource: sqls
+            selector: crossplane.io/claim-namespace=$NAMESPACE
