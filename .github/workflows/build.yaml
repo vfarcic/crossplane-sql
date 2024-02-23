@@ -21,6 +21,9 @@ jobs:
         uses: jetpack-io/devbox-install-action@v0.6.0
       - name: Build the package
         run: |
+          export UP_TOKEN=${{ secrets.UP_TOKEN }}
+          export UP_ACCOUNT=${{ secrets.UP_ACCOUNT }}
+          export VERSION=0.8.${{ github.run_number }}
           devbox run package-publish
       # - name: Build the package
       #   run: |
