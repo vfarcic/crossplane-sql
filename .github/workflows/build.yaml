@@ -11,17 +11,22 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Install devbox
+        uses: jetpack-io/devbox-install-action@v0.6.0
       - name: Build the package
         run: |
-          cd package
-          curl -sL https://cli.upbound.io | sh
-          ./up login --token ${{ secrets.UP_TOKEN }}
-          ./up xpkg build --name sql.xpkg
-          ./up xpkg push --package sql.xpkg xpkg.upbound.io/${{ secrets.UP_ACCOUNT }}/dot-sql:v0.8.${{ github.run_number }}
-          rm sql.xpkg
-      - name: Update config
-        run: |
-          yq --inplace ".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:v0.8.${{ github.run_number }}\"" config.yaml
+          devbox run package-generate
+      # - name: Build the package
+      #   run: |
+      #     cd package
+      #     curl -sL https://cli.upbound.io | sh
+      #     ./up login --token ${{ secrets.UP_TOKEN }}
+      #     ./up xpkg build --name sql.xpkg
+      #     ./up xpkg push --package sql.xpkg xpkg.upbound.io/${{ secrets.UP_ACCOUNT }}/dot-sql:v0.8.${{ github.run_number }}
+      #     rm sql.xpkg
+      # - name: Update config
+      #   run: |
+      #     yq --inplace ".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:v0.8.${{ github.run_number }}\"" config.yaml
       - name: Commit changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"

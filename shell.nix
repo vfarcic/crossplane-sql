@@ -12,7 +12,6 @@ pkgs.mkShell {
     bat
     go-task
     timoni
-    kuttl
     kubernetes-helm
     upbound
     yq-go
