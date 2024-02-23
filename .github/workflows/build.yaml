@@ -13,9 +13,9 @@ jobs:
           fetch-depth: 0
       - name: Install Pkl
         run: |
-          curl -L -o pkl https://github.com/apple/pkl/releases/download/0.25.2/pkl-linux-amd64
-          chmod +x pkl
-          ./pkl --version
+          curl -L -o pkl-binary https://github.com/apple/pkl/releases/download/0.25.2/pkl-linux-amd64
+          chmod +x pkl-binary
+          ./pkl-binary --version
           echo $PATH
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.6.0
