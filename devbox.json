@@ -14,13 +14,12 @@
   "shell": {
     "init_hook": [
       "go install github.com/kyverno/chainsaw@latest",
-      "export PATH=$PATH:$GOPATH/bin",
-      "task --summary"
+      "export PATH=$PATH:$GOPATH/bin"
     ],
     "scripts": {
       "cluster-create": [ "task cluster-create" ],
       "cluster-destroy": [ "task cluster-destroy" ],
-      "package-generate": [ "task cluster-destroy" ],
+      "package-publish": [ "task package-publish" ],
       "test-watch": [ "task test-watch" ]
     }
   }

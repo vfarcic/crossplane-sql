@@ -15,7 +15,7 @@ jobs:
         uses: jetpack-io/devbox-install-action@v0.6.0
       - name: Build the package
         run: |
-          devbox run package-generate
+          devbox run package-publish
       # - name: Build the package
       #   run: |
       #     cd package
