@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
       - name: Install Pkl
         run: |
-          curl -L -o pkl https://github.com/apple/pkl/releases/download/0.25.2/pkl-linux-aarch64
+          curl -L -o pkl https://github.com/apple/pkl/releases/download/0.25.2/pkl-linux-amd64
           chmod +x pkl
           ./pkl --version
           echo $PATH
