@@ -16,7 +16,7 @@ jobs:
           curl -L -o pkl-binary https://github.com/apple/pkl/releases/download/0.25.2/pkl-linux-amd64
           chmod +x pkl-binary
           mv pkl-binary /usr/local/bin/pkl
-          echo $PATH
+          echo "PATH=$PATH" >> "$GITHUB_ENV"
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.6.0
       - name: Test
