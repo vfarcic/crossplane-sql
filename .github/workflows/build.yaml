@@ -19,9 +19,7 @@ jobs:
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.6.0
       - name: Install Chainsaw
-        run: |
-          brew tap kyverno/chainsaw https://github.com/kyverno/chainsaw
-          brew install kyverno/chainsaw/chainsaw
+        uses: kyverno/action-install-chainsaw@v0.1.0
       - name: Build the package
         run: |
           export UP_TOKEN=${{ secrets.UP_TOKEN }}
