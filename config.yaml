@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-sql
 spec:
-  package: xpkg.upbound.io/devops-toolkit/dot-sql:0.8.55
+  package: xpkg.upbound.io/devops-toolkit/dot-sql:0.8.57
