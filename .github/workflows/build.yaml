@@ -19,7 +19,7 @@ jobs:
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.6.0
       - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.1.0
+        uses: kyverno/action-install-chainsaw@v0.1.6
       - name: Build the package
         run: |
           export UP_TOKEN=${{ secrets.UP_TOKEN }}
