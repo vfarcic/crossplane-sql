@@ -72,3 +72,4 @@ spec:
   forProvider: {}
   providerConfigRef:
     name: my-db-aws
+
