@@ -21,7 +21,8 @@
       "cluster-destroy": [ "task cluster-destroy" ],
       "package-publish": [ "task package-publish" ],
       "test": [ "task test" ],
-      "test-watch": [ "task test-watch" ]
+      "test-watch": [ "task test-watch" ],
+      "path": [ "echo $PATH" ]
     }
   }
 }
