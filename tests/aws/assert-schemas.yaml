@@ -28,10 +28,12 @@ spec:
             description text,
             primary key (id)
           );
-  (resourceRefs[?apiVersion == 'kubernetes.crossplane.io/v1alpha2' && kind == 'Object' && name == 'my-db-aws-schema-db-01']):
-    (length(@)): 1
-  (resourceRefs[?apiVersion == 'kubernetes.crossplane.io/v1alpha2' && kind == 'Object' && name == 'my-db-aws-schema-db-02']):
-    (length(@)): 1
+  (resourceRefs[?name == 'my-db-aws-schema-db-01']):
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
+  (resourceRefs[?name == 'my-db-aws-schema-db-02']):
+  - apiVersion: kubernetes.crossplane.io/v1alpha2
+    kind: Object
 ---
 apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object

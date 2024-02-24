@@ -1,6 +1,6 @@
 ## Run tests
 
-```bash
+```sh
 devbox shell
 
 task cluster-create
@@ -16,7 +16,7 @@ exit
 
 ## Publish To Upbound
 
-```bash
+```sh
 devbox shell
 
 # Replace `[...]` with the Upbound Cloud account
