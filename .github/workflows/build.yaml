@@ -18,12 +18,10 @@ jobs:
           mv pkl-binary /usr/local/bin/pkl
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.6.0
-      - name: Install Devbox
-        uses: jetpack-io/devbox-install-action@v0.6.0
-      - name: Test
+      - name: Install Chainsaw
         run: |
-          devbox run path
-          devbox run test
+          brew tap kyverno/chainsaw https://github.com/kyverno/chainsaw
+          brew install kyverno/chainsaw/chainsaw
       - name: Build the package
         run: |
           export UP_TOKEN=${{ secrets.UP_TOKEN }}

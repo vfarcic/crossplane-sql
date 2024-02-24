@@ -7,14 +7,12 @@
     "timoni@0.17.0",
     "upbound@0.24.1",
     "yq-go@4.41.1",
-    "go@1.22.0",
     "go-task@3.31.0",
     "kubernetes-helm@3.14.1"
   ],
   "shell": {
     "init_hook": [
-      "go install github.com/kyverno/chainsaw@latest",
-      "export PATH=$PATH:$GOPATH/bin"
+      "bat README.md"
     ],
     "scripts": {
       "cluster-create": [ "task cluster-create" ],

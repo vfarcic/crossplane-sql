@@ -1,7 +1,7 @@
 ## Run tests
 
 ```bash
-nix-shell --run $SHELL
+devbox shell
 
 task cluster-create
 
@@ -10,12 +10,14 @@ task test-watch
 # Stop watching with `ctrl+c`
 
 task cluster-destroy
+
+exit
 ```
 
 ## Publish To Upbound
 
 ```bash
-nix-shell --run $SHELL
+devbox shell
 
 # Replace `[...]` with the Upbound Cloud account
 export UP_ACCOUNT=[...]
@@ -27,4 +29,6 @@ export UP_TOKEN=[...]
 export VERSION=[...]
 
 task package-publish
+
+exit
 ```
