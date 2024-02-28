@@ -3,10 +3,18 @@ kind: Test
 metadata:
   name: azure
 spec:
+  template: true
+  bindings:
+    - name: hyperscaler
+      value: azure
+    - name: cluster
+      value: aks
   steps:
     - try:
         - apply:
-            file: install.yaml
+            file: ../common/install.yaml
+        - assert:
+            file: ../common/assert-install.yaml
         - assert:
             file: assert-install.yaml
         - patch:
@@ -14,19 +22,19 @@ spec:
         - patch:
             file: ../common/schemas.yaml
         - assert:
-            file: assert-db.yaml
+            file: ../common/assert-db.yaml
         - patch:
-            file: secret-pull.yaml
+            file: ../common/secret-pull.yaml
         - assert:
-            file: assert-secret-pull.yaml
+            file: ../common/assert-secret-pull.yaml
         - patch:
             file: ../common/secret-push.yaml
         - assert:
-            file: assert-secret-push.yaml
+            file: ../common/assert-secret-push.yaml
         - patch:
-            file: secret-pull-cluster.yaml
+            file: ../common/secret-pull-cluster.yaml
         - assert:
-            file: assert-secret-pull-cluster.yaml
+            file: ../common/assert-secret-pull-cluster.yaml
       catch:
         - get:
             resource: managed

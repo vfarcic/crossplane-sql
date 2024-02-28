@@ -1,24 +1,5 @@
 ---
 apiVersion: devopstoolkitseries.com/v1alpha1
-kind: SQLClaim
-metadata:
-  name: my-db
-spec:
-  compositionRef:
-    name: aws-postgresql
-  compositionSelector:
-    matchLabels:
-      db: postgresql
-      provider: aws
-  id: my-db-aws
-  parameters:
-    size: medium
-    version: "13.4"
-  resourceRef:
-    apiVersion: devopstoolkitseries.com/v1alpha1
-    kind: SQL
----
-apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQL
 metadata:
   labels:

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: my-db-google-password
+  name: (join('-', ['my-db', $hyperscaler, 'password']))
 data:
   password: cG9zdGdyZXM=
 ---
@@ -11,11 +11,12 @@ kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  id: my-db-google
+  id: (join('-', ['my-db', $hyperscaler]))
   compositionSelector:
     matchLabels:
-      provider: google
+      provider: ($hyperscaler)
       db: postgresql
   parameters:
     version: "13.4"
     size: medium
+
