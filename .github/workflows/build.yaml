@@ -27,7 +27,7 @@ jobs:
         run: |
           export UP_TOKEN=${{ secrets.UP_TOKEN }}
           export UP_ACCOUNT=${{ secrets.UP_ACCOUNT }}
-          export VERSION=0.8.${{ github.run_number }}
+          export VERSION=v0.8.${{ github.run_number }}
           devbox run package-publish
       - name: Commit changes
         run: |
