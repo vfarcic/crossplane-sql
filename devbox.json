@@ -11,7 +11,9 @@
     "kubernetes-helm@3.14.1"
   ],
   "shell": {
-    "init_hook": [],
+    "init_hook": [
+      "alias cat='bat --paging never --theme DarkNeon --style plain'"
+    ],
     "scripts": {
       "cluster-create":  ["task cluster-create"],
       "cluster-destroy": ["task cluster-destroy"],
