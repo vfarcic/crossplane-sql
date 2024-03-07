@@ -401,5 +401,57 @@ spec:
           {{ end }}
           {{ end }}
   - functionRef:
+      name: crossplane-contrib-function-go-templating
+    step: dynatrace
+    input:
+      apiVersion: gotemplating.fn.crossplane.io/v1beta1
+      kind: GoTemplate
+      source: Inline
+      delims:
+        left: '{{'
+        right: '}}'
+      inline:
+        template: |-
+          {{ if .observed.composite.resource.spec.parameters.dynatraceDashboard.enabled }}
+          ---
+          apiVersion: helm.crossplane.io/v1beta1
+          kind: Release
+          metadata:
+            name: {{ .observed.composite.resource.spec.id }}-dynatrace-dashboard
+            annotations:
+              gotemplating.fn.crossplane.io/composition-resource-name: {{ .observed.composite.resource.spec.id }}-dynatrace-dashboard
+          spec:
+            providerConfigRef:
+              name: {{ $.observed.composite.resource.spec.parameters.dynatraceDashboard.cluster }}
+            forProvider:
+              chart:
+                name: dashboards
+                repository: https://katharinasick.github.io/crossplane-observability-demo-dashboards
+                version: "0.1.2"
+              set:
+                - name: oauthCredentialsSecretName
+                  value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.oathCredentialsSecretName }}
+                - name: dashboards.app.enabled
+                  value: "true"
+                - name: dashboards.app.title
+                  value: "App & DB Metrics"
+                - name: dashboards.app.deployment
+                  value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.appDeploymentName }}
+                - name: dashboards.app.cluster
+                  value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.cluster }}
+                - name: dashboards.app.namespace
+                  value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.appNamespace }}
+                - name: dashboards.app.security.enabled
+                  value: "true"
+                - name: dashboards.app.database.enabled
+                  value: "true"
+                - name: dashboards.app.database.name
+                  value: {{ .observed.composite.resource.spec.id }}
+              namespace: dynatrace
+            providerConfigRef:
+              name: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.cluster }}
+            rollbackLimit: 3
+          {{ end }}
+  - functionRef:
       name: crossplane-contrib-function-auto-ready
     step: automatically-detect-ready-composed-resources

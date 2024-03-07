@@ -93,10 +93,6 @@ spec:
   deletionPolicy: Delete
   forProvider:
     region: us-east-1
-    tags:
-      crossplane-kind: internetgateway.ec2.aws.upbound.io
-      crossplane-name: my-db-aws
-      crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
   managementPolicy: FullControl
@@ -252,10 +248,6 @@ spec:
   deletionPolicy: Delete
   forProvider:
     region: us-east-1
-    tags:
-      crossplane-kind: routetable.ec2.aws.upbound.io
-      crossplane-name: my-db-aws
-      crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
   managementPolicy: FullControl
@@ -310,10 +302,6 @@ spec:
   forProvider:
     description: I am too lazy to write descriptions
     region: us-east-1
-    tags:
-      crossplane-kind: securitygroup.ec2.aws.upbound.io
-      crossplane-name: my-db-aws
-      crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
   managementPolicy: FullControl
@@ -339,10 +327,6 @@ spec:
     availabilityZone: us-east-1a
     cidrBlock: 11.0.0.0/24
     region: us-east-1
-    tags:
-      crossplane-kind: subnet.ec2.aws.upbound.io
-      crossplane-name: my-db-aws-a
-      crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
   managementPolicy: FullControl
@@ -368,10 +352,6 @@ spec:
     availabilityZone: us-east-1b
     cidrBlock: 11.0.1.0/24
     region: us-east-1
-    tags:
-      crossplane-kind: subnet.ec2.aws.upbound.io
-      crossplane-name: my-db-aws-b
-      crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
   managementPolicy: FullControl
@@ -397,10 +377,6 @@ spec:
     availabilityZone: us-east-1c
     cidrBlock: 11.0.2.0/24
     region: us-east-1
-    tags:
-      crossplane-kind: subnet.ec2.aws.upbound.io
-      crossplane-name: my-db-aws-c
-      crossplane-providerconfig: default
     vpcIdSelector:
       matchControllerRef: true
   managementPolicy: FullControl
@@ -427,10 +403,6 @@ spec:
     enableDnsHostnames: true
     enableDnsSupport: true
     region: us-east-1
-    tags:
-      crossplane-kind: vpc.ec2.aws.upbound.io
-      crossplane-name: my-db-aws
-      crossplane-providerconfig: default
   managementPolicy: FullControl
   providerConfigRef:
     name: default
@@ -516,10 +488,6 @@ spec:
     publiclyAccessible: true
     region: us-east-1
     skipFinalSnapshot: true
-    tags:
-      crossplane-kind: instance.rds.aws.upbound.io
-      crossplane-name: my-db-aws
-      crossplane-providerconfig: default
     username: masteruser
     vpcSecurityGroupIdSelector:
       matchControllerRef: true
@@ -548,10 +516,6 @@ spec:
     region: us-east-1
     subnetIdSelector:
       matchControllerRef: true
-    tags:
-      crossplane-kind: subnetgroup.rds.aws.upbound.io
-      crossplane-name: my-db-aws
-      crossplane-providerconfig: default
   managementPolicy: FullControl
   providerConfigRef:
     name: default
