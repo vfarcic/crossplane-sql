@@ -30,3 +30,5 @@ spec:
     version: ">=v0.2.1"
   # - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
   #   version: ">=v0.11.0"
+  # - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
+  #   version: ">=v0.17.0"

@@ -37,9 +37,13 @@ spec:
             file: ../common/secret-pull-cluster.yaml
         - assert:
             file: ../common/assert-secret-pull-cluster.yaml
-      catch:
-        - get:
-            resource: managed
-        - describe:
-            resource: sqls
-            selector: crossplane.io/claim-namespace=$NAMESPACE
+        - patch:
+            file: ../common/dynatrace.yaml
+        - assert:
+            file: ../common/assert-dynatrace.yaml
+    #   catch:
+    #     - get:
+    #         resource: managed
+    #     - describe:
+    #         resource: sqls
+    #         selector: crossplane.io/claim-namespace=$NAMESPACE

@@ -1,0 +1,61 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+spec:
+  parameters:
+    secrets:
+      pushToStore: true
+  parameters:
+    size: medium
+    version: "13.4"
+  (resourceRefs[?name == join('-', ['my-db', $hyperscaler, 'dynatrace-dashboard'])]):
+    - apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+---
+apiVersion: helm.crossplane.io/v1beta1
+kind: Release
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: (join('-', ['my-db', $hyperscaler, 'dynatrace-dashboard']))
+  labels:
+    crossplane.io/claim-name: my-db
+  name: (join('-', ['my-db', $hyperscaler, 'dynatrace-dashboard']))
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    chart:
+      name: dashboards
+      repository: https://katharinasick.github.io/crossplane-observability-demo-dashboards
+      version: "0.1.2"
+    set:
+      - name: oauthCredentialsSecretName
+        value: my-oauth-creds
+      - name: dashboards.app.enabled
+        value: "true"
+      - name: dashboards.app.title
+        value: "App & DB Metrics"
+      - name: dashboards.app.deployment
+        value: my-app
+      - name: dashboards.app.cluster
+        value: (join('-', ['my', $cluster, 'cluster']))
+      - name: dashboards.app.namespace
+        value: dynatrace
+      - name: dashboards.app.security.enabled
+        value: "true"
+      - name: dashboards.app.database.enabled
+        value: "true"
+      - name: dashboards.app.database.name
+        value: (join('-', ['my-db', $hyperscaler]))
+    namespace: dynatrace
+  providerConfigRef:
+    name: (join('-', ['my', $cluster, 'cluster']))
+  rollbackLimit: 3
+
