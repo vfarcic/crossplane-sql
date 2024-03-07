@@ -8,5 +8,5 @@ spec:
       enabled: true
       oathCredentialsSecretName: my-oauth-creds
       cluster: (join('-', ['my', $cluster, 'cluster']))
-      clusterNamespace: dynatrace
       appDeploymentName: my-app
+      appNamespace: production

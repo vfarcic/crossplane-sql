@@ -91,13 +91,13 @@ spec:
                         description: The name of the secret with the OAuth credentials for the Dynatrace API.
                         type: string
                       cluster:
-                        description: To which cluster to push the DB credentials.
-                        type: string
-                      clusterNamespace:
-                        description: To which Namespace to push the DB credentials.
+                        description: To which cluster to apply the dashboard.
                         type: string
                       appDeploymentName:
                         description: The name of the app deployment for which to create the dashboard.
+                        type: string
+                      appNamespace:
+                        description: The namespace of the app deployment for which to create the dashboard.
                         type: string
                 required:
                   - version

@@ -730,7 +730,7 @@ spec:
                 - name: dashboards.app.cluster
                   value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.cluster }}
                 - name: dashboards.app.namespace
-                  value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.clusterNamespace }}
+                  value: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.appNamespace }}
                 - name: dashboards.app.security.enabled
                   value: "true"
                 - name: dashboards.app.database.enabled

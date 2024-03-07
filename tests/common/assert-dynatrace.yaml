@@ -47,7 +47,7 @@ spec:
       - name: dashboards.app.cluster
         value: (join('-', ['my', $cluster, 'cluster']))
       - name: dashboards.app.namespace
-        value: dynatrace
+        value: production
       - name: dashboards.app.security.enabled
         value: "true"
       - name: dashboards.app.database.enabled
