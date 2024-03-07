@@ -123,7 +123,6 @@ spec:
           value: 0.0.0.0/0
         ipv4Enabled: true
       tier: db-custom-16-61440
-  managementPolicy: FullControl
   providerConfigRef:
     name: default
 ---
@@ -151,7 +150,6 @@ spec:
     passwordSecretRef:
       key: password
       name: my-db-google-password
-  managementPolicy: FullControl
 ---
 apiVersion: postgresql.sql.crossplane.io/v1alpha1
 kind: ProviderConfig

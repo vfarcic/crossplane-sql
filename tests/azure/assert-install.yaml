@@ -91,7 +91,6 @@ spec:
     serverNameSelector:
       matchControllerRef: true
     startIpAddress: 0.0.0.0
-  managementPolicy: FullControl
   providerConfigRef:
     name: default
 ---
@@ -129,7 +128,6 @@ spec:
     sslMinimalTlsVersionEnforced: TLSEnforcementDisabled
     storageMb: 5120
     version: "13.4"
-  managementPolicy: FullControl
   providerConfigRef:
     name: default
   writeConnectionSecretToRef:
