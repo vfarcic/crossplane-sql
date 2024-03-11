@@ -81,26 +81,6 @@
         }
       }
     },
-    "krew@0.4.4": {
-      "last_modified": "2024-02-24T23:06:34Z",
-      "resolved": "github:NixOS/nixpkgs/9a9dae8f6319600fa9aebde37f340975cab4b8c0#krew",
-      "source": "devbox-search",
-      "version": "0.4.4",
-      "systems": {
-        "aarch64-darwin": {
-          "store_path": "/nix/store/l2y6gad42916a1za47pjrjb7982ygl90-krew-0.4.4"
-        },
-        "aarch64-linux": {
-          "store_path": "/nix/store/ygl6xfw00j8pmf6gflsqy848n50jh66a-krew-0.4.4"
-        },
-        "x86_64-darwin": {
-          "store_path": "/nix/store/01vyv5g8n36yq7p70vx2qsaav3yn3biy-krew-0.4.4"
-        },
-        "x86_64-linux": {
-          "store_path": "/nix/store/1i05dnb7v1fhnjiy7an2prgca1ai37c8-krew-0.4.4"
-        }
-      }
-    },
     "kubectl@1.29.2": {
       "last_modified": "2024-02-16T04:19:51Z",
       "resolved": "github:NixOS/nixpkgs/5e55f0bb65124b05d0a52e164514c03596023634#kubectl",
