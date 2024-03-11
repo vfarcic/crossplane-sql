@@ -10,3 +10,4 @@ spec:
       cluster: (join('-', ['my', $cluster, 'cluster']))
       appDeploymentName: my-app
       appNamespace: production
+      slackChannel: "my-channel"

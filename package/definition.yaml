@@ -99,6 +99,9 @@ spec:
                       appNamespace:
                         description: The namespace of the app deployment for which to create the dashboard.
                         type: string
+                      slackChannel:
+                        description: "The Slack channel to send alerts to (e.g., my-channel)."
+                        type: string
                 required:
                   - version
             required:

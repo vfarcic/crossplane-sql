@@ -32,30 +32,27 @@ spec:
   deletionPolicy: Delete
   forProvider:
     chart:
-      name: dashboards
-      repository: https://katharinasick.github.io/crossplane-observability-demo-dashboards
-      version: "0.1.2"
-    set:
-      - name: oauthCredentialsSecretName
-        value: my-oauth-creds
-      - name: dashboards.app.enabled
-        value: "true"
-      - name: dashboards.app.title
-        value: "App & DB Metrics"
-      - name: dashboards.app.deployment
-        value: my-app
-      - name: dashboards.app.cluster
-        value: (join('-', ['my', $cluster, 'cluster']))
-      - name: dashboards.app.namespace
-        value: production
-      - name: dashboards.app.security.enabled
-        value: "true"
-      - name: dashboards.app.database.enabled
-        value: "true"
-      - name: dashboards.app.database.name
-        value: (join('-', ['my-db', $hyperscaler]))
+      name: kubernetes-workload
+      repository: https://katharinasick.github.io/crossplane-observability-demo-dynatrace
+      version: "0.1.1"
+    values:
+      oauthCredentialsSecretName: my-oauth-creds
+      dashboard:
+        enabled: true
+      alerting:
+        enabled: true
+        slackChannel: "#my-channel"
+      workloadName: my-app
+      cluster: (join('-', ['my', $cluster, 'cluster']))
+      namespace: production
+      crossplaneTerraformProvider:
+        connectionSecretRef:
+          name: dynatrace-terraform-creds
+        namespace: crossplane-system
+        key: credentials
+      databaseName: (join('-', ['my-db', $hyperscaler]))
     namespace: dynatrace
   providerConfigRef:
-    name: (join('-', ['my', $cluster, 'cluster']))
+    name: (join('-', ['my-db', $hyperscaler, 'sql']))
   rollbackLimit: 3
 
