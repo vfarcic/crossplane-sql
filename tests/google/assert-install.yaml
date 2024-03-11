@@ -21,6 +21,9 @@ spec:
     size: medium
     version: "13.4"
   resourceRefs:
+  - apiVersion: helm.crossplane.io/v1beta1
+    kind: ProviderConfig
+    name: my-db-google-sql
   - apiVersion: kubernetes.crossplane.io/v1alpha1
     kind: ProviderConfig
     name: my-db-google-sql

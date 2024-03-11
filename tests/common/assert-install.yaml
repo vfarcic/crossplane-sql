@@ -3,6 +3,7 @@ apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
 metadata:
   name: my-db
+  namespace: ($namespace)
 spec:
   compositionRef:
     name: (join('-', [$hyperscaler, 'postgresql']))
@@ -17,3 +18,31 @@ spec:
   resourceRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
     kind: SQL
+---
+apiVersion: kubernetes.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+    crossplane.io/claim-namespace: ($namespace)
+  name: (join('-', ['my-db', $hyperscaler, 'sql']))
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQL
+spec:
+  credentials:
+    source: InjectedIdentity
+---
+apiVersion: helm.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+    crossplane.io/claim-namespace: ($namespace)
+  name: (join('-', ['my-db', $hyperscaler, 'sql']))
+  ownerReferences:
+  - apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQL
+spec:
+  credentials:
+    source: InjectedIdentity

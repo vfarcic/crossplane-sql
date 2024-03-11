@@ -8,11 +8,13 @@
     "upbound@0.24.1",
     "yq-go@4.41.1",
     "go-task@3.31.0",
-    "kubernetes-helm@3.14.1"
+    "kubernetes-helm@3.14.1",
+    "krew@0.4.4"
   ],
   "shell": {
     "init_hook": [
-      "alias cat='bat --paging never --theme DarkNeon --style plain'"
+      "alias cat='bat --paging never --theme DarkNeon --style plain'",
+      "kubectl krew install ctx"
     ],
     "scripts": {
       "cluster-create":  ["task cluster-create"],

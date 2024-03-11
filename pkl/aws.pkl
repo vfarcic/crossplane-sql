@@ -1,5 +1,6 @@
 import "providerConfigSql.pkl"
 import "providerConfigKubernetes.pkl"
+import "providerConfigHelm.pkl"
 import "secretSql.pkl"
 import "sqlDb.pkl"
 import "schema.pkl"
@@ -280,6 +281,7 @@ spec {
                     }
                     (providerConfigSql)
                     (providerConfigKubernetes)
+                    (providerConfigHelm)
                     (secretSql) {
                         userFromApi     = "rds.aws.upbound.io/v1beta1"
                         userFromKind    = "Instance"

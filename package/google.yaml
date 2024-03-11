@@ -133,6 +133,25 @@ spec:
               type: Format
         readinessChecks:
         - type: None
+      - name: helm
+        base:
+          apiVersion: helm.crossplane.io/v1beta1
+          kind: ProviderConfig
+          spec:
+            credentials:
+              source: InjectedIdentity
+        patches:
+        - fromFieldPath: metadata.annotations
+          toFieldPath: metadata.annotations
+        - fromFieldPath: spec.id
+          toFieldPath: metadata.name
+          transforms:
+          - type: string
+            string:
+              fmt: '%s-sql'
+              type: Format
+        readinessChecks:
+        - type: None
       - name: sql-secret
         base:
           apiVersion: kubernetes.crossplane.io/v1alpha2
