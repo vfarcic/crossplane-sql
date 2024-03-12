@@ -755,7 +755,7 @@ spec:
                     name: dynatrace-terraform-creds
                   namespace: crossplane-system
                   key: credentials
-                databaseName: {{ .observed.composite.status.address }}
+                databaseName: {{ .observed.composite.resource.status.address }}
               namespace: dynatrace
             providerConfigRef:
               name: {{ .observed.composite.resource.spec.id }}-sql
