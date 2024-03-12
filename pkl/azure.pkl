@@ -131,6 +131,11 @@ spec {
                                 fromFieldPath = "spec.claimRef.namespace"
                                 toFieldPath   = "spec.forProvider.administratorLoginPasswordSecretRef.namespace"
                             }
+                            new {
+                                type          = "ToCompositeFieldPath"
+                                fromFieldPath = "status.atProvider.fqdn"
+                                toFieldPath   = "status.address"
+                            }
                         }
                     }
                     new {

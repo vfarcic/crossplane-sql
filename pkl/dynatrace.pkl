@@ -33,7 +33,7 @@ templateVar = """
               name: dynatrace-terraform-creds
             namespace: crossplane-system
             key: credentials
-          databaseName: {{ .observed.composite.resource.spec.id }}
+          databaseName: {{ .observed.composite.status.address }}
         namespace: dynatrace
       providerConfigRef:
         name: {{ .observed.composite.resource.spec.id }}-sql

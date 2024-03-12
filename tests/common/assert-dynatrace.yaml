@@ -50,7 +50,7 @@ spec:
           name: dynatrace-terraform-creds
         namespace: crossplane-system
         key: credentials
-      databaseName: (join('-', ['my-db', $hyperscaler]))
+      # databaseName: (join('-', ['my-db', $hyperscaler]))
     namespace: dynatrace
   providerConfigRef:
     name: (join('-', ['my-db', $hyperscaler, 'sql']))

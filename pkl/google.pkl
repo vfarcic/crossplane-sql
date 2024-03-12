@@ -124,6 +124,11 @@ spec {
                                 fromFieldPath = "spec.claimRef.namespace"
                                 toFieldPath   = "spec.forProvider.rootPasswordSecretRef.namespace"
                             }
+                            new {
+                                type          = "ToCompositeFieldPath"
+                                fromFieldPath = "status.atProvider.publicIpAddress"
+                                toFieldPath   = "status.address"
+                            }
                         }
                     }
                     new {

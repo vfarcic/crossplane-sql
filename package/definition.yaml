@@ -106,3 +106,9 @@ spec:
                   - version
             required:
               - parameters
+          status:
+            type: object
+            properties:
+              address:
+                description: Database instance address
+                type: string

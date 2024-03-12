@@ -318,6 +318,9 @@ spec:
               type: Format
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.forProvider.passwordSecretRef.namespace
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.address
+          toFieldPath: status.address
         name: rdsinstance
       - name: sql-config
         base:
@@ -752,7 +755,7 @@ spec:
                     name: dynatrace-terraform-creds
                   namespace: crossplane-system
                   key: credentials
-                databaseName: {{ .observed.composite.resource.spec.id }}
+                databaseName: {{ .observed.composite.status.address }}
               namespace: dynatrace
             providerConfigRef:
               name: {{ .observed.composite.resource.spec.id }}-sql

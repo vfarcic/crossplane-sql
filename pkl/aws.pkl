@@ -277,6 +277,11 @@ spec {
                                 fromFieldPath = "spec.claimRef.namespace"
                                 toFieldPath   = "spec.forProvider.passwordSecretRef.namespace"
                             }
+                            new {
+                                type          = "ToCompositeFieldPath"
+                                fromFieldPath = "status.atProvider.address"
+                                toFieldPath   = "status.address"
+                            }
                         }
                     }
                     (providerConfigSql)
