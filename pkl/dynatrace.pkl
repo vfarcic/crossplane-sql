@@ -17,7 +17,7 @@ templateVar = """
         chart:
           name: kubernetes-workload
           repository: https://katharinasick.github.io/crossplane-observability-demo-dynatrace
-          version: "0.1.1"
+          version: "0.1.2"
         values:
           oauthCredentialsSecretName: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.oathCredentialsSecretName }}
           dashboard:
@@ -33,7 +33,7 @@ templateVar = """
               name: dynatrace-terraform-creds
             namespace: crossplane-system
             key: credentials
-          databaseName: {{ .observed.composite.resource.status.address }}
+          databaseAddress: {{ .observed.composite.resource.status.address }}
         namespace: dynatrace
       providerConfigRef:
         name: {{ .observed.composite.resource.spec.id }}-sql

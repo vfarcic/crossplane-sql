@@ -34,7 +34,7 @@ spec:
     chart:
       name: kubernetes-workload
       repository: https://katharinasick.github.io/crossplane-observability-demo-dynatrace
-      version: "0.1.1"
+      version: "0.1.2"
     values:
       oauthCredentialsSecretName: my-oauth-creds
       dashboard:
