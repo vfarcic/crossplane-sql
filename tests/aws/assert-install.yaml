@@ -73,10 +73,10 @@ spec:
     kind: ProviderConfig
     name: my-db-aws
   - apiVersion: rds.aws.upbound.io/v1beta1
-    kind: Instance
-    name: my-db-aws
-  - apiVersion: rds.aws.upbound.io/v1beta1
     kind: SubnetGroup
+    name: my-db-aws
+  - apiVersion: rds.aws.upbound.io/v1beta2
+    kind: Instance
     name: my-db-aws
 ---
 apiVersion: ec2.aws.upbound.io/v1beta1
@@ -449,7 +449,7 @@ spec:
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
-apiVersion: rds.aws.upbound.io/v1beta1
+apiVersion: rds.aws.upbound.io/v1beta2
 kind: Instance
 metadata:
   annotations:
@@ -465,6 +465,7 @@ metadata:
 spec:
   deletionPolicy: Delete
   forProvider:
+    identifier: my-db-aws
     allocatedStorage: 200
     dbSubnetGroupNameSelector:
       matchControllerRef: true

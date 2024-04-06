@@ -228,7 +228,7 @@ spec {
                     new {
                         name = "rdsinstance"
                         base {
-                            apiVersion = "rds.aws.upbound.io/v1beta1"
+                            apiVersion = "rds.aws.upbound.io/v1beta2"
                             kind       = "Instance"
                             spec { forProvider {
                                 dbSubnetGroupNameSelector { matchControllerRef = true }
@@ -245,6 +245,10 @@ spec {
                             new {
                                 type = "PatchSet"
                                 patchSetName = "metadata"
+                            }
+                            new {
+                                fromFieldPath = "spec.id"
+                                toFieldPath   = "spec.forProvider.identifier"
                             }
                             new {
                                 fromFieldPath = "spec.parameters.size"

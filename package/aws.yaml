@@ -278,7 +278,7 @@ spec:
           patchSetName: metadata
         name: securityGroupRule
       - base:
-          apiVersion: rds.aws.upbound.io/v1beta1
+          apiVersion: rds.aws.upbound.io/v1beta2
           spec:
             forProvider:
               region: us-east-1
@@ -299,6 +299,8 @@ spec:
           patchSetName: metadata
         - type: PatchSet
           patchSetName: metadata
+        - fromFieldPath: spec.id
+          toFieldPath: spec.forProvider.identifier
         - fromFieldPath: spec.parameters.size
           toFieldPath: spec.forProvider.instanceClass
           transforms:
