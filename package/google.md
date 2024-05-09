@@ -38,13 +38,16 @@ kubectl --namespace crossplane-system \
     --from-file creds=./gcp-creds.json
 
 kubectl apply \
-    --filename ../../crossplane-config/provider-kubernetes-incluster.yaml
+    --filename providers/provider-helm-incluster.yaml
 
 kubectl apply \
-    --filename ../../crossplane-config/provider-google.yaml
+    --filename providers/provider-kubernetes-incluster.yaml
 
 kubectl apply \
-    --filename ../../crossplane-config/config-sql.yaml
+    --filename providers/google.yaml
+
+kubectl apply \
+    --filename providers/sql.yaml
 
 kubectl create namespace infra
 
@@ -70,10 +73,10 @@ spec:
 ## Create a PostgreSQL Instance
 
 ```bash
-cat ../../examples/sql/google.yaml
+cat examples/sql/google.yaml
 
 kubectl --namespace infra apply \
-    --filename ../../examples/sql/google.yaml
+    --filename examples/sql/google.yaml
 
 kubectl --namespace infra get sqlclaims
 
@@ -84,11 +87,11 @@ kubectl get managed
 
 ```bash
 kubectl --namespace infra delete \
-    --filename ../../examples/sql/google.yaml
+    --filename examples/sql/google.yaml
 
 kubectl get managed
 
-# Wait until all the resources are deleted (ignore `database`)
+# Wait until all the resources are deleted (ignore `database`)
 
 gcloud projects delete $PROJECT_ID
 ```
