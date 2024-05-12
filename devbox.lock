@@ -61,54 +61,6 @@
         }
       }
     },
-    "google-cloud-sdk@467.0.0": {
-      "last_modified": "2024-05-01T11:18:24Z",
-      "resolved": "github:NixOS/nixpkgs/bcd44e224fd68ce7d269b4f44d24c2220fd821e7#google-cloud-sdk",
-      "source": "devbox-search",
-      "version": "467.0.0",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/nz3c8npcjfwm2j5yc8c2kv02jad214v0-google-cloud-sdk-467.0.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/nz3c8npcjfwm2j5yc8c2kv02jad214v0-google-cloud-sdk-467.0.0"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/2dl98vc2vhg4ssyydbhb31bkmh2hc01f-google-cloud-sdk-467.0.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/2dl98vc2vhg4ssyydbhb31bkmh2hc01f-google-cloud-sdk-467.0.0"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/rrc94axn1v2mr4ypkzqgbip8w0n59m34-google-cloud-sdk-467.0.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/rrc94axn1v2mr4ypkzqgbip8w0n59m34-google-cloud-sdk-467.0.0"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/p3gdqn7zk638wnrdpdfiai1j2d778dqi-google-cloud-sdk-467.0.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/p3gdqn7zk638wnrdpdfiai1j2d778dqi-google-cloud-sdk-467.0.0"
-        }
-      }
-    },
     "gum@0.14.0": {
       "last_modified": "2024-05-03T15:42:32Z",
       "resolved": "github:NixOS/nixpkgs/5fd8536a9a5932d4ae8de52b7dc08d92041237fc#gum",
@@ -262,26 +214,6 @@
             }
           ],
           "store_path": "/nix/store/wa1v9in2302ziqr81yb1jm4bvfi54nzw-kyverno-chainsaw-0.1.9"
-        }
-      }
-    },
-    "timoni@0.17.0": {
-      "last_modified": "2024-02-10T18:15:24Z",
-      "resolved": "github:NixOS/nixpkgs/10b813040df67c4039086db0f6eaf65c536886c6#timoni",
-      "source": "devbox-search",
-      "version": "0.17.0",
-      "systems": {
-        "aarch64-darwin": {
-          "store_path": "/nix/store/kpqv984yvq0s9b7qva7rjmiimyxwhs52-timoni-0.17.0"
-        },
-        "aarch64-linux": {
-          "store_path": "/nix/store/g9bqvckvdhsm1f9bcd1y5i6454nj7d82-timoni-0.17.0"
-        },
-        "x86_64-darwin": {
-          "store_path": "/nix/store/k3y33vq3dx8rzzg236alvzw0hqgq4749-timoni-0.17.0"
-        },
-        "x86_64-linux": {
-          "store_path": "/nix/store/8qvhsi5d2bbxddmydizx9y3ias7dn1fx-timoni-0.17.0"
         }
       }
     },
