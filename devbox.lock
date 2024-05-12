@@ -265,26 +265,6 @@
         }
       }
     },
-    "timoni@0.17.0": {
-      "last_modified": "2024-02-10T18:15:24Z",
-      "resolved": "github:NixOS/nixpkgs/10b813040df67c4039086db0f6eaf65c536886c6#timoni",
-      "source": "devbox-search",
-      "version": "0.17.0",
-      "systems": {
-        "aarch64-darwin": {
-          "store_path": "/nix/store/kpqv984yvq0s9b7qva7rjmiimyxwhs52-timoni-0.17.0"
-        },
-        "aarch64-linux": {
-          "store_path": "/nix/store/g9bqvckvdhsm1f9bcd1y5i6454nj7d82-timoni-0.17.0"
-        },
-        "x86_64-darwin": {
-          "store_path": "/nix/store/k3y33vq3dx8rzzg236alvzw0hqgq4749-timoni-0.17.0"
-        },
-        "x86_64-linux": {
-          "store_path": "/nix/store/8qvhsi5d2bbxddmydizx9y3ias7dn1fx-timoni-0.17.0"
-        }
-      }
-    },
     "upbound@0.24.1": {
       "last_modified": "2024-02-10T18:15:24Z",
       "resolved": "github:NixOS/nixpkgs/10b813040df67c4039086db0f6eaf65c536886c6#upbound",
