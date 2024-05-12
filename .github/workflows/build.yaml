@@ -7,7 +7,7 @@ jobs:
   build-package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -17,9 +17,9 @@ jobs:
           chmod +x pkl-binary
           mv pkl-binary /usr/local/bin/pkl
       - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.1.7
+        uses: kyverno/action-install-chainsaw@v0.2.0
       - name: Install Devbox
-        uses: jetpack-io/devbox-install-action@v0.6.0
+        uses: jetpack-io/devbox-install-action@v0.11.0
       - name: Test
         run: |
           devbox run test
