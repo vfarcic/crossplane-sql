@@ -61,6 +61,102 @@
         }
       }
     },
+    "google-cloud-sdk@467.0.0": {
+      "last_modified": "2024-05-01T11:18:24Z",
+      "resolved": "github:NixOS/nixpkgs/bcd44e224fd68ce7d269b4f44d24c2220fd821e7#google-cloud-sdk",
+      "source": "devbox-search",
+      "version": "467.0.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/nz3c8npcjfwm2j5yc8c2kv02jad214v0-google-cloud-sdk-467.0.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/nz3c8npcjfwm2j5yc8c2kv02jad214v0-google-cloud-sdk-467.0.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2dl98vc2vhg4ssyydbhb31bkmh2hc01f-google-cloud-sdk-467.0.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2dl98vc2vhg4ssyydbhb31bkmh2hc01f-google-cloud-sdk-467.0.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rrc94axn1v2mr4ypkzqgbip8w0n59m34-google-cloud-sdk-467.0.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rrc94axn1v2mr4ypkzqgbip8w0n59m34-google-cloud-sdk-467.0.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/p3gdqn7zk638wnrdpdfiai1j2d778dqi-google-cloud-sdk-467.0.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/p3gdqn7zk638wnrdpdfiai1j2d778dqi-google-cloud-sdk-467.0.0"
+        }
+      }
+    },
+    "gum@0.14.0": {
+      "last_modified": "2024-05-03T15:42:32Z",
+      "resolved": "github:NixOS/nixpkgs/5fd8536a9a5932d4ae8de52b7dc08d92041237fc#gum",
+      "source": "devbox-search",
+      "version": "0.14.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/k1n8m42jdvb3fmk0mngjbj11z8qrmfcx-gum-0.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/k1n8m42jdvb3fmk0mngjbj11z8qrmfcx-gum-0.14.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/spknsw98bachz0z0063ns48f3fym8iip-gum-0.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/spknsw98bachz0z0063ns48f3fym8iip-gum-0.14.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8ygksbkmxkr1c501lcngmlspq3gcywyk-gum-0.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8ygksbkmxkr1c501lcngmlspq3gcywyk-gum-0.14.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/w3k05bd4i2ss9jfgw5j6n8nf5iszr50f-gum-0.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/w3k05bd4i2ss9jfgw5j6n8nf5iszr50f-gum-0.14.0"
+        }
+      }
+    },
     "kind@0.22.0": {
       "last_modified": "2024-02-17T16:08:43Z",
       "resolved": "github:NixOS/nixpkgs/52e1f314725b09b354336d17c7b8bd2442b7b8e4#kind",
