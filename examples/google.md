@@ -20,26 +20,38 @@ Create Google project and a service account.
 
 ```bash
 gcloud auth login
+```
 
+Create a new project.
+
+```sh
 export PROJECT_ID=dot-$(date +%Y%m%d%H%M%S)
 
 gcloud projects create $PROJECT_ID
+```
 
+Add billing account.
+
+```sh
 echo "Open https://console.cloud.google.com/billing/enable?project=$PROJECT_ID in a browser and **set the billing account**." | gum format
+```
 
-gum input --placeholder "Press the enter key to continue."
+Enable `sqladmin` API.
 
+```sh
 echo "Open https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=$PROJECT_ID in a browser and **enable** the API." | gum format
+```
 
-gum input --placeholder "Press the enter key to continue."
+Create a service account.
 
-export SA_NAME=devops-toolkit
+```sh
+export SA_NAME="devops-toolkit"
 
 export SA="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud iam service-accounts create $SA_NAME --project $PROJECT_ID
 
-export ROLE=roles/admin
+export ROLE="roles/admin"
 
 gcloud projects add-iam-policy-binding --role $ROLE $PROJECT_ID \
     --member serviceAccount:$SA
