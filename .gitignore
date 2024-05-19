@@ -1,3 +1,4 @@
 /kubeconfig
 /.task
 /tmp
+/.vscode

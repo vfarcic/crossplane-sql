@@ -20,6 +20,8 @@ jobs:
         uses: kyverno/action-install-chainsaw@v0.2.1
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.11.0
+        with:
+          enable-cache: 'true'
       - name: Test
         run: |
           devbox run test
