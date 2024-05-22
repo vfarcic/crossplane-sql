@@ -103,6 +103,7 @@ spec:
                         description: "The Slack channel to send alerts to (e.g., my-channel)."
                         type: string
                 required:
+                  - size
                   - version
             required:
               - id
