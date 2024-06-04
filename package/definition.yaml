@@ -114,3 +114,6 @@ spec:
               address:
                 description: Database instance address
                 type: string
+              ready:
+                description: Database instance address
+                type: bool
