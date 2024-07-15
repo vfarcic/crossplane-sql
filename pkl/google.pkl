@@ -135,10 +135,13 @@ spec {
                         name = "user"
                         base {
                             kind = "User"
-                            spec { forProvider {
-                                passwordSecretRef { key = "password" }
-                                instanceSelector { matchControllerRef = true }
-                            } }
+                            spec {
+                                deletionPolicy = "Orphan"
+                                forProvider {
+                                    passwordSecretRef { key = "password" }
+                                    instanceSelector { matchControllerRef = true }
+                                }
+                            }
                         }
                         patches {
                             new {

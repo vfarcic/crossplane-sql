@@ -143,7 +143,7 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
+  deletionPolicy: Orphan
   forProvider:
     instance: my-db-google
     instanceRef:
