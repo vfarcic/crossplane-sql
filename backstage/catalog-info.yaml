@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: crossplane-sql
+  description: Silly description of crossplane-sql
+  annotations:
+    github.com/project-slug: vfarcic/crossplane-sql
+    backstage.io/kubernetes-id: dot
+    backstage.io/kubernetes-namespace: git-repos
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=crossplane-sql
+spec:
+  type: service
+  lifecycle: production
+  owner: vfarcic
+  system: DevOpsCatalog
