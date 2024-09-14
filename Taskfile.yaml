@@ -6,13 +6,15 @@ tasks:
   package-generate:
     desc: Generates package files.
     cmds:
-      - for: ["aws", "google", "azure"]
+      - for: ["aws", "azure"]
         cmd: pkl eval --format yaml pkl/{{ .ITEM }}.pkl --output-path package/{{ .ITEM }}.yaml
+      - for: ["google"]
+        cmd: kcl run kcl/compositions.k > package/compositions.yaml
   package-apply:
     desc: Applies Compositions and Composite Resource Definition.
     cmds:
       - cmd: kubectl apply --filename package/definition.yaml && sleep 1
-      - for: ["aws.yaml", "azure.yaml", "google.yaml"]
+      - for: ["aws.yaml", "azure.yaml", "compositions.yaml"]
         cmd: kubectl apply --filename package/{{ .ITEM }}
   package-publish:
     desc: Builds and pushes the package.
@@ -41,6 +43,7 @@ tasks:
       - chainsaw test
     watch: true
     sources:
+      - kcl/*.k
       - pkl/*.pkl
       - tests/**/*.yaml
     generates:

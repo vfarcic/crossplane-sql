@@ -9,7 +9,10 @@
     "go-task@3.31.0",
     "kubernetes-helm@3.14.1",
     "kyverno-chainsaw@0.1.9",
-    "gum@0.14.0"
+    "gum@0.14.0",
+    "kcl@0.9.8",
+    "zellij@0.40.1",
+    "viddy@1.1.2"
   ],
   "shell": {
     "init_hook": [],

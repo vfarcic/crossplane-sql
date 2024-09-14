@@ -39,9 +39,9 @@ spec:
             file: ../common/dynatrace.yaml
         - assert:
             file: ../common/assert-dynatrace.yaml
-    #   catch:
-    #     - get:
-    #         resource: managed
-    #     - describe:
-    #         resource: sqls
-    #         selector: crossplane.io/claim-namespace=$NAMESPACE
+      catch:
+        - get:
+            resource: managed
+        - describe:
+            resource: sqls
+            selector: crossplane.io/claim-namespace=$NAMESPACE
