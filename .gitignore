@@ -2,3 +2,4 @@
 /.task
 /tmp
 /.vscode
+/gcp-creds.json
