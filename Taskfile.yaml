@@ -6,10 +6,9 @@ tasks:
   package-generate:
     desc: Generates package files.
     cmds:
-      - for: ["aws", "azure"]
+      - for: ["azure"]
         cmd: pkl eval --format yaml pkl/{{ .ITEM }}.pkl --output-path package/{{ .ITEM }}.yaml
-      - for: ["google"]
-        cmd: kcl run kcl/compositions.k > package/compositions.yaml
+      - cmd: kcl run kcl/compositions.k > package/compositions.yaml
   package-apply:
     desc: Applies Compositions and Composite Resource Definition.
     cmds:

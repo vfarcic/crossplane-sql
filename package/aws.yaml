@@ -130,18 +130,6 @@ spec:
               region: us-east-1
               vpcIdSelector:
                 matchControllerRef: true
-          kind: InternetGateway
-        patches:
-        - type: PatchSet
-          patchSetName: metadata
-        name: gateway
-      - base:
-          apiVersion: ec2.aws.upbound.io/v1beta1
-          spec:
-            forProvider:
-              region: us-east-1
-              vpcIdSelector:
-                matchControllerRef: true
           kind: RouteTable
         patches:
         - type: PatchSet
@@ -162,20 +150,6 @@ spec:
         - type: PatchSet
           patchSetName: metadata
         name: route
-      - base:
-          apiVersion: ec2.aws.upbound.io/v1beta1
-          spec:
-            forProvider:
-              region: us-east-1
-              routeTableIdSelector:
-                matchControllerRef: true
-              vpcIdSelector:
-                matchControllerRef: true
-          kind: MainRouteTableAssociation
-        patches:
-        - type: PatchSet
-          patchSetName: metadata
-        name: mainRouteTableAssociation
       - name: routeTableAssociation1a
         base:
           apiVersion: ec2.aws.upbound.io/v1beta1
@@ -341,44 +315,6 @@ spec:
           toFieldPath: spec.credentials.connectionSecretRef.name
         - fromFieldPath: spec.claimRef.namespace
           toFieldPath: spec.credentials.connectionSecretRef.namespace
-        readinessChecks:
-        - type: None
-      - name: kubernetes
-        base:
-          apiVersion: kubernetes.crossplane.io/v1alpha1
-          kind: ProviderConfig
-          spec:
-            credentials:
-              source: InjectedIdentity
-        patches:
-        - fromFieldPath: metadata.annotations
-          toFieldPath: metadata.annotations
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.name
-          transforms:
-          - type: string
-            string:
-              fmt: '%s-sql'
-              type: Format
-        readinessChecks:
-        - type: None
-      - name: helm
-        base:
-          apiVersion: helm.crossplane.io/v1beta1
-          kind: ProviderConfig
-          spec:
-            credentials:
-              source: InjectedIdentity
-        patches:
-        - fromFieldPath: metadata.annotations
-          toFieldPath: metadata.annotations
-        - fromFieldPath: spec.id
-          toFieldPath: metadata.name
-          transforms:
-          - type: string
-            string:
-              fmt: '%s-sql'
-              type: Format
         readinessChecks:
         - type: None
       - name: sql-secret

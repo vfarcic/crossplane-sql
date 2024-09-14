@@ -20,12 +20,20 @@ schema composition:
         mode = "Pipeline"
         pipeline = [
             {
-                step = _provider
+                step = "main"
                 functionRef.name = "crossplane-contrib-function-kcl"
                 input = {
                     apiVersion = "krm.kcl.dev/v1alpha1"
                     kind = "KCLRun"
                     spec.source = _source
+                }
+            }, {
+                step = "common"
+                functionRef.name = "crossplane-contrib-function-kcl"
+                input = {
+                    apiVersion = "krm.kcl.dev/v1alpha1"
+                    kind = "KCLRun"
+                    spec.source = file.read("kcl/common.k")
                 }
             }, {
                 step = "automatically-detect-ready-composed-resources"
@@ -39,6 +47,11 @@ schema composition:
     composition {
         _provider = "google"
         _source = file.read("kcl/google.k")
+    }
+
+    composition {
+        _provider = "aws"
+        _source = file.read("kcl/aws.k")
     }
 
 ]

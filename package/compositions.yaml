@@ -11,7 +11,7 @@ spec:
     kind: SQL
   mode: Pipeline
   pipeline:
-  - step: google
+  - step: main
     functionRef:
       name: crossplane-contrib-function-kcl
     input:
@@ -26,37 +26,12 @@ spec:
               {
                   name = oxr.spec.id
                   annotations = {
-                      # "crossplane.io/external-name" = oxr.spec.id
                       "krm.kcl.dev/composition-resource-name" = resourceName
                   }
               }
           }
 
-          schema providerConfig:
-              _apiVersion: str
-              _suffix: str
-              apiVersion = _apiVersion
-              kind = "ProviderConfig"
-              metadata = {
-                  name = oxr.spec.id + "-sql"
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-provider-config-" + _suffix
-                  }
-              }
-              spec = {
-                  credentials.source = "InjectedIdentity"
-              }
-
-          _items = [
-          providerConfig {
-              _apiVersion = "kubernetes.crossplane.io/v1alpha1"
-              _suffix = "kubernetes"
-          },
-          providerConfig {
-              _apiVersion = "helm.crossplane.io/v1beta1"
-              _suffix = "helm"
-          }, {
+          _items = [{
               apiVersion = "sql.gcp.upbound.io/v1beta1"
               kind = "DatabaseInstance"
               metadata = _metadata("sql")
@@ -417,6 +392,144 @@ spec:
                       }
                   }
               } for _schema in oxr.spec.parameters.schemas ]
+
+          items = _items
+  - step: common
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        source: |
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          schema providerConfig:
+              _apiVersion: str
+              _suffix: str
+              apiVersion = _apiVersion
+              kind = "ProviderConfig"
+              metadata = {
+                  name = oxr.spec.id + "-sql"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-provider-config-" + _suffix
+                  }
+              }
+              spec = {
+                  credentials.source = "InjectedIdentity"
+              }
+
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+              },
+              providerConfig {
+                  _apiVersion = "helm.crossplane.io/v1beta1"
+                  _suffix = "helm"
+          }]
+
+          items = _items
+  - step: automatically-detect-ready-composed-resources
+    functionRef:
+      name: crossplane-contrib-function-auto-ready
+  writeConnectionSecretsToNamespace: crossplane-system
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  labels:
+    db: postgresql
+    provider: aws
+  name: aws-postgresql
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQL
+  mode: Pipeline
+  pipeline:
+  - step: main
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        source: |
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          _metadata = lambda resourceName: str -> any {
+              {
+                  name = oxr.spec.id
+                  annotations = {
+                      # "crossplane.io/external-name" = oxr.spec.id
+                      "krm.kcl.dev/composition-resource-name" = resourceName
+                  }
+              }
+          }
+
+          _items = [{
+              apiVersion = "ec2.aws.upbound.io/v1beta1"
+              kind = "InternetGateway"
+              metadata = _metadata("gateway")
+              spec.forProvider = {
+                  region = "us-east-1"
+                  vpcIdSelector.matchControllerRef = True
+              }
+          }, {
+              apiVersion = "ec2.aws.upbound.io/v1beta1"
+              kind = "MainRouteTableAssociation"
+              metadata = _metadata("mainRouteTableAssociation")
+              spec.forProvider = {
+                  region = "us-east-1"
+                  routeTableIdSelector.matchControllerRef = True
+                  vpcIdSelector.matchControllerRef = True
+              }
+          #     **oxr
+          #     if oxr.spec.id + "-sql" in ocds:
+          #         status.address = ocds[oxr.spec.id + "-sql"].Resource.status.atProvider.publicIpAddress
+          }]
+
+          items = _items
+  - step: common
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        source: |
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          schema providerConfig:
+              _apiVersion: str
+              _suffix: str
+              apiVersion = _apiVersion
+              kind = "ProviderConfig"
+              metadata = {
+                  name = oxr.spec.id + "-sql"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-provider-config-" + _suffix
+                  }
+              }
+              spec = {
+                  credentials.source = "InjectedIdentity"
+              }
+
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+              },
+              providerConfig {
+                  _apiVersion = "helm.crossplane.io/v1beta1"
+                  _suffix = "helm"
+          }]
 
           items = _items
   - step: automatically-detect-ready-composed-resources
