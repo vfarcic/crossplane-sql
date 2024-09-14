@@ -157,195 +157,6 @@ providerConfig {
         }
         providerConfigRef.name = oxr.spec.id + "-sql"
     }
-#   - functionRef:
-#       name: crossplane-contrib-function-go-templating
-#     step: schema
-#     input:
-#       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-#       kind: GoTemplate
-#       source: Inline
-#       delims:
-#         left: '{{'
-#         right: '}}'
-#       inline:
-#         template: |-
-#           {{ range .observed.composite.resource.spec.parameters.schemas }}
-#           ---
-#           apiVersion: kubernetes.crossplane.io/v1alpha2
-#           kind: Object
-#           metadata:
-#             name: {{ $.observed.composite.resource.spec.id }}-schema-{{ .database }}
-#             annotations:
-#               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-schema-{{ .database }}
-#           spec:
-#             providerConfigRef:
-#               name: {{ $.observed.composite.resource.spec.id }}-sql
-#             forProvider:
-#               manifest:
-#                 apiVersion: db.atlasgo.io/v1alpha1
-#                 kind: AtlasSchema
-#                 metadata:
-#                   name: {{ $.observed.composite.resource.spec.id }}-{{ .database }}
-#                   namespace: {{ $.observed.composite.resource.spec.claimRef.namespace }}
-#                 toFieldPath: spec.credentials.connectionSecretRef.namespace
-#                 spec:
-#                   credentials:
-#                     scheme: postgres
-#                     hostFrom:
-#                       secretKeyRef:
-#                         key: endpoint
-#                         name: {{ $.observed.composite.resource.spec.id }}
-#                     port: 5432
-#                     userFrom:
-#                       secretKeyRef:
-#                         key: username
-#                         name: {{ $.observed.composite.resource.spec.id }}
-#                     passwordFrom:
-#                       secretKeyRef:
-#                         key: password
-#                         name: {{ $.observed.composite.resource.spec.id }}
-#                     database: {{ .database }}
-#                     parameters:
-#                       sslmode: disable
-#                   schema: 
-#                     sql: "{{ .sql }}"
-#           {{ end }}
-#   - functionRef:
-#       name: crossplane-contrib-function-go-templating
-#     step: secret-pull-cluster
-#     input:
-#       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-#       kind: GoTemplate
-#       source: Inline
-#       delims:
-#         left: '{{'
-#         right: '}}'
-#       inline:
-#         template: |-
-#           {{ if and .observed.composite.resource.spec.parameters.secrets.storeName .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-#           ---
-#           apiVersion: kubernetes.crossplane.io/v1alpha2
-#           kind: Object
-#           metadata:
-#             name: {{ $.observed.composite.resource.spec.id }}-secret-pull-cluster
-#             annotations:
-#               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-secret-pull-cluster
-#           spec:
-#             providerConfigRef:
-#               name: {{ $.observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-#             forProvider:
-#               manifest:
-#                 metadata:
-#                   name: {{ $.observed.composite.resource.spec.id }}
-#                   namespace: {{ $.observed.composite.resource.spec.parameters.secrets.pullToClusterNamespace }}
-#                 apiVersion: external-secrets.io/v1beta1
-#                 kind: ExternalSecret
-#                 spec:
-#                   dataFrom:
-#                   - extract:
-#                       conversionStrategy: Default
-#                       decodingStrategy: None
-#                       key: {{ $.observed.composite.resource.spec.id }}
-#                       metadataPolicy: None
-#                   refreshInterval: 1h
-#                   secretStoreRef:
-#                     kind: ClusterSecretStore
-#                     name: {{ $.observed.composite.resource.spec.parameters.secrets.storeName }}
-#                   target:
-#                     creationPolicy: Owner
-#                     deletionPolicy: Retain
-#                     name: {{ $.observed.composite.resource.spec.id }}
-#           {{ end }}
-#   - functionRef:
-#       name: crossplane-contrib-function-go-templating
-#     step: dapr-components
-#     input:
-#       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-#       kind: GoTemplate
-#       source: Inline
-#       delims:
-#         left: '{{'
-#         right: '}}'
-#       inline:
-#         template: |-
-#           {{ if and .observed.composite.resource.spec.parameters.secrets.daprComponents .observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-#           {{ range .observed.composite.resource.spec.parameters.databases }}
-#           ---
-#           apiVersion: kubernetes.crossplane.io/v1alpha2
-#           kind: Object
-#           metadata:
-#             name: {{ $.observed.composite.resource.spec.id }}-dapr-component-{{ . }}
-#             annotations:
-#               gotemplating.fn.crossplane.io/composition-resource-name: {{ $.observed.composite.resource.spec.id }}-dapr-component-{{ . }}
-#           spec:
-#             providerConfigRef:
-#               name: {{ $.observed.composite.resource.spec.parameters.secrets.pullToCluster }}
-#             forProvider:
-#               manifest:
-#                 apiVersion: dapr.io/v1alpha1
-#                 kind: Component
-#                 metadata:
-#                   name: {{ $.observed.composite.resource.spec.id }}-{{ . }}
-#                   namespace: {{ $.observed.composite.resource.spec.parameters.secrets.pullToClusterNamespace }}
-#                 spec:
-#                   type: state.postgresql
-#                   version: v1
-#                   metadata:
-#                     - name: connectionString
-#                       secretKeyRef:
-#                         name: {{ $.observed.composite.resource.spec.id }}
-#                         key: conn-{{ . }}
-#           {{ end }}
-#           {{ end }}
-#   - functionRef:
-#       name: crossplane-contrib-function-go-templating
-#     step: dynatrace
-#     input:
-#       apiVersion: gotemplating.fn.crossplane.io/v1beta1
-#       kind: GoTemplate
-#       source: Inline
-#       delims:
-#         left: '{{'
-#         right: '}}'
-#       inline:
-#         template: |-
-#           {{ if .observed.composite.resource.spec.parameters.dynatraceDashboard.enabled }}
-#           ---
-#           apiVersion: helm.crossplane.io/v1beta1
-#           kind: Release
-#           metadata:
-#             name: {{ .observed.composite.resource.spec.id }}-dynatrace-dashboard
-#             annotations:
-#               gotemplating.fn.crossplane.io/composition-resource-name: {{ .observed.composite.resource.spec.id }}-dynatrace-dashboard
-#           spec:
-#             providerConfigRef:
-#               name: {{ $.observed.composite.resource.spec.parameters.dynatraceDashboard.cluster }}
-#             forProvider:
-#               chart:
-#                 name: kubernetes-workload
-#                 repository: https://katharinasick.github.io/crossplane-observability-demo-dynatrace
-#                 version: "0.1.5"
-#               values:
-#                 oauthCredentialsSecretName: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.oathCredentialsSecretName }}
-#                 dashboard:
-#                   enabled: true
-#                 alerting:
-#                   enabled: true
-#                   slackChannel: "#{{ .observed.composite.resource.spec.parameters.dynatraceDashboard.slackChannel }}"
-#                 workloadName: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.appDeploymentName }}
-#                 cluster: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.cluster }}
-#                 namespace: {{ .observed.composite.resource.spec.parameters.dynatraceDashboard.appNamespace }}
-#                 crossplaneTerraformProvider:
-#                   connectionSecretRef:
-#                     name: dynatrace-terraform-creds
-#                   namespace: crossplane-system
-#                   key: credentials
-#                 databaseAddress: {{ .observed.composite.resource.status.address }}
-#               namespace: dynatrace
-#             providerConfigRef:
-#               name: {{ .observed.composite.resource.spec.id }}-sql
-#             rollbackLimit: 3
-#           {{ end }}
 }, {
     **oxr
     if oxr.spec.id + "-sql" in ocds:
@@ -462,5 +273,128 @@ if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pus
             }
         }
     }]
+
+if oxr.spec.parameters?.secrets?.daprComponents and oxr.spec.parameters?.secrets?.pullToCluster:
+    _items += [{
+        apiVersion = "kubernetes.crossplane.io/v1alpha2"
+        kind = "Object"
+        metadata = {
+            name = oxr.spec.id + "-dapr-component-" + _database
+            annotations = {
+                "crossplane.io/external-name" = oxr.spec.id + "-dapr-component-" + _database
+                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-dapr-component-" + _database
+            }
+        }
+        spec = {
+            providerConfigRef.name = oxr.spec.parameters.secrets.pullToCluster
+            forProvider = {
+                manifest = {
+                    apiVersion = "dapr.io/v1alpha1"
+                    kind = "Component"
+                    metadata = {
+                        name = oxr.spec.id + "-" + _database
+                        namespace = oxr.spec.parameters.secrets.pullToClusterNamespace
+                    }
+                    spec = {
+                        type = "state.postgresql"
+                        version = "v1"
+                        metadata = [{
+                            name = "connectionString"
+                            secretKeyRef = {
+                                name = oxr.spec.id
+                                key = "conn-" + _database
+                            }
+                        }]
+                    }
+                }
+            }
+        }
+    } for _database in oxr.spec.parameters.databases ]
+    _items += [{
+        apiVersion = "kubernetes.crossplane.io/v1alpha2"
+        kind = "Object"
+        metadata = {
+            name = oxr.spec.id + "-secret-pull-cluster"
+            annotations = {
+                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-secret-pull-cluster"
+            }
+        }
+        spec = {
+            providerConfigRef.name = oxr.spec.parameters.secrets.pullToCluster
+            forProvider.manifest = {
+                apiVersion = "external-secrets.io/v1beta1"
+                kind = "ExternalSecret"
+                metadata = {
+                    name = oxr.spec.id
+                    namespace = oxr.spec.parameters.secrets.pullToClusterNamespace
+                }
+                spec = {
+                    dataFrom = [{
+                        extract = {
+                            conversionStrategy = "Default"
+                            decodingStrategy = "None"
+                            key = oxr.spec.id
+                            metadataPolicy = "None"
+                        }
+                    }]
+                    refreshInterval = "1h"
+                    secretStoreRef = {
+                        kind = "ClusterSecretStore"
+                        name = oxr.spec.parameters.secrets.storeName
+                    }
+                    target = {
+                        creationPolicy = "Owner"
+                        deletionPolicy = "Retain"
+                        name = oxr.spec.id
+                    }
+                }
+            }
+        }
+    }]
+
+if oxr.spec.parameters?.schemas:
+    _items += [{
+        apiVersion = "kubernetes.crossplane.io/v1alpha2"
+        kind = "Object"
+        metadata = {
+            name = oxr.spec.id + "-schema-" + _schema.database
+            annotations = {
+                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-schema-" + _schema.database
+            }
+        }
+        spec = {
+            providerConfigRef.name = oxr.spec.id + "-sql"
+            forProvider.manifest = {
+                apiVersion = "db.atlasgo.io/v1alpha1"
+                kind = "AtlasSchema"
+                metadata = {
+                    name = oxr.spec.id + "-" + _schema.database
+                    namespace = oxr.spec.claimRef.namespace
+                }
+                toFieldPath = "spec.credentials.connectionSecretRef.namespace"
+                spec = {
+                    credentials = {
+                        scheme = "postgres"
+                        hostFrom.secretKeyRef = {
+                            key = "endpoint"
+                            name: oxr.spec.id
+                        }
+                        port = 5432
+                        userFrom.secretKeyRef = {
+                            key = "username"
+                            name = oxr.spec.id
+                        }
+                        passwordFrom.secretKeyRef = {
+                            key = "password"
+                            name = oxr.spec.id
+                        }
+                        database = _schema.database
+                        parameters.sslmode = "disable"
+                    }
+                    schema.sql = _schema.sql
+                }
+            }
+        }
+    } for _schema in oxr.spec.parameters.schemas ]
 
 items = _items
