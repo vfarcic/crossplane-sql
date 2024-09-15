@@ -123,7 +123,7 @@ kubectl get pkgrev
 Modify Project ID in the Google Cloud provider configuration and apply it.
 
 ```sh
-jq --inplace ".spec.projectID = \"$PROJECT_ID\"" \
+yq --inplace ".spec.projectID = \"$PROJECT_ID\"" \
     providers/provider-config-google.yaml
 
 kubectl apply --filename providers/provider-config-google.yaml

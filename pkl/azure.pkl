@@ -8,7 +8,6 @@ import "secretPull.pkl"
 import "secretPush.pkl"
 import "secretPullCluster.pkl"
 import "daprComponents.pkl"
-import "dynatrace.pkl"
 import "autoReady.pkl"
 
 apiVersion = "apiextensions.crossplane.io/v1"
@@ -162,7 +161,6 @@ spec {
         (secretPush)
         (secretPullCluster)
         (daprComponents)
-        (dynatrace)
         (autoReady)
     }
 }

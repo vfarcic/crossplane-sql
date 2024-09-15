@@ -35,10 +35,6 @@ spec:
             file: ../common/secret-pull-cluster.yaml
         - assert:
             file: ../common/assert-secret-pull-cluster.yaml
-        - patch:
-            file: ../common/dynatrace.yaml
-        - assert:
-            file: ../common/assert-dynatrace.yaml
     #   catch:
     #     - get:
     #         resource: managed
