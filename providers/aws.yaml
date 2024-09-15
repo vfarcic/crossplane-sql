@@ -5,6 +5,8 @@ metadata:
   name: provider-aws-rds
 spec:
   package: xpkg.upbound.io/upbound/provider-aws-rds:v1.13.0
+  # controllerConfigRef:
+  #   name: debug-config
 ---
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
@@ -12,3 +14,5 @@ metadata:
   name: provider-aws-ec2
 spec:
   package: xpkg.upbound.io/upbound/provider-aws-ec2:v1.13.0
+  # controllerConfigRef:
+  #   name: debug-config
