@@ -13,7 +13,7 @@ tasks:
     desc: Applies Compositions and Composite Resource Definition.
     cmds:
       - cmd: kubectl apply --filename package/definition.yaml && sleep 1
-      - for: ["aws.yaml", "azure.yaml", "compositions.yaml"]
+      - for: ["azure.yaml", "compositions.yaml"]
         cmd: kubectl apply --filename package/{{ .ITEM }}
   package-publish:
     desc: Builds and pushes the package.

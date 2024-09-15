@@ -81,27 +81,6 @@ spec:
                       daprComponents:
                         description: Whether to create a Dapr components for the DBs. `pullToCluster` needs to be set to `true` to use this feature. If enabled, Dapr needs to installed in the destination cluster (directly or through OpenFunction).
                         type: boolean
-                  dynatraceDashboard:
-                    type: object
-                    properties:
-                      enabled:
-                        description: Whether to create a Dynatrace dashboard for the DB and the app.
-                        type: boolean
-                      oathCredentialsSecretName:
-                        description: The name of the secret with the OAuth credentials for the Dynatrace API.
-                        type: string
-                      cluster:
-                        description: To which cluster to apply the dashboard.
-                        type: string
-                      appDeploymentName:
-                        description: The name of the app deployment for which to create the dashboard.
-                        type: string
-                      appNamespace:
-                        description: The namespace of the app deployment for which to create the dashboard.
-                        type: string
-                      slackChannel:
-                        description: "The Slack channel to send alerts to (e.g., my-channel)."
-                        type: string
                 required:
                   - size
                   - version
