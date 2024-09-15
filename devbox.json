@@ -13,7 +13,8 @@
     "zellij@0.40.1",
     "viddy@1.1.2",
     "path:gcloud#google-cloud-sdk",
-    "yq-go@4.44.3"
+    "yq-go@4.44.3",
+    "teller@2.0.7"
   ],
   "shell": {
     "init_hook": [],

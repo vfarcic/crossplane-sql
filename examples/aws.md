@@ -3,7 +3,9 @@
 ## Setup
 
 ```bash
-# Create a management Kubernetes cluster manually (e.g., minikube, Rancher Desktop, eksctl, etc.)
+devbox shell
+
+kind create cluster
 
 helm repo add crossplane-stable \
     https://charts.crossplane.io/stable
@@ -31,7 +33,7 @@ kubectl --namespace crossplane-system \
 kubectl apply \
     --filename ../providers/provider-kubernetes-incluster.yaml
 
-kubectl apply --filename ../config.yaml
+kubectl apply --filename config.yaml
 
 kubectl create namespace infra
 
@@ -39,15 +41,15 @@ kubectl get pkgrev
 
 # Wait until all the packages are healthy
 
-kubectl apply --filename ../examples/provider-config-aws.yaml
+kubectl apply --filename examples/provider-config-aws.yaml
 ```
 
 ## Create an EKS Cluster
 
 ```bash
-cat ../examples/aws.yaml
+cat examples/aws.yaml
 
-kubectl --namespace infra apply --filename ../examples/aws.yaml
+kubectl --namespace infra apply --filename examples/aws.yaml
     
 kubectl --namespace infra get sqlclaims
 

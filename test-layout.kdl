@@ -12,7 +12,7 @@ layout {
         floating_panes {
             pane {
                 name "cluster"
-                command "just"
+                command "task"
                 args "cluster-create"
                 close_on_exit true
                 x "20%"
@@ -24,23 +24,20 @@ layout {
         }
         pane {
             name "test-watch"
-            command "just"
+            command "task"
             args "test-watch"
             start_suspended true
             size "70%"
         }
         pane {
-            name "get-managed"
-            command "viddy"
-            args "kubectl" "get" "managed"
-            start_suspended true
+            name "shell"
             size "30%"
         }
     }
     tab name="Done" {
         pane {
             name "cluster-destroy"
-            command "just"
+            command "task"
             args "cluster-destroy"
             start_suspended true
         }

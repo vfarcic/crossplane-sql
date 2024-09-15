@@ -11,7 +11,7 @@ Setup up an environment with all the tools required to run the example.
 > Please skip the command that follows if you're using DevContainer.
 
 ```bash
-devbox shell --config devbox-complete.json
+devbox shell
 ```
 
 ### Google Project

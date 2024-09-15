@@ -265,6 +265,54 @@
         }
       }
     },
+    "teller@2.0.7": {
+      "last_modified": "2024-09-12T11:58:09Z",
+      "resolved": "github:NixOS/nixpkgs/280db3decab4cbeb22a4599bd472229ab74d25e1#teller",
+      "source": "devbox-search",
+      "version": "2.0.7",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ls269qpln16gfffw7i0lmsayv6x6ayrz-teller-2.0.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ls269qpln16gfffw7i0lmsayv6x6ayrz-teller-2.0.7"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2qa7biqab4mzv9w46nmzsi0s0xg1fp96-teller-2.0.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2qa7biqab4mzv9w46nmzsi0s0xg1fp96-teller-2.0.7"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/0c5qccip0drrpwxwhmwh40cmvqgjsbvm-teller-2.0.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/0c5qccip0drrpwxwhmwh40cmvqgjsbvm-teller-2.0.7"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6bc6sqm14xg4byfc2186wfc2gfnllf4f-teller-2.0.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6bc6sqm14xg4byfc2186wfc2gfnllf4f-teller-2.0.7"
+        }
+      }
+    },
     "upbound@0.24.1": {
       "last_modified": "2024-02-10T18:15:24Z",
       "resolved": "github:NixOS/nixpkgs/10b813040df67c4039086db0f6eaf65c536886c6#upbound",
