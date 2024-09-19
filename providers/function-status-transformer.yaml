@@ -1,0 +1,7 @@
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: Function
+metadata:
+  name: crossplane-contrib-function-status-transformer
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/function-status-transformer:v0.3.0

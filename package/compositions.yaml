@@ -38,7 +38,7 @@ spec:
           _items = [{
               apiVersion = "sql.gcp.upbound.io/v1beta1"
               kind = "DatabaseInstance"
-              metadata = _metadata("sql")
+              metadata = _metadata("databaseinstance")
               spec = {
                   forProvider = {
                       region = _region
@@ -138,8 +138,8 @@ spec:
               }
           }, {
               **oxr
-              if "sql" in ocds:
-                  status.address = ocds["sql"].Resource.status.atProvider.publicIpAddress
+              if "databaseinstance" in ocds:
+                  status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
           }]
 
           items = _items
@@ -435,6 +435,28 @@ spec:
               }]
 
           items = _items
+  - step: statuses
+    functionRef:
+      name: crossplane-contrib-function-status-transformer
+    input:
+      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+      kind: StatusTransformation
+      statusConditionHooks:
+      - matchers:
+        - resources:
+          - name: databaseinstance
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: \.*cannot get referenced ProviderConfig\.*
+        setConditions:
+        - target: CompositeAndClaim
+          condition:
+            type: ProviderConfigReady
+            status: 'False'
+            reason: FailedToConnect
+            message: providerConfig is missing. Contact service owner.
   - step: automatically-detect-ready-composed-resources
     functionRef:
       name: crossplane-contrib-function-auto-ready
@@ -977,6 +999,43 @@ spec:
               }]
 
           items = _items
+  - step: statuses
+    functionRef:
+      name: crossplane-contrib-function-status-transformer
+    input:
+      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+      kind: StatusTransformation
+      statusConditionHooks:
+      - matchers:
+        - resources:
+          - name: vpc
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: \.*cannot get referenced ProviderConfig\.*
+        setConditions:
+        - target: CompositeAndClaim
+          condition:
+            type: ProviderConfigReady
+            status: 'False'
+            reason: FailedToConnect
+            message: providerConfig is missing. Contact service owner.
+      - matchers:
+        - resources:
+          - name: vpc
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: '(.*)lookup sts.(?P<Region>.*).amazonaws.com on (.*): no such host(.*)'
+        setConditions:
+        - target: CompositeAndClaim
+          condition:
+            type: RegionAvailable
+            status: 'False'
+            reason: FailedToConnect
+            message: Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
   - step: automatically-detect-ready-composed-resources
     functionRef:
       name: crossplane-contrib-function-auto-ready
@@ -1385,6 +1444,28 @@ spec:
               }]
 
           items = _items
+  - step: statuses
+    functionRef:
+      name: crossplane-contrib-function-status-transformer
+    input:
+      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+      kind: StatusTransformation
+      statusConditionHooks:
+      - matchers:
+        - resources:
+          - name: resourcegroup
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: \.*cannot get referenced ProviderConfig\.*
+        setConditions:
+        - target: CompositeAndClaim
+          condition:
+            type: ProviderConfigReady
+            status: 'False'
+            reason: FailedToConnect
+            message: providerConfig is missing. Contact service owner.
   - step: automatically-detect-ready-composed-resources
     functionRef:
       name: crossplane-contrib-function-auto-ready

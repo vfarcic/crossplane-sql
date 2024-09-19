@@ -1,0 +1,21 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQLClaim
+metadata:
+  name: my-db
+status:
+  (conditions[?type == 'ProviderConfigReady']):
+  - reason: FailedToConnect
+    message: providerConfig is missing. Contact service owner.
+    status: "False"
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+status:
+  (conditions[?type == 'ProviderConfigReady']):
+  - reason: FailedToConnect
+    message: providerConfig is missing. Contact service owner.
+    status: "False"

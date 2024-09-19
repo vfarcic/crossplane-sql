@@ -17,7 +17,7 @@ _metadata = lambda resourceName: str -> any {
 _items = [{
     apiVersion = "sql.gcp.upbound.io/v1beta1"
     kind = "DatabaseInstance"
-    metadata = _metadata("sql")
+    metadata = _metadata("databaseinstance")
     spec = {
         forProvider = {
             region = _region
@@ -117,8 +117,8 @@ _items = [{
     }
 }, {
     **oxr
-    if "sql" in ocds:
-        status.address = ocds["sql"].Resource.status.atProvider.publicIpAddress
+    if "databaseinstance" in ocds:
+        status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
 }]
 
 items = _items

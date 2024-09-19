@@ -96,7 +96,7 @@ apiVersion: sql.gcp.upbound.io/v1beta1
 kind: DatabaseInstance
 metadata:
   annotations:
-    crossplane.io/composition-resource-name: sql
+    crossplane.io/composition-resource-name: databaseinstance
     crossplane.io/external-name: my-db-google
   labels:
     crossplane.io/claim-name: my-db

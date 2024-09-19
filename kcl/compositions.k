@@ -1,8 +1,12 @@
 import file
+import .awsstatuses
+import .googlestatuses
+import .azurestatuses
 
 schema composition:
     _provider: str
     _source: str
+    _statusConditionHooks: any
     apiVersion = "apiextensions.crossplane.io/v1"
     kind = "Composition"
     metadata = {
@@ -36,6 +40,14 @@ schema composition:
                     spec.source = file.read("kcl/common.k")
                 }
             }, {
+                step = "statuses"
+                functionRef.name = "crossplane-contrib-function-status-transformer"
+                input = {
+                    apiVersion = "function-status-transformer.fn.crossplane.io/v1beta1"
+                    kind = "StatusTransformation"
+                    statusConditionHooks = _statusConditionHooks
+                }
+            }, {
                 step = "automatically-detect-ready-composed-resources"
                 functionRef.name = "crossplane-contrib-function-auto-ready"
             }
@@ -47,16 +59,19 @@ schema composition:
     composition {
         _provider = "google"
         _source = file.read("kcl/google.k")
+        _statusConditionHooks = googlestatuses._statusConditionHooks
     }
 
     composition {
         _provider = "aws"
         _source = file.read("kcl/aws.k")
+        _statusConditionHooks = awsstatuses._statusConditionHooks
     }
 
     composition {
         _provider = "azure"
         _source = file.read("kcl/azure.k")
+        _statusConditionHooks = azurestatuses._statusConditionHooks
     }
 
 ]
