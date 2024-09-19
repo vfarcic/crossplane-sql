@@ -46,6 +46,9 @@ spec:
                     type: array
                     items:
                       type: string
+                  region:
+                    description: The region where the DB server should run. The default value depends on the selected provider. For AWS it is `us-east-1`, for Google Cloud it is `us-east1`, and for Azure it is `eastus`.
+                    type: string
                   schemas:
                     description: Database schema. Atlas operator (https://atlasgo.io/integrations/kubernetes/operator) needs to be installed in the cluster. Leave empty if schema should NOT be applied.
                     type: array

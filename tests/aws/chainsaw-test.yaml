@@ -37,13 +37,17 @@ spec:
             file: ../common/secret-pull-cluster.yaml
         - assert:
             file: ../common/assert-secret-pull-cluster.yaml
-      catch:
+        - patch:
+            file: ../common/region.yaml
+        - assert:
+            file: region.yaml
+    #   catch:
     #     - get:
     #         resource: managed
-        - describe:
-            resource: sqlclaims
-            name: my-db
-            namespace: $NAMESPACE
+    #     - describe:
+    #         resource: sqlclaims
+    #         name: my-db
+    #         namespace: $NAMESPACE
     #     - describe:
     #         resource: sqls
     #         selector: crossplane.io/claim-namespace=$NAMESPACE

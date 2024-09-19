@@ -1,0 +1,17 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+spec:
+  parameters:
+    region: other-region
+---
+apiVersion: sql.gcp.upbound.io/v1beta1
+kind: DatabaseInstance
+metadata:
+  name: my-db-google
+spec:
+  forProvider:
+    region: other-region

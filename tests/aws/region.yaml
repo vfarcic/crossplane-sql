@@ -1,0 +1,143 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  labels:
+    crossplane.io/claim-name: my-db
+spec:
+  parameters:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: InternetGateway
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: MainRouteTableAssociation
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTableAssociation
+metadata:
+  name: my-db-aws-1a
+spec:
+  forProvider:
+    region: other-region
+    subnetIdSelector:
+      matchLabels:
+        zone: other-regiona
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTableAssociation
+metadata:
+  name: my-db-aws-1b
+spec:
+  forProvider:
+    region: other-region
+    subnetIdSelector:
+      matchLabels:
+        zone: other-regionb
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTableAssociation
+metadata:
+  name: my-db-aws-1c
+spec:
+  forProvider:
+    region: other-region
+    subnetIdSelector:
+      matchLabels:
+        zone: other-regionc
+  providerConfigRef:
+    name: default
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTable
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroupRule
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: my-db-aws-a
+spec:
+  forProvider:
+    availabilityZone: other-regiona
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: my-db-aws-b
+spec:
+  forProvider:
+    availabilityZone: other-regionb
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: my-db-aws-c
+spec:
+  forProvider:
+    availabilityZone: other-regionc
+    region: other-region
+---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: rds.aws.upbound.io/v1beta2
+kind: Instance
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region
+---
+apiVersion: rds.aws.upbound.io/v1beta1
+kind: SubnetGroup
+metadata:
+  name: my-db-aws
+spec:
+  forProvider:
+    region: other-region

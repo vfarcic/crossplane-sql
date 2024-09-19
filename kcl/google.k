@@ -1,6 +1,10 @@
 oxr = option("params").oxr
 ocds = option("params").ocds
 
+_region = "us-east1"
+if oxr.spec?.parameters?.region:
+    _region = oxr.spec.parameters.region
+
 _metadata = lambda resourceName: str -> any {
     {
         name = oxr.spec.id
@@ -16,7 +20,7 @@ _items = [{
     metadata = _metadata("sql")
     spec = {
         forProvider = {
-            region = "us-east1"
+            region = _region
             databaseVersion = "POSTGRES_" + oxr.spec.parameters.version
             rootPasswordSecretRef = {
                 name = oxr.spec.id + "-password"

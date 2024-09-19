@@ -183,7 +183,7 @@ if oxr.spec.parameters?.schemas:
                         scheme = "postgres"
                         hostFrom.secretKeyRef = {
                             key = "endpoint"
-                            name: oxr.spec.id
+                            name = oxr.spec.id
                         }
                         port = 5432
                         userFrom.secretKeyRef = {

@@ -1,6 +1,10 @@
 oxr = option("params").oxr
 ocds = option("params").ocds
 
+_region = "us-east-1"
+if oxr.spec?.parameters?.region:
+    _region = oxr.spec.parameters.region
+
 _metadata = lambda resourceName: str -> any {
     {
         name = oxr.spec.id
@@ -15,7 +19,7 @@ _items = [{
     kind = "InternetGateway"
     metadata = _metadata("gateway")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         vpcIdSelector.matchControllerRef = True
     }
 }, {
@@ -23,7 +27,7 @@ _items = [{
     kind = "MainRouteTableAssociation"
     metadata = _metadata("mainRouteTableAssociation")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         routeTableIdSelector.matchControllerRef = True
         vpcIdSelector.matchControllerRef = True
     }
@@ -32,7 +36,7 @@ _items = [{
     kind = "RouteTable"
     metadata = _metadata("routeTable")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         vpcIdSelector.matchControllerRef = True
     }
 }, {
@@ -40,7 +44,7 @@ _items = [{
     kind = "Route"
     metadata = _metadata("route")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         routeTableIdSelector.matchControllerRef = True
         destinationCidrBlock = "0.0.0.0/0"
         gatewayIdSelector.matchControllerRef = True
@@ -50,7 +54,7 @@ _items = [{
     kind = "SecurityGroupRule"
     metadata = _metadata("securityGroupRule")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         description = "I am too lazy to write descriptions"
         type = "ingress"
         fromPort = 5432
@@ -66,7 +70,7 @@ _items = [{
     kind = "SecurityGroup"
     metadata = _metadata("securityGroup")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         description = "I am too lazy to write descriptions"
         vpcIdSelector.matchControllerRef = True
     }
@@ -75,7 +79,7 @@ _items = [{
     kind = "VPC"
     metadata = _metadata("vpc")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         cidrBlock = "11.0.0.0/16"
         enableDnsSupport = True
         enableDnsHostnames = True
@@ -85,7 +89,7 @@ _items = [{
     kind = "SubnetGroup"
     metadata = _metadata("subnetgroup")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         description = "I'm too lazy to write a good description"
         subnetIdSelector.matchControllerRef = True
     }
@@ -94,7 +98,7 @@ _items = [{
     kind = "Instance"
     metadata = _metadata("rdsinstance")
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         dbSubnetGroupNameSelector.matchControllerRef = True
         vpcSecurityGroupIdSelector.matchControllerRef = True
         username = "masteruser"
@@ -188,11 +192,11 @@ _items += [{
         }
     }
     spec.forProvider = {
-        region = "us-east-1"
+        region = _region
         routeTableIdSelector.matchControllerRef = True
         subnetIdSelector = {
             matchControllerRef = True
-            matchLabels.zone = "us-east-1" + _data.zone
+            matchLabels.zone = _region + _data.zone
         }
     }
 } for _data in _zoneList]
@@ -206,12 +210,12 @@ _items += [{
             "krm.kcl.dev/composition-resource-name" = "subnet-" + _data.zone
         }
         labels = {
-            zone = "us-east-1" + _data.zone
+            zone = _region + _data.zone
         }
     }
     spec.forProvider = {
-        region = "us-east-1"
-        availabilityZone = "us-east-1" + _data.zone
+        region = _region
+        availabilityZone = _region + _data.zone
         cidrBlock = _data.cidrBlock
         vpcIdSelector.matchControllerRef = True
     }

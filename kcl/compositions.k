@@ -54,4 +54,9 @@ schema composition:
         _source = file.read("kcl/aws.k")
     }
 
+    composition {
+        _provider = "azure"
+        _source = file.read("kcl/azure.k")
+    }
+
 ]
