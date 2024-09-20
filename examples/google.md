@@ -62,8 +62,6 @@ gcloud iam service-accounts keys create gcp-creds.json \
 
 ### Crossplane
 
-Create a Kubernetes cluster.
-
 Please skip the command that follows if you already have a Kubernetes cluster that you would like to use as a Crossplane control plane.
 
 ```sh

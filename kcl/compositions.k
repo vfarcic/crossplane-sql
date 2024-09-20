@@ -2,6 +2,7 @@ import file
 import .awsstatuses
 import .googlestatuses
 import .azurestatuses
+import .commonstatuses
 
 schema composition:
     _provider: str
@@ -59,19 +60,28 @@ schema composition:
     composition {
         _provider = "google"
         _source = file.read("kcl/google.k")
-        _statusConditionHooks = googlestatuses._statusConditionHooks
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "databaseinstance",
+            commonstatuses.commonDataList + googlestatuses.googleDataList
+        )
     }
 
     composition {
         _provider = "aws"
         _source = file.read("kcl/aws.k")
-        _statusConditionHooks = awsstatuses._statusConditionHooks
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "vpc",
+            commonstatuses.commonDataList + awsstatuses.awsDataList
+        )
     }
 
     composition {
         _provider = "azure"
         _source = file.read("kcl/azure.k")
-        _statusConditionHooks = azurestatuses._statusConditionHooks
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "resourcegroup",
+            commonstatuses.commonDataList + azurestatuses.azureDataList
+        )
     }
 
 ]

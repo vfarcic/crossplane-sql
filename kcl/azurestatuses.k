@@ -1,22 +1,13 @@
-_statusConditionHooks = [{
-    matchers = [{
-        resources = [{
-            name = "resourcegroup"
-        }]
-        conditions = [{
-            type = "Synced"
-            status = "False"
-            reason = "ReconcileError"
-            message = "\.*cannot get referenced ProviderConfig\.*"
-        }]
-    }]
-    setConditions = [{
-        target = "CompositeAndClaim"
-        condition = {
-            type = "ProviderConfigReady"
-            status = "False"
-            reason = "FailedToConnect"
-            message = "providerConfig is missing. Contact service owner."
-        }
-    }]
+azureDataList = [{
+    matcher.message = "(.*)The specified location '(?P<Region>.*)' is invalid(.*)"
+    setCondition = {
+        type = "RegionAvailable"
+        message = "selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value."
+    }
+}, {
+    matcher.message = "(.*)The provided location '(?P<Region>.*)' is not available for resource group(.*)"
+    setCondition = {
+        type = "RegionAvailable"
+        message = "selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value."
+    }
 }]
