@@ -1,7 +1,6 @@
 commonDataList = [{
     matcher.message = "(.*)cannot get referenced ProviderConfig(.*)"
     setCondition = {
-        type = "ProviderConfigReady"
         message = "providerConfig is missing. Contact service owner."
     }
 }]
@@ -15,6 +14,24 @@ statusConditionHooks = lambda resource: str, dataList: any -> any {
             }]
             conditions = [{
                 type = "Synced"
+            }]
+        }]
+        setConditions = [{
+            target = "CompositeAndClaim"
+            force = True
+            condition = {
+                type = "Developer"
+                status = "True"
+                message = "So far so good"
+            }
+        }]
+    }] + [{
+        matchers = [{
+            resources = [{
+                name = resource
+            }]
+            conditions = [{
+                type = "Synced"
                 status = "False"
                 reason = "ReconcileError"
                 message = _data.matcher.message
@@ -22,8 +39,9 @@ statusConditionHooks = lambda resource: str, dataList: any -> any {
         }]
         setConditions = [{
             target = "CompositeAndClaim"
+            force = True
             condition = {
-                type = _data.setCondition.type
+                type = "Developer"
                 status = "False"
                 reason = "FailedToConnect"
                 message = _data.setCondition.message

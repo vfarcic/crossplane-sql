@@ -85,6 +85,54 @@
         }
       }
     },
+    "crossplane-cli@1.16.1": {
+      "last_modified": "2024-09-10T15:01:03Z",
+      "resolved": "github:NixOS/nixpkgs/5ed627539ac84809c78b2dd6d26a5cebeb5ae269#crossplane-cli",
+      "source": "devbox-search",
+      "version": "1.16.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/80gxn959n8hgg54higv6irgz7gms8194-crossplane-cli-1.16.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/80gxn959n8hgg54higv6irgz7gms8194-crossplane-cli-1.16.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zqglnqclk86ijmxpq8qyw8b9dq3fd81q-crossplane-cli-1.16.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zqglnqclk86ijmxpq8qyw8b9dq3fd81q-crossplane-cli-1.16.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/himcxij4lvxzcy3czr25l8xsx7x92pfc-crossplane-cli-1.16.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/himcxij4lvxzcy3czr25l8xsx7x92pfc-crossplane-cli-1.16.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1vsfpiwiw51plx171pn9vwsxiz46gq80-crossplane-cli-1.16.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1vsfpiwiw51plx171pn9vwsxiz46gq80-crossplane-cli-1.16.1"
+        }
+      }
+    },
     "gh@2.44.1": {
       "last_modified": "2024-02-19T01:51:04Z",
       "resolved": "github:NixOS/nixpkgs/a332040396d7e3c47883e9c115c1da485712805e#gh",
@@ -281,51 +329,99 @@
         }
       }
     },
-    "kyverno-chainsaw@0.1.9": {
-      "last_modified": "2024-03-22T11:26:23Z",
-      "resolved": "github:NixOS/nixpkgs/a3ed7406349a9335cb4c2a71369b697cecd9d351#kyverno-chainsaw",
+    "kyverno-chainsaw@0.2.8": {
+      "last_modified": "2024-09-10T15:01:03Z",
+      "resolved": "github:NixOS/nixpkgs/5ed627539ac84809c78b2dd6d26a5cebeb5ae269#kyverno-chainsaw",
       "source": "devbox-search",
-      "version": "0.1.9",
+      "version": "0.2.8",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/gibp2644pl7b2ndsv9m8b0lhwwwplvyr-kyverno-chainsaw-0.1.9",
+              "path": "/nix/store/5d81iq6c2dbbwr99xcl3wzznjrmmhdhk-kyverno-chainsaw-0.2.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/gibp2644pl7b2ndsv9m8b0lhwwwplvyr-kyverno-chainsaw-0.1.9"
+          "store_path": "/nix/store/5d81iq6c2dbbwr99xcl3wzznjrmmhdhk-kyverno-chainsaw-0.2.8"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/q8064cz6kr4knm7i8x52x3267z7ks929-kyverno-chainsaw-0.1.9",
+              "path": "/nix/store/afg1aq8rv6hi24vnqbbl3mb68bk1v7nz-kyverno-chainsaw-0.2.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/q8064cz6kr4knm7i8x52x3267z7ks929-kyverno-chainsaw-0.1.9"
+          "store_path": "/nix/store/afg1aq8rv6hi24vnqbbl3mb68bk1v7nz-kyverno-chainsaw-0.2.8"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/49887f9yzi285302nnszvjl5a07jh648-kyverno-chainsaw-0.1.9",
+              "path": "/nix/store/dyjbicc3y71zd7yc4qxa9wyx3ff5sg24-kyverno-chainsaw-0.2.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/49887f9yzi285302nnszvjl5a07jh648-kyverno-chainsaw-0.1.9"
+          "store_path": "/nix/store/dyjbicc3y71zd7yc4qxa9wyx3ff5sg24-kyverno-chainsaw-0.2.8"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/wa1v9in2302ziqr81yb1jm4bvfi54nzw-kyverno-chainsaw-0.1.9",
+              "path": "/nix/store/gxi2064qk3fcipn7ngyhywbs8qg8qajz-kyverno-chainsaw-0.2.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/wa1v9in2302ziqr81yb1jm4bvfi54nzw-kyverno-chainsaw-0.1.9"
+          "store_path": "/nix/store/gxi2064qk3fcipn7ngyhywbs8qg8qajz-kyverno-chainsaw-0.2.8"
+        }
+      }
+    },
+    "nushell@0.98.0": {
+      "last_modified": "2024-09-20T05:11:28Z",
+      "resolved": "github:NixOS/nixpkgs/79454ee9aacc9714653a4e7eb2a52b717728caff#nushell",
+      "source": "devbox-search",
+      "version": "0.98.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/98iz9d4b3d9960amsjrd9hhg551g8zkd-nushell-0.98.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/98iz9d4b3d9960amsjrd9hhg551g8zkd-nushell-0.98.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/lr1fllqlh3p3ksrinj5cagikfvm4c9x5-nushell-0.98.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/lr1fllqlh3p3ksrinj5cagikfvm4c9x5-nushell-0.98.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zb5pab13n214fsq92i5c2fp95wdrldgp-nushell-0.98.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zb5pab13n214fsq92i5c2fp95wdrldgp-nushell-0.98.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/b4jwx295fqxg036jxb5bavvd4knikiix-nushell-0.98.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/b4jwx295fqxg036jxb5bavvd4knikiix-nushell-0.98.0"
         }
       }
     },

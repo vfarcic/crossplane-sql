@@ -4,7 +4,7 @@ kind: SQLClaim
 metadata:
   name: my-db
 status:
-  (conditions[?type == 'ProviderConfigReady']):
+  (conditions[?type == 'Developer']):
   - reason: FailedToConnect
     message: providerConfig is missing. Contact service owner.
     status: "False"
@@ -15,7 +15,7 @@ metadata:
   labels:
     crossplane.io/claim-name: my-db
 status:
-  (conditions[?type == 'ProviderConfigReady']):
+  (conditions[?type == 'Developer']):
   - reason: FailedToConnect
     message: providerConfig is missing. Contact service owner.
     status: "False"

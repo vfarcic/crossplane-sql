@@ -447,13 +447,26 @@ spec:
           - name: databaseinstance
           conditions:
           - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: databaseinstance
+          conditions:
+          - type: Synced
             status: 'False'
             reason: ReconcileError
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -467,8 +480,9 @@ spec:
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -482,8 +496,9 @@ spec:
             message: '(.*)Invalid value for region: (?P<Region>.*)., invalid(.*)'
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
@@ -1041,13 +1056,26 @@ spec:
           - name: vpc
           conditions:
           - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: vpc
+          conditions:
+          - type: Synced
             status: 'False'
             reason: ReconcileError
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1061,8 +1089,9 @@ spec:
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1076,8 +1105,9 @@ spec:
             message: '(.*)lookup sts.(?P<Region>.*).amazonaws.com on (.*): no such host(.*)'
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
@@ -1501,13 +1531,26 @@ spec:
           - name: resourcegroup
           conditions:
           - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: resourcegroup
+          conditions:
+          - type: Synced
             status: 'False'
             reason: ReconcileError
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1521,8 +1564,9 @@ spec:
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1536,8 +1580,9 @@ spec:
             message: (.*)The specified location '(?P<Region>.*)' is invalid(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
@@ -1551,8 +1596,9 @@ spec:
             message: (.*)The provided location '(?P<Region>.*)' is not available for resource group(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.

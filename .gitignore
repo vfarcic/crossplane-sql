@@ -4,4 +4,8 @@
 /.vscode
 /gcp-creds.json
 /aws-creds.conf
+<<<<<<< HEAD
 /azure-creds.json
+=======
+/.env
+>>>>>>> a1e271d (Status transformer)
