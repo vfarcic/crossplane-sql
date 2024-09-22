@@ -55,7 +55,7 @@ def set-crossplane [] {
     (
         kubectl wait
             --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 5m
+            --all --timeout 10m
     )
 
 }
