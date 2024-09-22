@@ -19,3 +19,4 @@ spec:
   parameters:
     version: "16.2"
     size: medium
+    region: us-east-1

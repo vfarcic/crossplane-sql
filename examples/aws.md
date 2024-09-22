@@ -19,9 +19,9 @@ kubectl create namespace a-team
 ```bash
 cat examples/aws.yaml
 
-kubectl --namespace infra apply --filename examples/aws.yaml
+kubectl --namespace a-team apply --filename examples/aws.yaml
     
-kubectl --namespace infra get sqlclaims
+kubectl --namespace a-team get sqlclaims
 
 kubectl get managed
 ```
@@ -29,11 +29,9 @@ kubectl get managed
 ## Destroy 
 
 ```bash
-kubectl --namespace infra delete --filename ../examples/aws.yaml
+kubectl --namespace a-team delete --filename ../examples/aws.yaml
 
 kubectl get managed
 
-# Wait until all the resources are deleted (ignore `database`)
-
-gcloud projects delete $PROJECT_ID
+# Wait until all the resources are deleted (ignore `database`)
 ```
