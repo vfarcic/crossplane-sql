@@ -453,7 +453,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -468,7 +468,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -483,7 +483,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
@@ -1047,7 +1047,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1062,7 +1062,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1077,7 +1077,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
@@ -1507,7 +1507,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1522,7 +1522,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: ProviderConfigReady
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: providerConfig is missing. Contact service owner.
@@ -1537,7 +1537,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
@@ -1552,7 +1552,7 @@ spec:
         setConditions:
         - target: CompositeAndClaim
           condition:
-            type: RegionAvailable
+            type: Developer
             status: 'False'
             reason: FailedToConnect
             message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.

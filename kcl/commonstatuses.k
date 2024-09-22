@@ -1,7 +1,6 @@
 commonDataList = [{
     matcher.message = "(.*)cannot get referenced ProviderConfig(.*)"
     setCondition = {
-        type = "ProviderConfigReady"
         message = "providerConfig is missing. Contact service owner."
     }
 }]
@@ -23,7 +22,7 @@ statusConditionHooks = lambda resource: str, dataList: any -> any {
         setConditions = [{
             target = "CompositeAndClaim"
             condition = {
-                type = _data.setCondition.type
+                type = "Developer"
                 status = "False"
                 reason = "FailedToConnect"
                 message = _data.setCondition.message

@@ -15,7 +15,8 @@
     "path:gcloud#google-cloud-sdk",
     "yq-go@4.44.3",
     "teller@2.0.7",
-    "azure-cli@2.64.0"
+    "azure-cli@2.64.0",
+    "nushell@0.98.0"
   ],
   "shell": {
     "init_hook": [],
