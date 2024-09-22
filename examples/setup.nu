@@ -64,7 +64,7 @@ def get-hyperscaler [] {
 
     let hyperscaler = [aws]
         | input list $"\n(ansi green_bold)Which Hyperscaler do you want to use?(ansi yellow_bold)"
-    ansi reset
+    print $"(ansi reset)"
 
     open settings.yaml
         | upsert hyperscaler $hyperscaler

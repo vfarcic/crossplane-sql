@@ -447,11 +447,24 @@ spec:
           - name: databaseinstance
           conditions:
           - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: databaseinstance
+          conditions:
+          - type: Synced
             status: 'False'
             reason: ReconcileError
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -467,6 +480,7 @@ spec:
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -482,6 +496,7 @@ spec:
             message: '(.*)Invalid value for region: (?P<Region>.*)., invalid(.*)'
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1041,11 +1056,24 @@ spec:
           - name: vpc
           conditions:
           - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: vpc
+          conditions:
+          - type: Synced
             status: 'False'
             reason: ReconcileError
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1061,6 +1089,7 @@ spec:
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1076,6 +1105,7 @@ spec:
             message: '(.*)lookup sts.(?P<Region>.*).amazonaws.com on (.*): no such host(.*)'
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1501,11 +1531,24 @@ spec:
           - name: resourcegroup
           conditions:
           - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: resourcegroup
+          conditions:
+          - type: Synced
             status: 'False'
             reason: ReconcileError
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1521,6 +1564,7 @@ spec:
             message: (.*)cannot get referenced ProviderConfig(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1536,6 +1580,7 @@ spec:
             message: (.*)The specified location '(?P<Region>.*)' is invalid(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'
@@ -1551,6 +1596,7 @@ spec:
             message: (.*)The provided location '(?P<Region>.*)' is not available for resource group(.*)
         setConditions:
         - target: CompositeAndClaim
+          force: true
           condition:
             type: Developer
             status: 'False'

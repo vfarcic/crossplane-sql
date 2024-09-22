@@ -1,4 +1,4 @@
-apiVersion: chainsaw.kyverno.io/v1alpha2
+apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
   name: aws
@@ -17,10 +17,6 @@ spec:
             file: ../common/assert-install.yaml
         - assert:
             file: ../common/assert-status-provider.yaml
-        # - apply:
-        #     file: provider-config.yaml
-        # - assert:
-        #     file: ../common/assert-status-provider-fixed.yaml
         - assert:
             file: assert-install.yaml
         - patch:

@@ -7,7 +7,6 @@
     "upbound@0.24.1",
     "go-task@3.31.0",
     "kubernetes-helm@3.14.1",
-    "kyverno-chainsaw@0.1.9",
     "gum@0.14.0",
     "kcl@0.9.8",
     "zellij@0.40.1",
@@ -16,7 +15,9 @@
     "yq-go@4.44.3",
     "teller@2.0.7",
     "azure-cli@2.64.0",
-    "nushell@0.98.0"
+    "nushell@0.98.0",
+    "kyverno-chainsaw@0.2.8",
+    "crossplane-cli@1.16.1"
   ],
   "shell": {
     "init_hook": [],
