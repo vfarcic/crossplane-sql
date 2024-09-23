@@ -11,7 +11,10 @@ def main [] {
 
     set-crossplane
 
-    set-aws
+    match $hyperscaler {
+        "aws" => set-aws
+        "google" => set-google
+    }
 
     kubectl create namespace infra
 
@@ -55,15 +58,15 @@ def set-crossplane [] {
     (
         kubectl wait
             --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 10m
+            --all --timeout 15m
     )
 
 }
 
 def get-hyperscaler [] {
 
-    let hyperscaler = [aws]
-        | input list $"\n(ansi green_bold)Which Hyperscaler do you want to use?(ansi yellow_bold)"
+    let hyperscaler = [aws, google]
+        | input list $"\n(ansi yellow_bold)Which Hyperscaler do you want to use?(ansi green_bold)"
     print $"(ansi reset)"
 
     open settings.yaml
@@ -103,6 +106,67 @@ def set-aws [] {
             --from-file creds=./aws-creds.conf
     )
 
-    kubectl apply --filename $"examples/provider-config-aws.yaml"
+    kubectl apply --filename examples/provider-config-aws.yaml
+
+}
+
+def set-google [] {
+
+    gcloud auth login
+
+    let project_id = $"dot-(date now | format date "%Y%m%d%H%M%S")"
+    open settings.yaml
+        | upsert google.projectID $project_id
+        | save settings.yaml --force
+
+    gcloud projects create $project_id
+
+    start $"https://console.cloud.google.com/billing/enable?project=($project_id)"
+
+    print $"
+    Set (ansi yellow_bold)billing account(ansi reset).
+    Press any key to continue.
+    "
+    input
+
+    start $"https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=($project_id)"
+    
+    print $"(ansi yellow_bold)
+    ENABLE(ansi reset) the API.
+    Press any key to continue.
+    "
+    input
+
+    let sa_name = "devops-toolkit"
+
+    let sa = $"($sa_name)@($project_id).iam.gserviceaccount.com"
+    
+    (
+        gcloud iam service-accounts create $sa_name 
+            --project $project_id
+    )
+
+    (
+        gcloud projects add-iam-policy-binding
+            --role roles/admin $project_id
+            --member $"serviceAccount:($sa)"
+    )
+
+    (
+        gcloud iam service-accounts keys create gcp-creds.json
+            --project $project_id --iam-account $sa
+    )
+
+    (
+        kubectl --namespace crossplane-system
+            create secret generic gcp-creds
+            --from-file creds=./gcp-creds.json
+    )
+
+    open examples/provider-config-google.yaml
+        | upsert spec.projectID $project_id
+        | save examples/provider-config-google.yaml --force
+
+    kubectl apply --filename examples/provider-config-google.yaml
 
 }
