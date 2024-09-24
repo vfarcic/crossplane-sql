@@ -6,7 +6,7 @@ metadata:
 status:
   (conditions[?type == 'Developer']):
   - reason: FailedToConnect
-    message: providerConfig is missing. Contact service owner.
+    message: ProviderConfig is missing. Contact service owner.
     status: "False"
 ---
 apiVersion: devopstoolkitseries.com/v1alpha1
@@ -17,5 +17,5 @@ metadata:
 status:
   (conditions[?type == 'Developer']):
   - reason: FailedToConnect
-    message: providerConfig is missing. Contact service owner.
+    message: ProviderConfig is missing. Contact service owner.
     status: "False"

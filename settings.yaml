@@ -1,1 +1,3 @@
-hyperscaler: google
+hyperscaler: azure
+google:
+  projectID: dot-20240923120418

@@ -14,6 +14,7 @@ def main [] {
     match $hyperscaler {
         "aws" => set-aws
         "google" => set-google
+        "azure" => set-azure
     }
 
     kubectl create namespace infra
@@ -51,22 +52,22 @@ def set-crossplane [] {
             --filename providers/provider-helm-incluster.yaml
     )
 
-    print $"(ansi yellow_bold)Waiting for Crossplane providers to be deployed...(ansi reset)"
+    print $"(ansi yellow_bold)Waiting for Crossplane providers to be deployed \(up to 30 min.\)...(ansi reset)"
 
     sleep 60sec
 
     (
         kubectl wait
             --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 15m
+            --all --timeout 30m
     )
 
 }
 
 def get-hyperscaler [] {
 
-    let hyperscaler = [aws, google]
-        | input list $"\n(ansi yellow_bold)Which Hyperscaler do you want to use?(ansi green_bold)"
+    let hyperscaler = [aws, azure, google]
+        | input list $"\n(ansi green_bold)Which Hyperscaler do you want to use?"
     print $"(ansi reset)"
 
     open settings.yaml
@@ -125,7 +126,7 @@ def set-google [] {
 
     print $"
     Set (ansi yellow_bold)billing account(ansi reset).
-    Press any key to continue.
+    (ansi green_bold)Press any key to continue.(ansi reset)
     "
     input
 
@@ -133,7 +134,7 @@ def set-google [] {
     
     print $"(ansi yellow_bold)
     ENABLE(ansi reset) the API.
-    Press any key to continue.
+    (ansi green_bold)Press any key to continue.(ansi reset)
     "
     input
 
@@ -168,5 +169,32 @@ def set-google [] {
         | save examples/provider-config-google.yaml --force
 
     kubectl apply --filename examples/provider-config-google.yaml
+
+}
+
+def set-azure [] {
+
+    if AZURE_TENANT not-in $env {
+        let value = input $"(ansi green_bold)Enter Azure Tenant: (ansi reset)"
+        $env.AZURE_TENANT = $value
+    }
+
+    az login --tenant $env.AZURE_TENANT
+
+    let subscription_id = (az account show --query id -o tsv)
+
+    (
+        az ad sp create-for-rbac --sdk-auth --role Owner
+            --scopes $"/subscriptions/($subscription_id)"
+            | save azure-creds.json --force
+    )
+
+    (
+        kubectl --namespace crossplane-system
+            create secret generic azure-creds
+            --from-file creds=./azure-creds.json
+    )
+
+    kubectl apply --filename examples/provider-config-azure.yaml
 
 }

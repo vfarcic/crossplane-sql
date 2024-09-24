@@ -3,7 +3,7 @@ kind: ProviderConfig
 metadata:
   name: default
 spec:
-  projectID: dot-20240920173135
+  projectID: dot-20240923120418
   credentials:
     source: Secret
     secretRef:
