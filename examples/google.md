@@ -125,6 +125,9 @@ yq --inplace ".spec.projectID = \"$PROJECT_ID\"" \
     providers/provider-config-google.yaml
 
 kubectl apply --filename providers/provider-config-google.yaml
+
+kubectl --namespace infra apply \
+    --filename examples/google-secret.yaml
 ```
 
 ## Create a PostgreSQL Instance

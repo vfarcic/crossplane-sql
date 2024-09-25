@@ -5,22 +5,23 @@ def main [] {
     let hyperscaler = (open settings.yaml | get hyperscaler)
 
     (
-        kubectl --namespace a-team delete
+        kubectl --namespace infra delete
             --filename $"examples/($hyperscaler).yaml"
     )
 
     mut counter = 999; loop {
-        $counter = ( kubectl get managed | detect columns | length )
+        $counter = (
+            kubectl get managed
+                | detect columns
+                | where NAME !~ "database.postgresql.sql.crossplane.io"
+                | length
+        )
         if $counter == 0 {
             break
         }
         print $"Waiting for ($counter) resources to be deleted..."
         sleep 10sec
     }
-
-    open config.yaml
-        | upsert spec.package "xpkg.upbound.io/devops-toolkit/dot-sql:v0.8.132"
-        | save config.yaml --force
 
     kind delete cluster
 

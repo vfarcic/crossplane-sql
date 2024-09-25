@@ -29,6 +29,7 @@ def set-cluster [] {
         kubectl apply
             --filename "https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml"
     )
+    
 }
 
 def set-crossplane [] {
@@ -67,7 +68,7 @@ def set-crossplane [] {
 def get-hyperscaler [] {
 
     let hyperscaler = [aws, azure, google]
-        | input list $"\n(ansi green_bold)Which Hyperscaler do you want to use?"
+        | input list $"\n(ansi yellow_bold)Which Hyperscaler do you want to use?(ansi green_bold)"
     print $"(ansi reset)"
 
     open settings.yaml
@@ -83,14 +84,14 @@ def get-hyperscaler [] {
 def set-aws [] {
 
     if AWS_ACCESS_KEY_ID not-in $env {
-        let value = input $"(ansi green_bold)Enter AWS Access Key ID: (ansi reset)"
+        let value = input $"(ansi yellow_bold)Enter AWS Access Key ID: (ansi reset)"
         $env.AWS_ACCESS_KEY_ID = $value
     }
     $"export AWS_ACCESS_KEY_ID=($env.AWS_ACCESS_KEY_ID)\n"
         | save --append .env
 
     if AWS_SECRET_ACCESS_KEY not-in $env {
-        let value = input $"(ansi green_bold)Enter AWS Secret Access Key: (ansi reset)"
+        let value = input $"(ansi yellow_bold)Enter AWS Secret Access Key: (ansi reset)"
         $env.AWS_SECRET_ACCESS_KEY = $value
     }
     $"export AWS_SECRET_ACCESS_KEY=($env.AWS_SECRET_ACCESS_KEY)\n"
@@ -126,7 +127,7 @@ def set-google [] {
 
     print $"
     Set (ansi yellow_bold)billing account(ansi reset).
-    (ansi green_bold)Press any key to continue.(ansi reset)
+    (ansi yellow_bold)Press any key to continue.(ansi reset)
     "
     input
 
@@ -134,7 +135,7 @@ def set-google [] {
     
     print $"(ansi yellow_bold)
     ENABLE(ansi reset) the API.
-    (ansi green_bold)Press any key to continue.(ansi reset)
+    (ansi yellow_bold)Press any key to continue.(ansi reset)
     "
     input
 
@@ -175,7 +176,7 @@ def set-google [] {
 def set-azure [] {
 
     if AZURE_TENANT not-in $env {
-        let value = input $"(ansi green_bold)Enter Azure Tenant: (ansi reset)"
+        let value = input $"(ansi yellow_bold)Enter Azure Tenant: (ansi reset)"
         $env.AZURE_TENANT = $value
     }
 
@@ -196,5 +197,19 @@ def set-azure [] {
     )
 
     kubectl apply --filename examples/provider-config-azure.yaml
+
+    let db_name = $"my-db-(date now | format date "%Y%m%d%H%M%S")"
+
+    open examples/azure.yaml
+        | upsert spec.id $db_name
+        | save examples/azure.yaml --force
+
+    open examples/azure-error.yaml
+        | upsert spec.id $db_name
+        | save examples/azure-error.yaml --force
+
+    open examples/azure-secret.yaml
+        | upsert metadata.name $"($db_name)-password"
+        | save examples/azure-secret.yaml --force
 
 }

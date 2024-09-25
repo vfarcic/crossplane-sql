@@ -90,6 +90,9 @@ kubectl get pkgrev
 
 ```sh
 kubectl apply --filename examples/provider-config-azure.yaml
+
+kubectl --namespace infra apply \
+    --filename examples/azure-secret.yaml
 ```
 
 ## Create a PostgreSQL Instance
