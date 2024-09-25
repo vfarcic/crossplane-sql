@@ -60,6 +60,7 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
   - http:
       paths:
@@ -70,4 +71,4 @@ spec:
             name: silly-demo
             port:
               number: 8080
-    host: devopstoolkitseries.com
+    host: silly-demo.127.0.0.1.nip.io

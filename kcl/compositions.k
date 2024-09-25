@@ -61,8 +61,7 @@ schema composition:
         _provider = "google"
         _source = file.read("kcl/google.k")
         _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "databaseinstance",
-            commonstatuses.commonDataList + googlestatuses.googleDataList
+            "databaseinstance", googlestatuses.googleDataList
         )
     }
 
@@ -70,8 +69,7 @@ schema composition:
         _provider = "aws"
         _source = file.read("kcl/aws.k")
         _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "vpc",
-            commonstatuses.commonDataList + awsstatuses.awsDataList
+            "vpc", awsstatuses.awsDataList
         )
     }
 
@@ -79,8 +77,7 @@ schema composition:
         _provider = "azure"
         _source = file.read("kcl/azure.k")
         _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "resourcegroup",
-            commonstatuses.commonDataList + azurestatuses.azureDataList
+            "resourcegroup", azurestatuses.azureDataList
         )
     }
 

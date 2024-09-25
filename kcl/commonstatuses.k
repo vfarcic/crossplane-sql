@@ -1,7 +1,7 @@
 commonDataList = [{
     matcher.message = "(.*)cannot get referenced ProviderConfig(.*)"
     setCondition = {
-        message = "providerConfig is missing. Contact service owner."
+        message = "ProviderConfig is missing. Contact service owner."
     }
 }]
 

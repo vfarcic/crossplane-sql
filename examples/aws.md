@@ -11,7 +11,7 @@ chmod +x examples/setup.nu
 
 source .env
 
-kubectl create namespace a-team
+kubectl --namespace infra apply --filename examples/aws-secret.yaml
 ```
 
 ## Create an EKS Cluster
@@ -19,9 +19,9 @@ kubectl create namespace a-team
 ```bash
 cat examples/aws.yaml
 
-kubectl --namespace a-team apply --filename examples/aws.yaml
+kubectl --namespace infra apply --filename examples/aws.yaml
     
-kubectl --namespace a-team get sqlclaims
+kubectl --namespace infra get sqlclaims
 
 kubectl get managed
 ```
@@ -29,7 +29,7 @@ kubectl get managed
 ## Destroy 
 
 ```bash
-kubectl --namespace a-team delete --filename ../examples/aws.yaml
+kubectl --namespace infra delete --filename examples/aws.yaml
 
 kubectl get managed
 

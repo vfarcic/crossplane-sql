@@ -1,11 +1,11 @@
 azureDataList = [{
     matcher.message = "(.*)The specified location '(?P<Region>.*)' is invalid(.*)"
     setCondition = {
-        message = "selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value."
+        message = "Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value."
     }
 }, {
     matcher.message = "(.*)The provided location '(?P<Region>.*)' is not available for resource group(.*)"
     setCondition = {
-        message = "selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value."
+        message = "Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value."
     }
 }]
