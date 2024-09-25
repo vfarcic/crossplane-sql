@@ -469,23 +469,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: providerConfig is missing. Contact service owner.
-      - matchers:
-        - resources:
-          - name: databaseinstance
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: (.*)cannot get referenced ProviderConfig(.*)
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: providerConfig is missing. Contact service owner.
+            message: ProviderConfig is missing. Contact service owner.
       - matchers:
         - resources:
           - name: databaseinstance
@@ -501,7 +485,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
+            message: Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
   - step: automatically-detect-ready-composed-resources
     functionRef:
       name: crossplane-contrib-function-auto-ready
@@ -1078,23 +1062,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: providerConfig is missing. Contact service owner.
-      - matchers:
-        - resources:
-          - name: vpc
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: (.*)cannot get referenced ProviderConfig(.*)
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: providerConfig is missing. Contact service owner.
+            message: ProviderConfig is missing. Contact service owner.
       - matchers:
         - resources:
           - name: vpc
@@ -1110,7 +1078,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
+            message: Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
   - step: automatically-detect-ready-composed-resources
     functionRef:
       name: crossplane-contrib-function-auto-ready
@@ -1553,23 +1521,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: providerConfig is missing. Contact service owner.
-      - matchers:
-        - resources:
-          - name: resourcegroup
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: (.*)cannot get referenced ProviderConfig(.*)
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: providerConfig is missing. Contact service owner.
+            message: ProviderConfig is missing. Contact service owner.
       - matchers:
         - resources:
           - name: resourcegroup
@@ -1585,7 +1537,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
+            message: Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
       - matchers:
         - resources:
           - name: resourcegroup
@@ -1601,7 +1553,7 @@ spec:
             type: Developer
             status: 'False'
             reason: FailedToConnect
-            message: selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
+            message: Selected region {{ .Region }} is not available. Double check the `spec.parameters.region` value.
   - step: automatically-detect-ready-composed-resources
     functionRef:
       name: crossplane-contrib-function-auto-ready
