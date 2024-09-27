@@ -3,7 +3,7 @@ kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  id: my-db-20240925155601
+  id: my-db-20240927015756
   compositionSelector:
     matchLabels:
       provider: azure
@@ -13,5 +13,5 @@ spec:
     size: small
     region: otherregion
     databases:
-      - db-01
-      - db-02
+    - db-01
+    - db-02
