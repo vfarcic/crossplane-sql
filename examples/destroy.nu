@@ -13,6 +13,7 @@ def main [] {
         $counter = (
             kubectl get managed
                 | grep -v "database.postgresql.sql.crossplane.io"
+                | grep -v "NAME"
                 | lines
                 | length
         )
