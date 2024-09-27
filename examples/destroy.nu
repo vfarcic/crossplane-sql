@@ -12,8 +12,8 @@ def main [] {
     mut counter = 999; loop {
         $counter = (
             kubectl get managed
-                | detect columns
-                | where NAME !~ "database.postgresql.sql.crossplane.io"
+                | grep -v "database.postgresql.sql.crossplane.io"
+                | lines
                 | length
         )
         if $counter == 0 {
