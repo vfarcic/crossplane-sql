@@ -4,7 +4,7 @@ kind: Provider
 metadata:
   name: provider-aws-rds
 spec:
-  package: xpkg.upbound.io/upbound/provider-aws-rds:v1.15.0
+  package: xpkg.upbound.io/upbound/provider-aws-rds:v1.16.0
   # controllerConfigRef:
   #   name: debug-config
 ---
