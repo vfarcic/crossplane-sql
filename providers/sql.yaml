@@ -4,5 +4,5 @@ kind: Provider
 metadata:
   name: provider-sql
 spec:
-  package: xpkg.upbound.io/crossplane-contrib/provider-sql:v0.9.0
+  package: xpkg.upbound.io/crossplane-contrib/provider-sql:v0.10.0
 ---
