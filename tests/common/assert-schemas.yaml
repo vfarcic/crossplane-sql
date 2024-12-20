@@ -1,5 +1,5 @@
 ---
-apiVersion: devopstoolkitseries.com/v1alpha1
+apiVersion: devopstoolkit.live/v1alpha1
 kind: SQL
 metadata:
   labels:
@@ -45,7 +45,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: (join('-', ['my-db', $hyperscaler, 'schema-db-01']))
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -105,7 +105,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: (join('-', ['my-db', $hyperscaler, 'schema-db-02']))
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL

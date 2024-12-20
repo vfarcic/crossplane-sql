@@ -1,5 +1,5 @@
 ---
-apiVersion: devopstoolkitseries.com/v1alpha1
+apiVersion: devopstoolkit.live/v1alpha1
 kind: SQLClaim
 metadata:
   name: my-db
@@ -16,7 +16,7 @@ spec:
     size: medium
     version: "13.4"
   resourceRef:
-    apiVersion: devopstoolkitseries.com/v1alpha1
+    apiVersion: devopstoolkit.live/v1alpha1
     kind: SQL
 ---
 apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -27,7 +27,7 @@ metadata:
     crossplane.io/claim-namespace: ($namespace)
   name: (join('-', ['my-db', $hyperscaler, 'sql']))
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     kind: SQL
 spec:
   credentials:
@@ -41,7 +41,7 @@ metadata:
     crossplane.io/claim-namespace: ($namespace)
   name: (join('-', ['my-db', $hyperscaler, 'sql']))
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     kind: SQL
 spec:
   credentials:

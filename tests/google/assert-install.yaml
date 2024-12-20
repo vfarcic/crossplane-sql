@@ -1,12 +1,12 @@
 ---
-apiVersion: devopstoolkitseries.com/v1alpha1
+apiVersion: devopstoolkit.live/v1alpha1
 kind: SQL
 metadata:
   labels:
     crossplane.io/claim-name: my-db
 spec:
   claimRef:
-    apiVersion: devopstoolkitseries.com/v1alpha1
+    apiVersion: devopstoolkit.live/v1alpha1
     kind: SQLClaim
     name: my-db
   compositionRef:
@@ -50,7 +50,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-google-secret
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -102,7 +102,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-google
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -138,7 +138,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-google
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -163,7 +163,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-google
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL

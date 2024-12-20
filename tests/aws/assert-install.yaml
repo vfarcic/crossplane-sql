@@ -1,12 +1,12 @@
 ---
-apiVersion: devopstoolkitseries.com/v1alpha1
+apiVersion: devopstoolkit.live/v1alpha1
 kind: SQL
 metadata:
   labels:
     crossplane.io/claim-name: my-db
 spec:
   claimRef:
-    apiVersion: devopstoolkitseries.com/v1alpha1
+    apiVersion: devopstoolkit.live/v1alpha1
     kind: SQLClaim
     name: my-db
   compositionRef:
@@ -88,7 +88,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -110,7 +110,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -134,7 +134,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -159,7 +159,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-1a
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -185,7 +185,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-1b
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -211,7 +211,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-1c
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -237,7 +237,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -259,7 +259,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -288,7 +288,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -311,7 +311,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-a
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -335,7 +335,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-b
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -359,7 +359,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-c
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -383,7 +383,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -407,7 +407,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws-secret
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -458,7 +458,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -494,7 +494,7 @@ metadata:
     crossplane.io/claim-name: my-db
   name: my-db-aws
   ownerReferences:
-  - apiVersion: devopstoolkitseries.com/v1alpha1
+  - apiVersion: devopstoolkit.live/v1alpha1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
