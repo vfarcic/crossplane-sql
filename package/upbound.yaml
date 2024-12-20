@@ -1,0 +1,28 @@
+apiVersion: meta.dev.upbound.io/v1alpha1
+kind: Project
+metadata:
+  name: dot-sql
+spec:
+  dependsOn:
+  - provider: xpkg.upbound.io/upbound/provider-aws-ec2
+    version: ">=v1.0.0"
+  - provider: xpkg.upbound.io/upbound/provider-aws-rds
+    version: ">=v1.0.0"
+  - provider: xpkg.upbound.io/upbound/provider-azure-dbforpostgresql
+    version: ">=v0.33.0"
+  - provider: xpkg.upbound.io/upbound/provider-gcp-sql
+    version: ">=v0.33.0"
+  - provider: xpkg.upbound.io/crossplane-contrib/provider-sql
+    version: ">=v0.9.0"
+  - function: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+    version: ">=v0.2.1"
+  - function: xpkg.upbound.io/crossplane-contrib/function-status-transformer
+    version: ">=v0.3.0"
+  # - function: xpkg.upbound.io/crossplane-contrib/function-kcl
+  #   version: ">=v0.10.3"
+  description: Fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
+  license: Apache-2.0
+  maintainer: Viktor Farcic (@vfarcic)
+  readme: A Configuration package that defines a SQL and SQLClaim types that can be used to create and provision fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
+  repository: xpkg.upbound.io/devops-toolkit/dot-sql
+  source: github.com/vfarcic/crossplane-sql
