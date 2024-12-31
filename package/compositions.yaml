@@ -241,7 +241,6 @@ spec:
                           }
                       }
                   } for _database in oxr.spec.parameters.databases ]
-              if oxr.spec.parameters?.usage?.enabled:
                   _items += [{
                       apiVersion = "apiextensions.crossplane.io/v1alpha1"
                       kind = "Usage"
@@ -875,8 +874,8 @@ spec:
                       }
                       spec = {
                           of = {
-                              apiVersion = "rds.aws.upbound.io/v1beta2"
-                              kind = "Instance"
+                              apiVersion = "rds.aws.upbound.io/v1beta1"
+                              kind = "SubnetGroup"
                               resourceRef.name = oxr.spec.id
                           }
                           by = {
@@ -886,7 +885,6 @@ spec:
                           }
                       }
                   } for _database in oxr.spec.parameters.databases ]
-              if oxr.spec.parameters?.usage?.enabled:
                   _items += [{
                       apiVersion = "apiextensions.crossplane.io/v1alpha1"
                       kind = "Usage"
@@ -1395,7 +1393,6 @@ spec:
                           }
                       }
                   } for _database in oxr.spec.parameters.databases ]
-              if oxr.spec.parameters?.usage?.enabled:
                   _items += [{
                       apiVersion = "apiextensions.crossplane.io/v1alpha1"
                       kind = "Usage"
