@@ -11,7 +11,8 @@ chmod +x dot.nu
 
 source .env
 
-kubectl --namespace infra apply --filename examples/aws-secret.yaml
+kubectl --namespace infra apply \
+    --filename examples/aws-secret.yaml
 ```
 
 ## Create an PostgreSQL RDS Server

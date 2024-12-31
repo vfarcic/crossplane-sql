@@ -93,11 +93,11 @@ if oxr.spec.parameters?.databases:
             apiVersion = "apiextensions.crossplane.io/v1alpha1"
             kind = "Usage"
             metadata = {
-                name = oxr.spec.id + "-object-secret-usage"
+                name = oxr.spec.id + "-object-secret-" + _database + "usage"
                 annotations = {
                     "krm.kcl.dev/ready": "True"
-                    "crossplane.io/external-name" = oxr.spec.id + "-object-secret-usage"
-                    "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-object-secret-usage"
+                    "crossplane.io/external-name" = oxr.spec.id + "-object-secret-" + _database + "usage"
+                    "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-object-secret-" + _database + "usage"
                 }
             }
             spec = {
