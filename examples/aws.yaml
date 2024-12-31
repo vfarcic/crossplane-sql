@@ -16,5 +16,3 @@ spec:
     databases:
       - db-01
       - db-02
-    usage:
-      enabled: true
