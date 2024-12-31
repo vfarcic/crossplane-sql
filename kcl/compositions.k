@@ -8,6 +8,8 @@ schema composition:
     _provider: str
     _source: str
     _statusConditionHooks: any
+    _serverApiVersion: str
+    _serverKind: str
     apiVersion = "apiextensions.crossplane.io/v1"
     kind = "Composition"
     metadata = {
@@ -38,7 +40,7 @@ schema composition:
                 input = {
                     apiVersion = "krm.kcl.dev/v1alpha1"
                     kind = "KCLRun"
-                    spec.source = file.read("kcl/common.k")
+                    spec.source = file.read("kcl/common.k").replace("SERVER_API_VERSION", _serverApiVersion).replace("SERVER_KIND", _serverKind) 
                 }
             }, {
                 step = "statuses"
@@ -63,6 +65,8 @@ schema composition:
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "databaseinstance", googlestatuses.googleDataList
         )
+        _serverApiVersion = "sql.gcp.upbound.io/v1beta1"
+        _serverKind = "DatabaseInstance"
     }
 
     composition {
@@ -71,6 +75,8 @@ schema composition:
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "vpc", awsstatuses.awsDataList
         )
+        _serverApiVersion = "rds.aws.upbound.io/v1beta2"
+        _serverKind = "Instance"
     }
 
     composition {
@@ -79,6 +85,8 @@ schema composition:
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "resourcegroup", azurestatuses.azureDataList
         )
+        _serverApiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+        _serverKind = "Server"
     }
 
 ]

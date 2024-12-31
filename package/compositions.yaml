@@ -216,6 +216,31 @@ spec:
                       forProvider = {}
                   }
               } for _database in oxr.spec.parameters.databases ]
+              if oxr.spec.parameters?.usage?.enabled:
+                  _items += [{
+                      apiVersion = "apiextensions.crossplane.io/v1alpha1"
+                      kind = "Usage"
+                      metadata = {
+                          name = oxr.spec.id + "-" + _database + "-usage"
+                          annotations = {
+                              "krm.kcl.dev/ready": "True"
+                              "crossplane.io/external-name" = oxr.spec.id + "-" + _database + "-usage"
+                              "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-" + _database + "-usage"
+                          }
+                      }
+                      spec = {
+                          of = {
+                              apiVersion = "sql.gcp.upbound.io/v1beta1"
+                              kind = "DatabaseInstance"
+                              resourceRef.name = oxr.spec.id
+                          }
+                          by = {
+                              kind = "Database"
+                              resourceRef.name = oxr.spec.id + "-" + _database
+                          }
+                      }
+                  } for _database in oxr.spec.parameters.databases ]
+              # xxx
 
           if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pullRootPasswordKey:
               _items += [{
@@ -811,6 +836,31 @@ spec:
                       forProvider = {}
                   }
               } for _database in oxr.spec.parameters.databases ]
+              if oxr.spec.parameters?.usage?.enabled:
+                  _items += [{
+                      apiVersion = "apiextensions.crossplane.io/v1alpha1"
+                      kind = "Usage"
+                      metadata = {
+                          name = oxr.spec.id + "-" + _database + "-usage"
+                          annotations = {
+                              "krm.kcl.dev/ready": "True"
+                              "crossplane.io/external-name" = oxr.spec.id + "-" + _database + "-usage"
+                              "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-" + _database + "-usage"
+                          }
+                      }
+                      spec = {
+                          of = {
+                              apiVersion = "rds.aws.upbound.io/v1beta2"
+                              kind = "Instance"
+                              resourceRef.name = oxr.spec.id
+                          }
+                          by = {
+                              kind = "Database"
+                              resourceRef.name = oxr.spec.id + "-" + _database
+                          }
+                      }
+                  } for _database in oxr.spec.parameters.databases ]
+              # xxx
 
           if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pullRootPasswordKey:
               _items += [{
@@ -1270,6 +1320,31 @@ spec:
                       forProvider = {}
                   }
               } for _database in oxr.spec.parameters.databases ]
+              if oxr.spec.parameters?.usage?.enabled:
+                  _items += [{
+                      apiVersion = "apiextensions.crossplane.io/v1alpha1"
+                      kind = "Usage"
+                      metadata = {
+                          name = oxr.spec.id + "-" + _database + "-usage"
+                          annotations = {
+                              "krm.kcl.dev/ready": "True"
+                              "crossplane.io/external-name" = oxr.spec.id + "-" + _database + "-usage"
+                              "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-" + _database + "-usage"
+                          }
+                      }
+                      spec = {
+                          of = {
+                              apiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+                              kind = "Server"
+                              resourceRef.name = oxr.spec.id
+                          }
+                          by = {
+                              kind = "Database"
+                              resourceRef.name = oxr.spec.id + "-" + _database
+                          }
+                      }
+                  } for _database in oxr.spec.parameters.databases ]
+              # xxx
 
           if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pullRootPasswordKey:
               _items += [{

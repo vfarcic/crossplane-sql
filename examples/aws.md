@@ -5,16 +5,16 @@
 ```bash
 devbox shell
 
-chmod +x examples/setup.nu
+chmod +x dot.nu
 
-./examples/setup.nu
+./dot.nu setup aws
 
 source .env
 
 kubectl --namespace infra apply --filename examples/aws-secret.yaml
 ```
 
-## Create an EKS Cluster
+## Create an PostgreSQL RDS Server
 
 ```bash
 cat examples/aws.yaml
