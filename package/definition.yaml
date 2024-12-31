@@ -84,13 +84,6 @@ spec:
                       daprComponents:
                         description: Whether to create a Dapr components for the DBs. `pullToCluster` needs to be set to `true` to use this feature. If enabled, Dapr needs to installed in the destination cluster (directly or through OpenFunction).
                         type: boolean
-                  usage:
-                    description: Whether Crossplane `Usage` (currently alpha feature) is enabled.
-                    type: object
-                    properties:
-                      enabled:
-                        type: boolean
-                        default: false
                 required:
                   - size
                   - version
