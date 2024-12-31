@@ -25,6 +25,8 @@ kubectl --namespace infra apply --filename examples/aws.yaml
 crossplane beta trace --namespace infra sqlclaim my-db
 ```
 
+> Wait until all the resources are `Available`
+
 ## Destroy 
 
 ```bash

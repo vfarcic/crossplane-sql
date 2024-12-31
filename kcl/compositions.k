@@ -75,8 +75,8 @@ schema composition:
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "vpc", awsstatuses.awsDataList
         )
-        _serverApiVersion = "rds.aws.upbound.io/v1beta2"
-        _serverKind = "Instance"
+        _serverApiVersion = "rds.aws.upbound.io/v1beta1"
+        _serverKind = "SubnetGroup"
     }
 
     composition {
