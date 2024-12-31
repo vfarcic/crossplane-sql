@@ -88,7 +88,6 @@ if oxr.spec.parameters?.databases:
                 }
             }
         } for _database in oxr.spec.parameters.databases ]
-    if oxr.spec.parameters?.usage?.enabled:
         _items += [{
             apiVersion = "apiextensions.crossplane.io/v1alpha1"
             kind = "Usage"
