@@ -68,11 +68,11 @@ if oxr.spec.parameters?.databases:
             apiVersion = "apiextensions.crossplane.io/v1alpha1"
             kind = "Usage"
             metadata = {
-                name = oxr.spec.id + "-database-" + _database + "-usage"
+                name = oxr.spec.id + "-server-" + _database + "-usage"
                 annotations = {
                     "krm.kcl.dev/ready": "True"
-                    "crossplane.io/external-name" = oxr.spec.id + "-database-" + _database + "-usage"
-                    "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-database-" + _database + "-usage"
+                    "crossplane.io/external-name" = oxr.spec.id + "-server-" + _database + "-usage"
+                    "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-server-" + _database + "-usage"
                 }
             }
             spec = {
@@ -93,18 +93,18 @@ if oxr.spec.parameters?.databases:
             apiVersion = "apiextensions.crossplane.io/v1alpha1"
             kind = "Usage"
             metadata = {
-                name = oxr.spec.id + "-object-secret-" + _database + "usage"
+                name = oxr.spec.id + "-secret-" + _database + "-usage"
                 annotations = {
                     "krm.kcl.dev/ready": "True"
-                    "crossplane.io/external-name" = oxr.spec.id + "-object-secret-" + _database + "usage"
-                    "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-object-secret-" + _database + "usage"
+                    "crossplane.io/external-name" = oxr.spec.id + "-secret-" + _database + "-usage"
+                    "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-secret-" + _database + "-usage"
                 }
             }
             spec = {
                 of = {
                     apiVersion = "kubernetes.crossplane.io/v1alpha2"
                     kind = "Object"
-                    resourceRef.name = oxr.spec.id
+                    resourceRef.name = oxr.spec.id + "-secret"
                 }
                 by = {
                     kind = "Database"
