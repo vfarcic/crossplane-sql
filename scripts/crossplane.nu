@@ -312,71 +312,14 @@ Press any key to continue.
         }
     } | to yaml | kubectl apply --filename -
 
+    wait crossplane
 
-    print $"(ansi yellow_bold)Waiting for Crossplane providers to be deployed...(ansi reset)"
+    if $db and $hyperscaler != "none" {
 
-    sleep 60sec
-
-    (
-        kubectl wait
-            --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 30m
-    )
-
-    if $hyperscaler == "google" {
-
-        {
-            apiVersion: "gcp.upbound.io/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: "default" }
-            spec: {
-                projectID: $project_id
-                credentials: {
-                    source: "Secret"
-                    secretRef: {
-                        namespace: "crossplane-system"
-                        name: "gcp-creds"
-                        key: "creds"
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
-
-    } else if $hyperscaler == "aws" {
-
-        {
-            apiVersion: "aws.upbound.io/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: default }
-            spec: {
-                credentials: {
-                    source: Secret
-                    secretRef: {
-                        namespace: crossplane-system
-                        name: aws-creds
-                        key: creds
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
-    
-    } else if $hyperscaler == "azure" {
-
-        {
-            apiVersion: "azure.upbound.io/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: default }
-            spec: {
-                credentials: {
-                    source: "Secret"
-                    secretRef: {
-                        namespace: "crossplane-system"
-                        name: "azure-creds"
-                        key: "creds"
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
+        (
+            main apply providerconfig $hyperscaler
+                --google_project_id $project_id
+        )
 
     }
 
@@ -430,5 +373,83 @@ def "main delete crossplane" [] {
         sleep 10sec
         $counter = (kubectl get managed --output name | grep -v object | grep -v database | wc -l | into int)
     }
+
+}
+
+def "main apply providerconfig" [
+    hyperscaler: string,
+    --google_project_id: string,
+] {
+
+    if $hyperscaler == "google" {
+
+        {
+            apiVersion: "gcp.upbound.io/v1beta1"
+            kind: "ProviderConfig"
+            metadata: { name: "default" }
+            spec: {
+                projectID: $google_project_id
+                credentials: {
+                    source: "Secret"
+                    secretRef: {
+                        namespace: "crossplane-system"
+                        name: "gcp-creds"
+                        key: "creds"
+                    }
+                }
+            }
+        } | to yaml | kubectl apply --filename -
+
+    } else if $hyperscaler == "aws" {
+
+        {
+            apiVersion: "aws.upbound.io/v1beta1"
+            kind: "ProviderConfig"
+            metadata: { name: default }
+            spec: {
+                credentials: {
+                    source: Secret
+                    secretRef: {
+                        namespace: crossplane-system
+                        name: aws-creds
+                        key: creds
+                    }
+                }
+            }
+        } | to yaml | kubectl apply --filename -
+    
+    } else if $hyperscaler == "azure" {
+
+        {
+            apiVersion: "azure.upbound.io/v1beta1"
+            kind: "ProviderConfig"
+            metadata: { name: default }
+            spec: {
+                credentials: {
+                    source: "Secret"
+                    secretRef: {
+                        namespace: "crossplane-system"
+                        name: "azure-creds"
+                        key: "creds"
+                    }
+                }
+            }
+        } | to yaml | kubectl apply --filename -
+
+    }
+
+}
+
+def "wait crossplane" [] {
+
+    print $"(ansi yellow_bold)Waiting for Crossplane providers to be deployed...(ansi reset)"
+
+    sleep 60sec
+
+    (
+        kubectl wait
+            --for=condition=healthy provider.pkg.crossplane.io
+            --all --timeout 30m
+    )
 
 }

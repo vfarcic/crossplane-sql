@@ -21,9 +21,7 @@ cat examples/aws.yaml
 
 kubectl --namespace infra apply --filename examples/aws.yaml
     
-kubectl --namespace infra get sqlclaims
-
-kubectl get managed
+crossplane beta trace --namespace infra sqlclaim my-db
 ```
 
 ## Destroy 

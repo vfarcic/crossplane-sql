@@ -83,6 +83,7 @@ if oxr.spec.parameters?.databases:
                 }
                 by = {
                     kind = "Database"
+                    apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
                     resourceRef.name = oxr.spec.id + "-" + _database
                 }
             }
