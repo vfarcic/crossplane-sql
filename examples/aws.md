@@ -30,6 +30,6 @@ crossplane beta trace --namespace infra sqlclaim my-db
 kubectl --namespace infra delete --filename examples/aws.yaml
 
 kubectl get managed
-
-# Wait until all the resources are deleted (ignore `database`)
 ```
+
+> Wait until all the resources are deleted
