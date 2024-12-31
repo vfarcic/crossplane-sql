@@ -40,7 +40,7 @@ schema composition:
                 input = {
                     apiVersion = "krm.kcl.dev/v1alpha1"
                     kind = "KCLRun"
-                    spec.source = file.read("kcl/common.k").replace("SERVER_API_VERSION", _serverApiVersion).replace("SERVER_KIND", _serverKind) 
+                    spec.source = file.read("kcl/common.k")
                 }
             }, {
                 step = "statuses"

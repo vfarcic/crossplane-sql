@@ -24,3 +24,11 @@ def "main setup" [
     kubectl create namespace infra
 
 }
+
+def "main destroy" [] {
+
+    main delete crossplane
+
+    main destroy kubernetes kind
+
+}

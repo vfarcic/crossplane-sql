@@ -366,12 +366,12 @@ Press any key to continue.
 
 def "main delete crossplane" [] {
 
-    mut counter = (kubectl get managed --output name | grep -v object | grep -v database | wc -l | into int)
+    mut counter = (kubectl get managed --output name | wc -l | into int)
 
     while $counter > 0 {
         print $"Waiting for remaining ($counter) managed resources to be removed..."
         sleep 10sec
-        $counter = (kubectl get managed --output name | grep -v object | grep -v database | wc -l | into int)
+        $counter = (kubectl get managed --output name | wc -l | into int)
     }
 
 }

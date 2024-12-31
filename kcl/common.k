@@ -64,55 +64,6 @@ if oxr.spec.parameters?.databases:
             deletionPolicy = "Orphan"
         }
     } for _database in oxr.spec.parameters.databases ]
-    # if oxr.spec.parameters?.usage?.enabled:
-    #     _items += [{
-    #         apiVersion = "apiextensions.crossplane.io/v1alpha1"
-    #         kind = "Usage"
-    #         metadata = {
-    #             name = oxr.spec.id + "-server-" + _database + "-usage"
-    #             annotations = {
-    #                 "krm.kcl.dev/ready": "True"
-    #                 "crossplane.io/external-name" = oxr.spec.id + "-server-" + _database + "-usage"
-    #                 "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-server-" + _database + "-usage"
-    #             }
-    #         }
-    #         spec = {
-    #             of = {
-    #                 apiVersion = "SERVER_API_VERSION"
-    #                 kind = "SERVER_KIND"
-    #                 resourceRef.name = oxr.spec.id
-    #             }
-    #             by = {
-    #                 kind = "Database"
-    #                 apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-    #                 resourceRef.name = oxr.spec.id + "-" + _database
-    #             }
-    #         }
-    #     } for _database in oxr.spec.parameters.databases ]
-    #     _items += [{
-    #         apiVersion = "apiextensions.crossplane.io/v1alpha1"
-    #         kind = "Usage"
-    #         metadata = {
-    #             name = oxr.spec.id + "-secret-" + _database + "-usage"
-    #             annotations = {
-    #                 "krm.kcl.dev/ready": "True"
-    #                 "crossplane.io/external-name" = oxr.spec.id + "-secret-" + _database + "-usage"
-    #                 "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-secret-" + _database + "-usage"
-    #             }
-    #         }
-    #         spec = {
-    #             of = {
-    #                 apiVersion = "kubernetes.crossplane.io/v1alpha2"
-    #                 kind = "Object"
-    #                 resourceRef.name = oxr.spec.id + "-secret"
-    #             }
-    #             by = {
-    #                 kind = "Database"
-    #                 apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-    #                 resourceRef.name = oxr.spec.id + "-" + _database
-    #             }
-    #         }
-    #     } for _database in oxr.spec.parameters.databases ]
 
 if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pullRootPasswordKey:
     _items += [{

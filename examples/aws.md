@@ -29,10 +29,6 @@ crossplane beta trace --namespace infra sqlclaim my-db
 
 ## Destroy 
 
-```bash
-kubectl --namespace infra delete --filename examples/aws.yaml
-
-kubectl get managed
+```sh
+./dot.nu destroy
 ```
-
-> Wait until all the resources are deleted
