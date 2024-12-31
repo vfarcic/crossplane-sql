@@ -164,6 +164,10 @@ aws_secret_access_key = ($aws_secret_access_key)
 
     } else if $hyperscaler == "kind" {
 
+        do --ignore-errors {
+            docker desktop start
+        }
+
         {
             kind: "Cluster"
             apiVersion: "kind.x-k8s.io/v1alpha4"
@@ -240,6 +244,10 @@ def "main destroy kubernetes" [hyperscaler: string, name = "dot", delete_project
     } else if $hyperscaler == "kind" {
 
         kind delete cluster
+
+        do --ignore-errors {
+            docker desktop stop
+        }
 
     }
 
