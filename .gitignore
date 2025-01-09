@@ -6,3 +6,4 @@
 /aws-creds.conf
 /azure-creds.json
 /.env
+/up
