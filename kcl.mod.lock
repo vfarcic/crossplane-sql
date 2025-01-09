@@ -1,0 +1,6 @@
+[dependencies]
+  [dependencies.models]
+    name = "models"
+    full_name = "_"
+    reg = "ghcr.io"
+    repo = "kcl-lang/models"

@@ -2,8 +2,19 @@ import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
 import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
 import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
 
-oxr = option("params").oxr
-ocds = option("params").ocds
+oxr = {
+    spec = {
+        id = "my-db"
+        claimRef.namespace = "my-namespace"
+        parameters = {
+            size = "small"
+            version = "11.10"
+        }
+    }
+}
+ocds = {}
+# oxr = option("params").oxr
+# ocds = option("params").ocds
 
 _region = "us-east-1"
 if oxr.spec?.parameters?.region:
