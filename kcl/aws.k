@@ -1,7 +1,6 @@
 import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
 import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
 import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
-import models.k8s.apimachinery.pkg.apis.meta.v1 as k8sv1
 
 oxr = option("params").oxr
 ocds = option("params").ocds
@@ -114,8 +113,7 @@ _items = [
                 instanceClass = "db.m5.8xlarge"
             engineVersion = oxr.spec.parameters.version
         }
-    },
-    {
+    }, {
         apiVersion = "kubernetes.crossplane.io/v1alpha2"
         kind = "Object"
         metadata = {
