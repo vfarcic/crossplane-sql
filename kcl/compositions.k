@@ -33,7 +33,7 @@ schema composition:
                     apiVersion = "krm.kcl.dev/v1alpha1"
                     kind = "KCLRun"
                     spec = {
-                        dependencies = """models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "2d784373b9d988c8820eb78e287cfb7df295e3f4" }"""
+                        dependencies = """models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "b927181cd45c474496ea0d9aae7040a048d1ae80" }"""
                         source = _source
                     }
                 }
@@ -44,7 +44,7 @@ schema composition:
                     apiVersion = "krm.kcl.dev/v1alpha1"
                     kind = "KCLRun"
                     spec = {
-                        dependencies = """models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "2d784373b9d988c8820eb78e287cfb7df295e3f4" }"""
+                        dependencies = """models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "b927181cd45c474496ea0d9aae7040a048d1ae80" }"""
                         source = file.read("kcl/common.k")
                     }
                 }

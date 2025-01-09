@@ -1,6 +1,6 @@
-import sql.models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
-import sql.models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
-import sql.models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
+import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
+import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
+import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
 
 # oxr = {
 #     spec = {
