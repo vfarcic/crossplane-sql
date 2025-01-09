@@ -1,4 +1,4 @@
-/kubeconfig*.yaml
+/kubeconfig*
 /.task
 /tmp
 /.vscode
@@ -6,4 +6,3 @@
 /aws-creds.conf
 /azure-creds.json
 /.env
-/up

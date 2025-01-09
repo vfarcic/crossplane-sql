@@ -7,7 +7,6 @@
     "go-task@3.31.0",
     "kubernetes-helm@3.14.1",
     "gum@0.14.0",
-    "kcl@0.9.8",
     "zellij@0.40.1",
     "viddy@1.1.2",
     "path:gcloud#google-cloud-sdk",
@@ -17,7 +16,8 @@
     "nushell@0.98.0",
     "kyverno-chainsaw@0.2.8",
     "crossplane-cli@1.16.1",
-    "upbound@0.36.1"
+    "upbound@0.36.1",
+    "kcl@0.11.0"
   ],
   "shell": {
     "init_hook": [],
