@@ -32,17 +32,8 @@ tasks:
       - defer: { task: cluster-destroy }
   test-watch:
     desc: Runs tests assuming that the cluster is already created and everything is installed.
-    deps:
-      - task: package-generate
     cmds:
-      - task: package-apply
-      - chainsaw test
-    watch: true
-    sources:
-      - kcl/*.k
-      - tests/**/*.yaml
-    generates:
-      - package/*.yaml
+      - watchexec -w kcl -w tests "task test-once"
   test-once:
     desc: Runs tests once assuming that the cluster is already created and everything is installed.
     deps:

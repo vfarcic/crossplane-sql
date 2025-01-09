@@ -1,0 +1,5 @@
+[dependencies]
+  [dependencies.models]
+    name = "models"
+    full_name = "models_0.0.1"
+    version = "0.0.1"

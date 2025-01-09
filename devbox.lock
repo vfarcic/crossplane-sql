@@ -569,6 +569,54 @@
         }
       }
     },
+    "watchexec@2.2.1": {
+      "last_modified": "2024-12-23T21:10:33Z",
+      "resolved": "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d#watchexec",
+      "source": "devbox-search",
+      "version": "2.2.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/va984lpywi9dcnav47ka6h8k87rl4ljr-watchexec-2.2.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/va984lpywi9dcnav47ka6h8k87rl4ljr-watchexec-2.2.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wvw92xw658rblcjwamr7ka9fpfvrf9fi-watchexec-2.2.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wvw92xw658rblcjwamr7ka9fpfvrf9fi-watchexec-2.2.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/c3hyr9wg8caxz4kjlhl43fbb030i26dg-watchexec-2.2.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/c3hyr9wg8caxz4kjlhl43fbb030i26dg-watchexec-2.2.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/0gmzkwq7xybyii2y5gdfszkbrc2kcyaq-watchexec-2.2.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/0gmzkwq7xybyii2y5gdfszkbrc2kcyaq-watchexec-2.2.1"
+        }
+      }
+    },
     "yq-go@4.44.3": {
       "last_modified": "2024-09-12T11:58:09Z",
       "resolved": "github:NixOS/nixpkgs/280db3decab4cbeb22a4599bd472229ab74d25e1#yq-go",

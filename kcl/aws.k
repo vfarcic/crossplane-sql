@@ -1,6 +1,7 @@
 import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
 import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
 import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
+import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
 
 # oxr = {
 #     spec = {
@@ -125,9 +126,8 @@ _items = [
                 instanceClass = "db.m5.8xlarge"
             engineVersion = oxr.spec.parameters.version
         }
-    }, {
-        apiVersion = "kubernetes.crossplane.io/v1alpha2"
-        kind = "Object"
+    },
+    k8sv1alpha2.Object {
         metadata = {
             name = oxr.spec.id + "-secret"
             annotations = {
@@ -188,43 +188,43 @@ _zoneList = [
     { zone = "c", cidrBlock = "11.0.2.0/24"  }
 ]
 
-_items += [{
-    apiVersion = "ec2.aws.upbound.io/v1beta1"
-    kind = "RouteTableAssociation"
-    metadata = {
-        name = oxr.spec.id + "-1" + _data.zone
-        annotations = {
-            "krm.kcl.dev/composition-resource-name" = "routeTableAssociation1" + _data.zone
+_routeTableAssociations = [
+    ec2v1beta1.RouteTableAssociation {
+        metadata = {
+            name = oxr.spec.id + "-1" + _data.zone
+            annotations = {
+                "krm.kcl.dev/composition-resource-name" = "routeTableAssociation1" + _data.zone
+            }
         }
-    }
-    spec.forProvider = {
-        region = _region
-        routeTableIdSelector.matchControllerRef = True
-        subnetIdSelector = {
-            matchControllerRef = True
-            matchLabels.zone = _region + _data.zone
+        spec.forProvider = {
+            region = _region
+            routeTableIdSelector.matchControllerRef = True
+            subnetIdSelector = {
+                matchControllerRef = True
+                matchLabels.zone = _region + _data.zone
+            }
         }
-    }
-} for _data in _zoneList]
+    } for _data in _zoneList
+]
 
-_items += [{
-    apiVersion = "ec2.aws.upbound.io/v1beta1"
-    kind = "Subnet"
-    metadata = {
-        name = oxr.spec.id + "-" + _data.zone
-        annotations = {
-            "krm.kcl.dev/composition-resource-name" = "subnet-" + _data.zone
+_subnets = [
+    ec2v1beta1.Subnet {
+        metadata = {
+            name = oxr.spec.id + "-" + _data.zone
+            annotations = {
+                "krm.kcl.dev/composition-resource-name" = "subnet-" + _data.zone
+            }
+            labels = {
+                zone = _region + _data.zone
+            }
         }
-        labels = {
-            zone = _region + _data.zone
+        spec.forProvider = {
+            region = _region
+            availabilityZone = _region + _data.zone
+            cidrBlock = _data.cidrBlock
+            vpcIdSelector.matchControllerRef = True
         }
-    }
-    spec.forProvider = {
-        region = _region
-        availabilityZone = _region + _data.zone
-        cidrBlock = _data.cidrBlock
-        vpcIdSelector.matchControllerRef = True
-    }
-} for _data in _zoneList]
+    } for _data in _zoneList
+]
 
-items = _items
+items = _items + _routeTableAssociations + _subnets
