@@ -5,7 +5,7 @@
     "kubectl@1.29.2",
     "bat@0.24.0",
     "go-task@3.41.0",
-    "kubernetes-helm@3.14.1",
+    "kubernetes-helm@3.17.0",
     "gum@0.14.0",
     "zellij@0.40.1",
     "viddy@1.1.2",
