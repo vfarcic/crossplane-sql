@@ -7,7 +7,7 @@
     "go-task@3.41.0",
     "kubernetes-helm@3.14.1",
     "gum@0.14.0",
-    "zellij@0.40.1",
+    "zellij@0.41.2",
     "viddy@1.1.2",
     "path:gcloud#google-cloud-sdk",
     "yq-go@4.44.3",
