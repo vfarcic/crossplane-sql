@@ -10,7 +10,7 @@
     "zellij@0.41.2",
     "viddy@1.1.2",
     "path:gcloud#google-cloud-sdk",
-    "yq-go@4.44.3",
+    "yq-go@4.45.1",
     "teller@2.0.7",
     "azure-cli@2.64.0",
     "nushell@0.98.0",
