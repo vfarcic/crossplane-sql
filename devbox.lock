@@ -721,51 +721,51 @@
         }
       }
     },
-    "zellij@0.40.1": {
-      "last_modified": "2024-09-12T11:58:09Z",
-      "resolved": "github:NixOS/nixpkgs/280db3decab4cbeb22a4599bd472229ab74d25e1#zellij",
+    "zellij@0.41.2": {
+      "last_modified": "2025-01-19T08:16:51Z",
+      "resolved": "github:NixOS/nixpkgs/50165c4f7eb48ce82bd063e1fb8047a0f515f8ce#zellij",
       "source": "devbox-search",
-      "version": "0.40.1",
+      "version": "0.41.2",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/jpy1nxkg8581jq39vbvl5lpw1y23vxqa-zellij-0.40.1",
+              "path": "/nix/store/r38bwz4w295cqf71jdbnl7kliayj1zg7-zellij-0.41.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/jpy1nxkg8581jq39vbvl5lpw1y23vxqa-zellij-0.40.1"
+          "store_path": "/nix/store/r38bwz4w295cqf71jdbnl7kliayj1zg7-zellij-0.41.2"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/32kgf0nn1akak86vr98yjd84k1fdhzjp-zellij-0.40.1",
+              "path": "/nix/store/rp8nsi2qms59ds97k45kjw9i5rmi2sxg-zellij-0.41.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/32kgf0nn1akak86vr98yjd84k1fdhzjp-zellij-0.40.1"
+          "store_path": "/nix/store/rp8nsi2qms59ds97k45kjw9i5rmi2sxg-zellij-0.41.2"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/y7wr0gr8rhxqfnvrf4zb2chbz2jr4z0a-zellij-0.40.1",
+              "path": "/nix/store/8ci3yxzazh247b5vkg5zydpq74qqqsmv-zellij-0.41.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/y7wr0gr8rhxqfnvrf4zb2chbz2jr4z0a-zellij-0.40.1"
+          "store_path": "/nix/store/8ci3yxzazh247b5vkg5zydpq74qqqsmv-zellij-0.41.2"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/2hzr8dpliwppqifrr0mk419p9hwmziz1-zellij-0.40.1",
+              "path": "/nix/store/bcdisscr34pfpx5rvprnvlwlni26l0lm-zellij-0.41.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/2hzr8dpliwppqifrr0mk419p9hwmziz1-zellij-0.40.1"
+          "store_path": "/nix/store/bcdisscr34pfpx5rvprnvlwlni26l0lm-zellij-0.41.2"
         }
       }
     }
