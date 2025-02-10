@@ -353,23 +353,51 @@
         }
       }
     },
-    "kind@0.22.0": {
-      "last_modified": "2024-02-17T16:08:43Z",
-      "resolved": "github:NixOS/nixpkgs/52e1f314725b09b354336d17c7b8bd2442b7b8e4#kind",
+    "kind@0.26.0": {
+      "last_modified": "2025-01-19T08:16:51Z",
+      "resolved": "github:NixOS/nixpkgs/50165c4f7eb48ce82bd063e1fb8047a0f515f8ce#kind",
       "source": "devbox-search",
-      "version": "0.22.0",
+      "version": "0.26.0",
       "systems": {
         "aarch64-darwin": {
-          "store_path": "/nix/store/0ywagqpak13l3jdxcmvwwdqbg88dsg61-kind-0.22.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4j12j5zijvbcyafx85a2qh8jkv4m6lnz-kind-0.26.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4j12j5zijvbcyafx85a2qh8jkv4m6lnz-kind-0.26.0"
         },
         "aarch64-linux": {
-          "store_path": "/nix/store/klkzwml5vgf0kcjxzzngjzsnwkcarvqi-kind-0.22.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/gkpan5sh4kmbxknrf79p9ssd1j024ydb-kind-0.26.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/gkpan5sh4kmbxknrf79p9ssd1j024ydb-kind-0.26.0"
         },
         "x86_64-darwin": {
-          "store_path": "/nix/store/77qhlbb500z2rf3ffl5kfi1j12ik086b-kind-0.22.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2vsw8jyi2n4sm74sk1kbff6hq5v8nz6i-kind-0.26.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2vsw8jyi2n4sm74sk1kbff6hq5v8nz6i-kind-0.26.0"
         },
         "x86_64-linux": {
-          "store_path": "/nix/store/gxwzy4gxhv14jw77bd51bs7raqaivvra-kind-0.22.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/hp80rb9dpsk2wj5db2zngh5b8hrgwy4k-kind-0.26.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/hp80rb9dpsk2wj5db2zngh5b8hrgwy4k-kind-0.26.0"
         }
       }
     },
