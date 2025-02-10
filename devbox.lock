@@ -65,23 +65,51 @@
         }
       }
     },
-    "bat@0.24.0": {
-      "last_modified": "2024-02-10T18:15:24Z",
-      "resolved": "github:NixOS/nixpkgs/10b813040df67c4039086db0f6eaf65c536886c6#bat",
+    "bat@0.25.0": {
+      "last_modified": "2025-01-19T08:16:51Z",
+      "resolved": "github:NixOS/nixpkgs/50165c4f7eb48ce82bd063e1fb8047a0f515f8ce#bat",
       "source": "devbox-search",
-      "version": "0.24.0",
+      "version": "0.25.0",
       "systems": {
         "aarch64-darwin": {
-          "store_path": "/nix/store/672sg1rsaz8kkikc7p8gas4gvmscv69i-bat-0.24.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/64j9hxqbm4x1f1w2ci8wmkshipglmylr-bat-0.25.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/64j9hxqbm4x1f1w2ci8wmkshipglmylr-bat-0.25.0"
         },
         "aarch64-linux": {
-          "store_path": "/nix/store/9hrf4qg72cqp3jvc1sqm30rr6hdrlj23-bat-0.24.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/anyzgi7mcih0w0kcah481yyx0q4xm2z0-bat-0.25.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/anyzgi7mcih0w0kcah481yyx0q4xm2z0-bat-0.25.0"
         },
         "x86_64-darwin": {
-          "store_path": "/nix/store/0p1hnlqcc8hn8rqdq3d1xxghxb71w8kb-bat-0.24.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/5r2f874181wzkkv9kasxwgpysnjs931h-bat-0.25.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/5r2f874181wzkkv9kasxwgpysnjs931h-bat-0.25.0"
         },
         "x86_64-linux": {
-          "store_path": "/nix/store/fgzf7h4agq237bjly536x81g3jnz1c9g-bat-0.24.0"
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/gripb51fm48l44qwhm0bk0ji3b55ki03-bat-0.25.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/gripb51fm48l44qwhm0bk0ji3b55ki03-bat-0.25.0"
         }
       }
     },
