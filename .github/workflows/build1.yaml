@@ -22,9 +22,10 @@ jobs:
           devbox run test
       - name: Build the package
         run: |
+          GOBIN=$PWD go install github.com/maykonlsf/semver-cli/cmd/semver@latest
           export UP_TOKEN=${{ secrets.UP_TOKEN }}
           export UP_ACCOUNT=${{ secrets.UP_ACCOUNT }}
-          export VERSION=v1.0.${{ github.run_number }}
+          export VERSION=$(./semver up release)
           devbox run package-publish
       - name: Commit changes
         run: |
