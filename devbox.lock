@@ -1,67 +1,67 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "azure-cli@2.64.0": {
-      "last_modified": "2024-09-13T05:52:00Z",
-      "resolved": "github:NixOS/nixpkgs/673d99f1406cb09b8eb6feab4743ebdf70046557#azure-cli",
+    "azure-cli@2.69.0": {
+      "last_modified": "2025-02-13T04:03:32Z",
+      "resolved": "github:NixOS/nixpkgs/2d55b4c1531187926c2a423f6940b3b1301399b5#azure-cli",
       "source": "devbox-search",
-      "version": "2.64.0",
+      "version": "2.69.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/v9cikhvlw3qqxbsgza9gzcwp1cc0bfw2-python3.12-azure-cli-2.64.0",
+              "path": "/nix/store/xkkbzv9l6n47knlpj7fa4ifr2ri0jpdw-python3.12-azure-cli-2.69.0",
               "default": true
             },
             {
               "name": "dist",
-              "path": "/nix/store/zg2l337k86174mi44c08i3dk43qp0cnl-python3.12-azure-cli-2.64.0-dist"
+              "path": "/nix/store/3v8k8ar9wmrj17whk2fkzag0rhl4cwyr-python3.12-azure-cli-2.69.0-dist"
             }
           ],
-          "store_path": "/nix/store/v9cikhvlw3qqxbsgza9gzcwp1cc0bfw2-python3.12-azure-cli-2.64.0"
+          "store_path": "/nix/store/xkkbzv9l6n47knlpj7fa4ifr2ri0jpdw-python3.12-azure-cli-2.69.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/dwfh9pkl46vx2shw4q3s05v6f4zigwj4-python3.12-azure-cli-2.64.0",
+              "path": "/nix/store/a0azlan244rs60pz41fknxn3n74zl08h-python3.12-azure-cli-2.69.0",
               "default": true
             },
             {
               "name": "dist",
-              "path": "/nix/store/03czlrzw2mi0aqggzwxwrdz8xihaxmbr-python3.12-azure-cli-2.64.0-dist"
+              "path": "/nix/store/gd6hxdr99f2k8vmaxd0pdlbciz6h3nd4-python3.12-azure-cli-2.69.0-dist"
             }
           ],
-          "store_path": "/nix/store/dwfh9pkl46vx2shw4q3s05v6f4zigwj4-python3.12-azure-cli-2.64.0"
+          "store_path": "/nix/store/a0azlan244rs60pz41fknxn3n74zl08h-python3.12-azure-cli-2.69.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/lhz9x46mi2vcgxnp2rcsqrqacaky0pw5-python3.12-azure-cli-2.64.0",
+              "path": "/nix/store/14aa3jp5ysq8xfchqjwm995411gmp7wi-python3.12-azure-cli-2.69.0",
               "default": true
             },
             {
               "name": "dist",
-              "path": "/nix/store/gpg1qv8f207hp684xhwnxdcga5slpzzf-python3.12-azure-cli-2.64.0-dist"
+              "path": "/nix/store/b8lixdz2kxr1m4pbpjhcrs8nl79g57vi-python3.12-azure-cli-2.69.0-dist"
             }
           ],
-          "store_path": "/nix/store/lhz9x46mi2vcgxnp2rcsqrqacaky0pw5-python3.12-azure-cli-2.64.0"
+          "store_path": "/nix/store/14aa3jp5ysq8xfchqjwm995411gmp7wi-python3.12-azure-cli-2.69.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/wmr7zm2z4vg1x4nqgif4a306q2kiszl6-python3.12-azure-cli-2.64.0",
+              "path": "/nix/store/ngv7rzzn5g2mjw2qcijrmmh1jvga9jc2-python3.12-azure-cli-2.69.0",
               "default": true
             },
             {
               "name": "dist",
-              "path": "/nix/store/fzqpmz8hr52b37aldg354k79c0mjnx7n-python3.12-azure-cli-2.64.0-dist"
+              "path": "/nix/store/y8n623bldbx5cv3j7q0id4mxl5ii44k6-python3.12-azure-cli-2.69.0-dist"
             }
           ],
-          "store_path": "/nix/store/wmr7zm2z4vg1x4nqgif4a306q2kiszl6-python3.12-azure-cli-2.64.0"
+          "store_path": "/nix/store/ngv7rzzn5g2mjw2qcijrmmh1jvga9jc2-python3.12-azure-cli-2.69.0"
         }
       }
     },
@@ -208,6 +208,9 @@
           "store_path": "/nix/store/3laqs1ys46ryva9mcmk1q5yvn1k3xhyc-gh-2.66.1"
         }
       }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "resolved": "github:NixOS/nixpkgs/1128e89fd5e11bb25aedbfc287733c6502202ea9?lastModified=1739451785&narHash=sha256-3ebRdThRic9bHMuNi2IAA%2Fek9b32bsy8F5R4SvGTIog%3D"
     },
     "go-task@3.41.0": {
       "last_modified": "2025-01-19T08:16:51Z",
