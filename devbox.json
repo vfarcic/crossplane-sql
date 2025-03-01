@@ -7,7 +7,6 @@
     "go-task@3.41.0",
     "kubernetes-helm@3.17.1",
     "gum@0.15.2",
-    "zellij@0.41.2",
     "viddy@1.3.0",
     "path:gcloud#google-cloud-sdk",
     "yq-go@4.45.1",
@@ -18,7 +17,8 @@
     "crossplane-cli@1.19.0",
     "upbound@0.37.1",
     "kcl@0.11.1",
-    "watchexec@2.3.0"
+    "watchexec@2.3.0",
+    "git@2.48.1"
   ],
   "shell": {
     "init_hook": [],

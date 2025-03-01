@@ -3,13 +3,11 @@
 ```sh
 devbox shell
 
-zellij --session crossplane-sql --layout test-layout.kdl
-```
+task cluster-create
 
-> Quit Zellij by pressing `ctrl+q`
+task test-watch
 
-```sh
-zellij delete-session crossplane-sql
+task cluster-destroy
 
 exit
 ```
