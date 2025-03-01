@@ -98,7 +98,7 @@ kubectl get managed
 
 > Repeat the previous command if there are still resources to be deleted.
 
-Delete the Google Cloud project.
+FIXME: Delete the Google Cloud project.
 
 ```sh
 ./dot.nu destroy google

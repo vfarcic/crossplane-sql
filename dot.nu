@@ -57,11 +57,6 @@ def "main destroy" [
     provider: string
 ] {
 
-    (
-        main delete crossplane --kind sqlclaim --name my-db
-            --namespace infra
-    )
-
     main destroy kubernetes kind
 
 }
