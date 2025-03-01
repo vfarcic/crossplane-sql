@@ -1,15 +1,23 @@
 #!/usr/bin/env nu
 
-def --env "main apply crossplane" [
-    --provider = none,      # Which provider to use. Available options are `none`, `google`, `aws`, and `azure`
-    --app = false,          # Whether to apply DOT App Configuration
-    --db = false,           # Whether to apply DOT SQL Configuration
-    --github = false,       # Whether to apply DOT GitHub Configuration
-    --github_user: string,  # GitHub user required for the DOT GitHub Configuration and optinal for the DOT App Configuration
-    --github_token: string, # GitHub token required for the DOT GitHub Configuration and optinal for the DOT App Configuration
-    --policies = false      # Whether to create Validating ADmission Policies
-    --skip_login = false    # Whether to skip the login (only for Azure)
+def --env "main apply external_secrets" [
 ] {
+
+    (
+        helm repo add external-secrets
+            https://charts.external-secrets.io
+    )
+
+    (
+        helm upgrade --install
+            external-secrets external-secrets/external-secrets
+            --namespace external-secrets --create-namespace --wait
+    )
+
+
+
+
+
 
     mut project_id = ""
 
@@ -369,116 +377,3 @@ Press any key to continue.
     }
 
 }
-
-def "main delete crossplane" [
-    --kind: string,
-    --name: string,
-    --namespace: string
-] {
-
-    if ($kind | is-not-empty) and ($name | is-not-empty) and ($namespace | is-not-empty) { 
-        kubectl --namespace $namespace delete $kind $name
-    }
-
-    print $"Waiting for (ansi green_bold)Crossplane managed resources(ansi reset) to be deleted..."
-    
-    mut command = { kubectl get managed --output name }
-    if ($name | is-not-empty) {
-        $command = {
-            (
-                kubectl get managed --output name
-                    --selector $"crossplane.io/claim-name=($name)"
-            )
-        }
-    }
-
-    mut resources = (do $command)
-    mut counter = ($resources | wc -l | into int)
-
-    while $counter > 0 {
-        print $"($resources)\nWaiting for remaining (ansi green_bold)($counter)(ansi reset) managed resources to be (ansi green_bold)removed(ansi reset)...\n"
-        sleep 10sec
-        $resources = (do $command)
-        $counter = ($resources | wc -l | into int)
-    }
-
-}
-
-def "apply providerconfig" [
-    provider: string,
-    --google_project_id: string,
-] {
-
-    if $provider == "google" {
-
-        {
-            apiVersion: "gcp.upbound.io/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: "default" }
-            spec: {
-                projectID: $google_project_id
-                credentials: {
-                    source: "Secret"
-                    secretRef: {
-                        namespace: "crossplane-system"
-                        name: "gcp-creds"
-                        key: "creds"
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
-
-    } else if $provider == "aws" {
-
-        {
-            apiVersion: "aws.upbound.io/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: default }
-            spec: {
-                credentials: {
-                    source: Secret
-                    secretRef: {
-                        namespace: crossplane-system
-                        name: aws-creds
-                        key: creds
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
-    
-    } else if $provider == "azure" {
-
-        {
-            apiVersion: "azure.upbound.io/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: default }
-            spec: {
-                credentials: {
-                    source: "Secret"
-                    secretRef: {
-                        namespace: "crossplane-system"
-                        name: "azure-creds"
-                        key: "creds"
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
-
-    }
-
-}
-
-def "wait crossplane" [] {
-
-    print $"(ansi green_bold)Waiting for Crossplane providers to be deployed...(ansi reset)"
-
-    sleep 60sec
-
-    (
-        kubectl wait
-            --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 30m
-    )
-
-}
-

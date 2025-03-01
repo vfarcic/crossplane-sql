@@ -6,161 +6,79 @@ This section sets up the environment to test an example of a Crossplane Composit
 
 ### Environment
 
-Setup up an environment with all the tools required to run the example.
+Setup up a local environment with all the tools required to run the example.
 
-> Please skip the command that follows if you're using DevContainer.
-
-```bash
+```sh
 devbox shell
 ```
 
-### Google Project
-
-Create Google project and a service account.
-
-```bash
-gcloud auth login
-```
-
-Create a new project.
+Create a local Kubernetes cluster with `kind`.
 
 ```sh
-export PROJECT_ID=dot-$(date +%Y%m%d%H%M%S)
-
-gcloud projects create $PROJECT_ID
-```
-
-Add billing account.
-
-```sh
-echo "Open https://console.cloud.google.com/billing/enable?project=$PROJECT_ID in a browser and **set the billing account**." | gum format
-```
-
-Enable `sqladmin` API.
-
-```sh
-echo "Open https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=$PROJECT_ID in a browser and **enable** the API." | gum format
-```
-
-Create a service account.
-
-```sh
-export SA_NAME="devops-toolkit"
-
-export SA="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
-
-gcloud iam service-accounts create $SA_NAME --project $PROJECT_ID
-
-export ROLE="roles/admin"
-
-gcloud projects add-iam-policy-binding --role $ROLE $PROJECT_ID \
-    --member serviceAccount:$SA
-
-gcloud iam service-accounts keys create gcp-creds.json \
-    --project $PROJECT_ID --iam-account $SA
-```
-
-### Crossplane
-
-Please skip the command that follows if you already have a Kubernetes cluster that you would like to use as a Crossplane control plane.
-
-```sh
-kind create cluster
-```
-
-Install Crossplane.
-
-```sh
-helm repo add crossplane-stable \
-    https://charts.crossplane.io/stable
-
-helm repo update
-
-helm upgrade --install crossplane crossplane-stable/crossplane \
-    --namespace crossplane-system --create-namespace --wait
-```
-
-Create a secret with Google Cloud credentials.
-
-```sh
-kubectl --namespace crossplane-system \
-    create secret generic gcp-creds \
-    --from-file creds=./gcp-creds.json
-```
-
-Apply providers that cannot be installed as Configuration dependencies.
-
-```sh
-kubectl apply \
-    --filename providers/provider-kubernetes-incluster.yaml
-
-kubectl apply \
-    --filename providers/provider-helm-incluster.yaml
-```
-
-Apply the Composition configuration and its dependencies.
-
-```sh
-kubectl apply --filename config.yaml
-```
-
-Create the `infra` Namespace where we'll apply the SQL Claim.
-
-```sh
-kubectl create namespace infra
-```
-
-Take a look at the status of the packages.
-
-```sh
-kubectl get pkgrev
-```
-
-> Repeat the previous command until all the packages are healthy
-
-Modify Project ID in the Google Cloud provider configuration and apply it.
-
-```sh
-yq --inplace ".spec.projectID = \"$PROJECT_ID\"" \
-    providers/provider-config-google.yaml
-
-kubectl apply --filename providers/provider-config-google.yaml
-
-kubectl --namespace infra apply \
-    --filename examples/google-secret.yaml
+./dot.nu setup google
 ```
 
 ## Create a PostgreSQL Instance
 
+Take a look at the initial root password.
+
+```sh
+cat examples/google-secret.yaml
+```
+
 Take a look at the example Claim.
 
-```bash
+```sh
 cat examples/google.yaml
 ```
 
-Apply the example Claim.
+Apply the secret and the example Claim.
 
 ```sh
+kubectl --namespace infra apply --filename examples/google-secret.yaml
+
 kubectl --namespace infra apply --filename examples/google.yaml
 ```
 
 Take a look at the status of the SQL Claim.
 
 ```sh
-kubectl --namespace infra get sqlclaims
+crossplane beta trace sqlclaim my-db --namespace infra
 ```
 
-Retrieve all managed resources expanded from the Claim.
+## Create a PostgreSQL Instance with Credentials Pushed to Secrets Store
+
+Take a look at the initial root password.
 
 ```sh
-kubectl get managed
+cat examples/google-secret.yaml
+```
+
+Take a look at the example Claim.
+
+```sh
+cat examples/google-eso.yaml
+```
+
+Apply the secret and the example Claim.
+
+```sh
+kubectl --namespace infra apply --filename examples/google-secret.yaml
+
+kubectl --namespace infra apply --filename examples/google-eso.yaml
+```
+
+Take a look at the status of the SQL Claim.
+
+```sh
+crossplane beta trace sqlclaim my-db --namespace infra
 ```
 
 ## Destroy
 
 Delete the example Claim.
 
-```bash
+```sh
 kubectl --namespace infra delete --filename examples/google.yaml
 ```
 
@@ -175,5 +93,5 @@ kubectl get managed
 Delete the Google Cloud project.
 
 ```sh
-gcloud projects delete $PROJECT_ID
+./dot.nu destroy google
 ```
