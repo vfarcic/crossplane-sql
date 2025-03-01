@@ -3,6 +3,7 @@
 source scripts/kubernetes.nu
 source scripts/crossplane.nu
 source scripts/external-secrets.nu
+source scripts/atlas.nu
 
 def main [] {}
 
@@ -29,6 +30,14 @@ def "main setup" [
                 --google_project_id $env.PROJECT_ID
         )
 
+        start $"https://console.cloud.google.com/marketplace/product/google/sqladmin.googleapis.com?project=($env.PROJECT_ID)"
+            
+        print $"
+(ansi yellow_bold)ENABLE(ansi reset) the API.
+Press any key to continue.
+"
+        input
+
         (
             main apply external_secrets $provider
                 --google_project_id $env.PROJECT_ID
@@ -39,6 +48,8 @@ def "main setup" [
         apply providerconfig $provider 
 
     }
+
+    main apply atlas
 
 }
 

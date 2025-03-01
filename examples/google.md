@@ -16,6 +16,8 @@ Create a local Kubernetes cluster with `kind`.
 
 ```sh
 ./dot.nu setup google
+
+source .env
 ```
 
 ## Create a PostgreSQL Instance
@@ -46,12 +48,20 @@ Take a look at the status of the SQL Claim.
 crossplane beta trace sqlclaim my-db --namespace infra
 ```
 
-## Create a PostgreSQL Instance with Credentials Pushed to Secrets Store
-
-Take a look at the initial root password.
+Delete the example Claim.
 
 ```sh
-cat examples/google-secret.yaml
+kubectl --namespace infra delete --filename examples/google.yaml
+```
+
+## Create a PostgreSQL Instance with Credentials Pulled From and Pushed to Secrets Store and Atlas Schema
+
+Create a secret with the root password.
+
+```sh
+echo "{\"password\": \"IWillNeverTell\" }" \
+    | gcloud secrets --project $PROJECT_ID \
+    create db-root-password --data-file=-
 ```
 
 Take a look at the example Claim.
@@ -63,8 +73,6 @@ cat examples/google-eso.yaml
 Apply the secret and the example Claim.
 
 ```sh
-kubectl --namespace infra apply --filename examples/google-secret.yaml
-
 kubectl --namespace infra apply --filename examples/google-eso.yaml
 ```
 
@@ -74,21 +82,21 @@ Take a look at the status of the SQL Claim.
 crossplane beta trace sqlclaim my-db --namespace infra
 ```
 
-## Destroy
-
 Delete the example Claim.
 
 ```sh
-kubectl --namespace infra delete --filename examples/google.yaml
+kubectl --namespace infra delete --filename examples/google-eso.yaml
 ```
 
-Retrieve all managed resources expanded from the Claim.
+## Destroy
+
+Confirm that all the managed resources are removed.
 
 ```sh
 kubectl get managed
 ```
 
-> Repeat the previous command if there are still resources to be deleted (ignore `database`).
+> Repeat the previous command if there are still resources to be deleted.
 
 Delete the Google Cloud project.
 
