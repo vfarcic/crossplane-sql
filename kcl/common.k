@@ -196,7 +196,7 @@ if oxr.spec.parameters?.schemas:
                             name = oxr.spec.id
                         }
                         database = _schema.database
-                        parameters.sslmode = "disable"
+                        parameters.sslmode = "require"
                     }
                     schema.sql = _schema.sql
                 }

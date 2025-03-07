@@ -65,7 +65,8 @@ spec:
               key: endpoint
               name: (join('-', ['my-db', $hyperscaler]))
           parameters:
-            sslmode: disable
+            # sslmode: disable
+            sslmode: require
           passwordFrom:
             secretKeyRef:
               key: password
@@ -125,7 +126,8 @@ spec:
               key: endpoint
               name: (join('-', ['my-db', $hyperscaler]))
           parameters:
-            sslmode: disable
+            # sslmode: disable
+            sslmode: require
           passwordFrom:
             secretKeyRef:
               key: password
