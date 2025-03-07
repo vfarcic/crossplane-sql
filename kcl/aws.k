@@ -117,6 +117,7 @@ _items = [
                 namespace = oxr.spec.claimRef.namespace
                 key = "password"
             }
+            storageEncrypted = True
             identifier = oxr.spec.id
             if oxr.spec.parameters.size == "small":
                 instanceClass = "db.m5.large"
