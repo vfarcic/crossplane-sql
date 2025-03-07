@@ -51,6 +51,22 @@ Press any key to continue.
 
     main apply atlas
 
+    if $provider == "google" {
+        
+        (
+            main apply external_secrets google
+                --google_project_id $env.PROJECT_ID
+        )
+
+    } else if $provider == "azure" {
+        
+        (
+            main apply external_secrets azure
+                --azure_key_vault_name $env.RESOURCE_GROUP
+        )
+        
+    }
+
 }
 
 def "main destroy" [

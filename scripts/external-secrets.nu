@@ -1,8 +1,9 @@
 #!/usr/bin/env nu
 
 def "main apply external_secrets" [
-    provider: string            # Supported values: `google`
-    --google_project_id: string # Used only if `provider` is `google`
+    provider: string               # Supported values: `google`, `azure`
+    --google_project_id: string    # Used only if `provider` is `google`
+    --azure_key_vault_name: string # Used only if `provider` is `azure`
 ] {
 
     (
@@ -46,13 +47,48 @@ def "main apply external_secrets" [
         } | to yaml |
             kubectl apply --filename -
 
-            start $"https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=($google_project_id)"
+        start $"https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=($google_project_id)"
             
-            print $"
+        print $"
 (ansi yellow_bold)ENABLE(ansi reset) the API.
 Press the (ansi yellow_bold)enter key(ansi reset) to continue.
 "
-            input
+        input
+
+    } else if $provider == "azure" {
+
+        # FIXME: Uncomment and rewrite
+        
+        # az keyvault create --name $RESOURCE_GROUP \
+        #     --resource-group $RESOURCE_GROUP
+
+        # az keyvault key create --vault-name $RESOURCE_GROUP --name "ContosoFirstKey" --protection software
+
+        # export AZURE_UPN=$(az ad user list | jq ".[0].userPrincipalName" -r)
+
+        # export AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+
+        # az role assignment create \
+        #     --role "Key Vault Secrets Officer" \
+        #     --assignee $AZURE_UPN \
+        #     --scope "/subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.KeyVault/vaults/$RESOURCE_GROUP"
+
+        {
+            apiVersion: "external-secrets.io/v1beta1"
+            kind: "ClusterSecretStore"
+            metadata: {
+                name: "azure"
+            }
+            spec: {
+                provider: {
+                    azurekv: {
+                        authType: "ManagedIdentity"
+                        vaultUrl: $"https://($azure_key_vault_name).vault.azure.net"
+                    }
+                }
+            }
+        } | to yaml |
+            kubectl apply --filename -
 
     }
 
