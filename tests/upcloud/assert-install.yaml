@@ -1,0 +1,252 @@
+# ---
+# apiVersion: devopstoolkit.live/v1alpha1
+# kind: SQL
+# metadata:
+#   labels:
+#     crossplane.io/claim-name: my-db
+# spec:
+#   claimRef:
+#     apiVersion: devopstoolkit.live/v1alpha1
+#     kind: SQLClaim
+#     name: my-db
+#   compositionRef:
+#     name: google-postgresql
+#   compositionSelector:
+#     matchLabels:
+#       db: postgresql
+#       provider: google
+#   compositionUpdatePolicy: Automatic
+#   id: my-db-google
+#   parameters:
+#     size: medium
+#     version: "13.4"
+#   resourceRefs:
+#   - apiVersion: helm.crossplane.io/v1beta1
+#     kind: ProviderConfig
+#     name: my-db-google-sql
+#   - apiVersion: kubernetes.crossplane.io/v1alpha1
+#     kind: ProviderConfig
+#     name: my-db-google-sql
+#   - apiVersion: kubernetes.crossplane.io/v1alpha2
+#     kind: Object
+#     name: my-db-google-secret
+#   - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+#     kind: ProviderConfig
+#     name: my-db-google
+#   - apiVersion: sql.gcp.upbound.io/v1beta1
+#     kind: DatabaseInstance
+#     name: my-db-google
+#   - apiVersion: sql.gcp.upbound.io/v1beta1
+#     kind: User
+#     name: my-db-google
+# ---
+# apiVersion: kubernetes.crossplane.io/v1alpha2
+# kind: Object
+# metadata:
+#   annotations:
+#     crossplane.io/composition-resource-name: sql-secret
+#     crossplane.io/external-name: my-db-google-secret
+#   labels:
+#     crossplane.io/claim-name: my-db
+#   name: my-db-google-secret
+#   ownerReferences:
+#   - apiVersion: devopstoolkit.live/v1alpha1
+#     blockOwnerDeletion: true
+#     controller: true
+#     kind: SQL
+# spec:
+#   deletionPolicy: Delete
+#   forProvider:
+#     manifest:
+#       apiVersion: v1
+#       data:
+#         port: NTQzMg==
+#       kind: Secret
+#       metadata:
+#         name: my-db-google
+#   managementPolicies:
+#   - '*'
+#   providerConfigRef:
+#     name: my-db-google-sql
+#   readiness:
+#     policy: SuccessfulCreate
+#   references:
+#   - patchesFrom:
+#       apiVersion: sql.gcp.upbound.io/v1beta1
+#       fieldPath: metadata.name
+#       kind: User
+#       name: my-db-google
+#       namespace: crossplane-system
+#     toFieldPath: stringData.username
+#   - patchesFrom:
+#       apiVersion: v1
+#       fieldPath: data.password
+#       kind: Secret
+#       name: my-db-google-password
+#     toFieldPath: data.password
+#   - patchesFrom:
+#       apiVersion: sql.gcp.upbound.io/v1beta1
+#       fieldPath: status.atProvider.publicIpAddress
+#       kind: DatabaseInstance
+#       name: my-db-google
+#       namespace: crossplane-system
+#     toFieldPath: stringData.endpoint
+# ---
+# apiVersion: sql.gcp.upbound.io/v1beta1
+# kind: DatabaseInstance
+# metadata:
+#   annotations:
+#     crossplane.io/composition-resource-name: databaseinstance
+#     crossplane.io/external-name: my-db-google
+#   labels:
+#     crossplane.io/claim-name: my-db
+#   name: my-db-google
+#   ownerReferences:
+#   - apiVersion: devopstoolkit.live/v1alpha1
+#     blockOwnerDeletion: true
+#     controller: true
+#     kind: SQL
+# spec:
+#   deletionPolicy: Delete
+#   forProvider:
+#     databaseVersion: POSTGRES_13.4
+#     deletionProtection: false
+#     region: us-east1
+#     rootPasswordSecretRef:
+#       key: password
+#       name: my-db-google-password
+#     settings:
+#     - availabilityType: REGIONAL
+#       backupConfiguration:
+#       - binaryLogEnabled: false
+#         enabled: true
+#       ipConfiguration:
+#       - authorizedNetworks:
+#         - name: all
+#           value: 0.0.0.0/0
+#         ipv4Enabled: true
+#       tier: db-custom-16-61440
+#   providerConfigRef:
+#     name: default
+# ---
+# apiVersion: sql.gcp.upbound.io/v1beta1
+# kind: User
+# metadata:
+#   annotations:
+#     crossplane.io/composition-resource-name: user
+#   labels:
+#     crossplane.io/claim-name: my-db
+#   name: my-db-google
+#   ownerReferences:
+#   - apiVersion: devopstoolkit.live/v1alpha1
+#     blockOwnerDeletion: true
+#     controller: true
+#     kind: SQL
+# spec:
+#   deletionPolicy: Orphan
+#   forProvider:
+#     instance: my-db-google
+#     instanceRef:
+#       name: my-db-google
+#     instanceSelector:
+#       matchControllerRef: true
+#     passwordSecretRef:
+#       key: password
+#       name: my-db-google-password
+# ---
+# apiVersion: postgresql.sql.crossplane.io/v1alpha1
+# kind: ProviderConfig
+# metadata:
+#   annotations:
+#     crossplane.io/composition-resource-name: sql-config
+#   labels:
+#     crossplane.io/claim-name: my-db
+#   name: my-db-google
+#   ownerReferences:
+#   - apiVersion: devopstoolkit.live/v1alpha1
+#     blockOwnerDeletion: true
+#     controller: true
+#     kind: SQL
+# spec:
+#   credentials:
+#     connectionSecretRef:
+#       name: my-db-google
+#     source: PostgreSQLConnectionSecret
+#   defaultDatabase: postgres
+#   sslMode: require
+
+
+
+
+
+# ---
+# apiVersion: network.upcloud.com/v1alpha1
+# kind: Router
+# metadata:
+#   name: my-db
+# spec:
+#   forProvider:
+#     labels: {}
+#     name: my-db
+#     staticRoute: []
+# ---
+# apiVersion: network.upcloud.com/v1alpha1
+# kind: Network
+# metadata:
+#   name: my-db
+# spec:
+#   forProvider:
+#     ipNetwork:
+#       - address: "10.0.0.0/24"
+#         dhcp: true
+#         dhcpDefaultRoute: false
+#         family: IPv4
+#     name: my-db
+#     routerRef:
+#       name: my-db
+#     zone: us-nyc1
+# ---
+# apiVersion: database.upcloud.com/v1alpha1
+# kind: ManagedDatabasePostgresql
+# metadata:
+#   name: my-db
+# spec:
+#   forProvider:
+#     name: my-db
+#     network:
+#       - family: IPv4
+#         name: my-db
+#         type: private
+#         uuidRef:
+#           name: my-db
+#     plan: 1x1xCPU-2GB-25GB
+#     title: my-db
+#     zone: us-nyc1
+#     properties:
+#       - publicAccess: true
+#         ipFilter:
+#           - "0.0.0.0/0"
+#   writeConnectionSecretToRef:
+#     name: my-db
+#     namespace: a-team
+
+# apiVersion: v1
+# data:
+#   attribute.properties.0.admin_password: ""
+#   attribute.service_password: QVZOU19FVzhyaDBXR3U2WWpsNEFFWDhM
+#   attribute.service_uri: cG9zdGdyZXM6Ly91cGFkbWluOkFWTlNfRVc4cmgwV0d1NllqbDRBRVg4TEBteS1kYi1kcGRwbXljZ2lwc2IuZGIudXBjbG91ZGRhdGFiYXNlcy5jb206MTE1NjkvZGVmYXVsdGRiP3NzbG1vZGU9cmVxdWlyZQ==
+# kind: Secret
+# metadata:
+#   creationTimestamp: "2025-03-09T17:04:44Z"
+#   name: my-db
+#   namespace: a-team
+#   ownerReferences:
+#   - apiVersion: database.upcloud.com/v1alpha1
+#     blockOwnerDeletion: true
+#     controller: true
+#     kind: ManagedDatabasePostgresql
+#     name: my-db
+#     uid: f29c3f06-d301-4d9e-b2c9-84f9c1d9b053
+#   resourceVersion: "17815"
+#   uid: b70bb0b5-6507-40a6-a28c-6a4709e116e7
+# type: connection.crossplane.io/v1alpha1

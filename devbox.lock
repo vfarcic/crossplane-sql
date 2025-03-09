@@ -704,6 +704,131 @@
         }
       }
     },
+    "postgresql@17.4": {
+      "last_modified": "2025-03-01T01:09:10Z",
+      "plugin_version": "0.0.2",
+      "resolved": "github:NixOS/nixpkgs/199169a2135e6b864a888e89a2ace345703c025d#postgresql",
+      "source": "devbox-search",
+      "version": "17.4",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zd35b0i1fhjmc26cn6a8ghprhkmzp79b-postgresql-17.4",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/zgai1p4565qwdvqc7mmsl3247n3knsk9-postgresql-17.4-man",
+              "default": true
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/09sv4cw1gg77vd93dcjwl85b0cb7kxg5-postgresql-17.4-lib"
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/irr6cjglf380f30bzmwbbzji1a4bz5h8-postgresql-17.4-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/28xzxn1fjp65m05ifxkxcd19j1ynzk0a-postgresql-17.4-doc"
+            }
+          ],
+          "store_path": "/nix/store/zd35b0i1fhjmc26cn6a8ghprhkmzp79b-postgresql-17.4"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/xzzw3572n865kxwf2q23hsxya7mmd4b7-postgresql-17.4",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/brpaqrlg6r4vvildlv709wh8319cy2qp-postgresql-17.4-man",
+              "default": true
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/ysh2fpwba8679b6l6j4yn2skf89hyd0r-postgresql-17.4-lib"
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/is8w57lbgyqlnbdc47sg6hjnwv6b5vsp-postgresql-17.4-debug"
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/0xvzh654xby0q7ksnff6j0swai9j2bm1-postgresql-17.4-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/9fyahcf4n0k7nfdy2mddylkiyhnfnkbr-postgresql-17.4-doc"
+            }
+          ],
+          "store_path": "/nix/store/xzzw3572n865kxwf2q23hsxya7mmd4b7-postgresql-17.4"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/l20rz2blm09y0dv9p6ljaps8nlcldway-postgresql-17.4",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/7xacvnqxsix81p68dnmy427jpgz0w1g6-postgresql-17.4-man",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/12xlky44qs9nw3z75md9a96bnhs5an31-postgresql-17.4-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/va23gqn6vb1g0nqqmgqikkmvvcb9qrb3-postgresql-17.4-doc"
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/zbgy14l9kq3m2ywg89ahmpm4ajvf1qw2-postgresql-17.4-lib"
+            }
+          ],
+          "store_path": "/nix/store/l20rz2blm09y0dv9p6ljaps8nlcldway-postgresql-17.4"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/dn4ya5zan8fxkid33amkbbck5nz9b9g8-postgresql-17.4",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/5pvsil11xpg4qjxrvi68xcw2rfzxfngq-postgresql-17.4-man",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/kd63hmy16mx56hdx62vpk7c7vr22b72i-postgresql-17.4-debug"
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/cgrm2svpaah7mvgs9cy5x25x3wmv5fkk-postgresql-17.4-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/qksfx1vscxgjmmvl3nrs6qv6vi2wsiyp-postgresql-17.4-doc"
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/29bxhk93nz6sbd5czrh0gwc0fgpa96xs-postgresql-17.4-lib"
+            }
+          ],
+          "store_path": "/nix/store/dn4ya5zan8fxkid33amkbbck5nz9b9g8-postgresql-17.4"
+        }
+      }
+    },
     "teller@2.0.7": {
       "last_modified": "2025-02-07T11:26:36Z",
       "resolved": "github:NixOS/nixpkgs/d98abf5cf5914e5e4e9d57205e3af55ca90ffc1d#teller",
@@ -797,6 +922,54 @@
             }
           ],
           "store_path": "/nix/store/9rxch0myyxviaqv20h9rvca7rxv021zv-upbound-0.37.1"
+        }
+      }
+    },
+    "upcloud-cli@3.14.0": {
+      "last_modified": "2025-02-07T11:26:36Z",
+      "resolved": "github:NixOS/nixpkgs/d98abf5cf5914e5e4e9d57205e3af55ca90ffc1d#upcloud-cli",
+      "source": "devbox-search",
+      "version": "3.14.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7iz5fg7n2qs77hi6m925k1g9swh0jkaj-upcloud-cli-3.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7iz5fg7n2qs77hi6m925k1g9swh0jkaj-upcloud-cli-3.14.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ycvif1b4z3p3wvqzbkn3j83xyp6izs6i-upcloud-cli-3.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ycvif1b4z3p3wvqzbkn3j83xyp6izs6i-upcloud-cli-3.14.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4igi8zzfkdkpyhj041v3r1l031daggmn-upcloud-cli-3.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4igi8zzfkdkpyhj041v3r1l031daggmn-upcloud-cli-3.14.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/r52n75sb8ayhknd6vv35v9anhb8yzqqj-upcloud-cli-3.14.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/r52n75sb8ayhknd6vv35v9anhb8yzqqj-upcloud-cli-3.14.0"
         }
       }
     },

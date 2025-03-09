@@ -18,7 +18,9 @@
     "upbound@0.37.1",
     "kcl@0.11.1",
     "watchexec@2.3.0",
-    "git@2.48.1"
+    "git@2.48.1",
+    "upcloud-cli@3.14.0",
+    "postgresql@17.4"
   ],
   "shell": {
     "init_hook": [],
