@@ -12,3 +12,5 @@ providers:
           aws-account-id: AWS_ACCOUNT_ID
           github-user: GITHUB_USER
           azure-tenant: AZURE_TENANT
+          upcloud-username: UPCLOUD_USERNAME
+          upcloud-password: UPCLOUD_PASSWORD

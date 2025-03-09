@@ -59,9 +59,6 @@ Press any key to continue.
 
         sleep 5sec
 
-        print $project_id
-        print $sa
-    
         (
             gcloud projects add-iam-policy-binding
                 --role roles/admin $project_id
@@ -103,6 +100,8 @@ aws_secret_access_key = ($env.AWS_SECRET_ACCESS_KEY)
             kubectl --namespace crossplane-system
                 create secret generic aws-creds
                 --from-file creds=./aws-creds.conf
+                --from-literal $"accessKeyID=($env.AWS_ACCESS_KEY_ID)"
+                --from-literal $"secretAccessKey=($env.AWS_SECRET_ACCESS_KEY)"
         )
 
     } else if $provider == "azure" {
@@ -134,6 +133,32 @@ aws_secret_access_key = ($env.AWS_SECRET_ACCESS_KEY)
                 --from-file creds=./azure-creds.json
         )
 
+    } else if $provider == "upcloud" {
+
+        if UPCLOUD_USERNAME not-in $env {
+            $env.UPCLOUD_USERNAME = input $"(ansi yellow_bold)UpCloud Username: (ansi reset)"
+        }
+        $"export UPCLOUD_USERNAME=($env.UPCLOUD_USERNAME)\n"
+            | save --append .env
+
+        if UPCLOUD_PASSWORD not-in $env {
+            $env.UPCLOUD_PASSWORD = input $"(ansi yellow_bold)UpCloud Password: (ansi reset)"
+        }
+        $"export UPCLOUD_PASSWORD=($env.UPCLOUD_PASSWORD)\n"
+            | save --append .env
+
+        {
+            apiVersion: "v1"
+            kind: "Secret"
+            metadata: {
+                name: "upcloud-creds"
+            }
+            type: "Opaque"
+            stringData: {
+                credentials: $"{\"username\": \"($env.UPCLOUD_USERNAME)\", \"password\": \"($env.UPCLOUD_PASSWORD)\"}"
+            }
+        }
+
     }
 
     if $app {
@@ -144,7 +169,7 @@ aws_secret_access_key = ($env.AWS_SECRET_ACCESS_KEY)
             apiVersion: "pkg.crossplane.io/v1"
             kind: "Configuration"
             metadata: { name: "crossplane-app" }
-            spec: { package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.7.23" }
+            spec: { package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.7.30" }
         } | to yaml | kubectl apply --filename -
 
         if $policies {
@@ -209,7 +234,7 @@ Press any key to continue.
             apiVersion: "pkg.crossplane.io/v1"
             kind: "Configuration"
             metadata: { name: "crossplane-sql" }
-            spec: { package: "xpkg.upbound.io/devops-toolkit/dot-sql:v1.0.14" }
+            spec: { package: "xpkg.upbound.io/devops-toolkit/dot-sql:v1.1.18" }
         } | to yaml | kubectl apply --filename -
 
     }
@@ -463,6 +488,24 @@ def "apply providerconfig" [
                 }
             }
         } | to yaml | kubectl apply --filename -
+
+    } else if $provider == "upcloud" {
+
+        {
+            apiVersion: "provider.upcloud.com/v1beta1"
+            kind: "ProviderConfig"
+            metadata: { name: default }
+            spec: {
+                credentials: {
+                    source: "Secret"
+                    secretRef: {
+                        namespace: "crossplane-system"
+                        name: "upcloud-creds"
+                        key: "creds"
+                    }
+                }
+            }
+        } | to yaml | kubectl apply --filename -       
 
     }
 
