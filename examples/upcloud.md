@@ -20,6 +20,11 @@ Create a local Kubernetes cluster with `kind`.
 source .env
 ```
 
+
+
+
+
+
 ## Create a PostgreSQL Instance
 
 Take a look at the initial root password.
@@ -101,5 +106,5 @@ kubectl get managed
 FIXME: Delete the Google Cloud project.
 
 ```sh
-./dot.nu destroy google
+./dot.nu destroy upcloud
 ```
