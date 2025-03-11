@@ -311,6 +311,7 @@ spec:
                                       remoteRef.remoteKey = oxr.spec.id
                                   }
                               }]
+                              deletionPolicy = "Orphan"
                           }
                       }
                   }
@@ -688,6 +689,7 @@ spec:
                                       remoteRef.remoteKey = oxr.spec.id
                                   }
                               }]
+                              deletionPolicy = "Orphan"
                           }
                       }
                   }
@@ -1155,6 +1157,7 @@ spec:
                                       remoteRef.remoteKey = oxr.spec.id
                                   }
                               }]
+                              deletionPolicy = "Orphan"
                           }
                       }
                   }
@@ -1668,6 +1671,7 @@ spec:
                                       remoteRef.remoteKey = oxr.spec.id
                                   }
                               }]
+                              deletionPolicy = "Orphan"
                           }
                       }
                   }
