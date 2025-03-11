@@ -1,0 +1,16 @@
+---
+apiVersion: network.upcloud.com/v1alpha1
+kind: Network
+metadata:
+  name: my-db-upcloud
+spec:
+  forProvider:
+    ipNetwork:
+      - address: "1.2.3.4/24"
+        dhcp: true
+        dhcpDefaultRoute: false
+        family: IPv4
+    name: my-db-upcloud
+    routerSelector:
+      matchControllerRef: true
+    zone: us-nyc1

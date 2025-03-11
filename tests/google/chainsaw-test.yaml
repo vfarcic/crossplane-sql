@@ -9,6 +9,8 @@ spec:
       value: google
     - name: cluster
       value: gke
+    - name: dbPort
+      value: 5432
   steps:
     - try:
         - apply:

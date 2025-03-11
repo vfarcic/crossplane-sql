@@ -61,8 +61,16 @@ spec:
                         sql:
                           description: The SQL to apply.
                           type: string
+                  upcloud:
+                    description: UpCloud specific parameters.
+                    type: object
+                    properties:
+                      networkAddress:
+                        description: The address to use for network that will be created for the database server.
+                        type: string
+                        default: "10.0.0.0/24"
                   secrets:
-                    description: Pushing and pulling secrets from a secret store. External Secrets Operator must be installed for this feature to work.
+                    description: Pushing and pulling secrets from a secret store. External Secrets Operator must be installed for this feature to work. UpCloud is currently not supported since it does not have a Secrets Store.
                     type: object
                     properties:
                       storeName:
@@ -86,7 +94,6 @@ spec:
                         type: boolean
                 required:
                   - size
-                  - version
             required:
               - id
               - parameters

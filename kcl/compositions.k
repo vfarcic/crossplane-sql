@@ -2,6 +2,7 @@ import file
 import .awsstatuses
 import .googlestatuses
 import .azurestatuses
+import .upcloudstatuses
 import .commonstatuses
 
 schema composition:
@@ -93,6 +94,16 @@ schema composition:
         )
         _serverApiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
         _serverKind = "Server"
+    }
+
+    composition {
+        _provider = "upcloud"
+        _source = file.read("kcl/upcloud.k")
+        _serverApiVersion = "database.upcloud.com/v1alpha1"
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "network", upcloudstatuses.upcloudDataList
+        )
+        _serverKind = "ManagedDatabasePostgresql"
     }
 
 ]

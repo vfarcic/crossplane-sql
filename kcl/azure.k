@@ -61,26 +61,26 @@ _items = [{
         resourceGroupNameSelector.matchControllerRef = True
         serverNameSelector.matchControllerRef = True
     }
-}, {
-    apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-    kind = "ProviderConfig"
-    metadata = {
-        name = oxr.spec.id
-        annotations = {
-            "krm.kcl.dev/ready": "True"
-            "krm.kcl.dev/composition-resource-name" = "sql-config"
-        }
-    }
-    spec = {
-        credentials = {
-            source = "PostgreSQLConnectionSecret"
-            connectionSecretRef = {
-                name = oxr.spec.id
-                namespace = oxr.spec.claimRef.namespace
-            }
-        }
-        sslMode = "require"
-    }
+# }, {
+#     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+#     kind = "ProviderConfig"
+#     metadata = {
+#         name = oxr.spec.id
+#         annotations = {
+#             "krm.kcl.dev/ready": "True"
+#             "krm.kcl.dev/composition-resource-name" = "sql-config"
+#         }
+#     }
+#     spec = {
+#         credentials = {
+#             source = "PostgreSQLConnectionSecret"
+#             connectionSecretRef = {
+#                 name = oxr.spec.id
+#                 namespace = oxr.spec.claimRef.namespace
+#             }
+#         }
+#         sslMode = "require"
+#     }
 }, {
     **oxr
     if "server" in ocds:

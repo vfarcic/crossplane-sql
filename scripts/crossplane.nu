@@ -157,7 +157,7 @@ aws_secret_access_key = ($env.AWS_SECRET_ACCESS_KEY)
             stringData: {
                 credentials: $"{\"username\": \"($env.UPCLOUD_USERNAME)\", \"password\": \"($env.UPCLOUD_PASSWORD)\"}"
             }
-        }
+        } | to yaml | kubectl apply --filename -
 
     }
 
@@ -505,7 +505,7 @@ def "apply providerconfig" [
                     }
                 }
             }
-        } | to yaml | kubectl apply --filename -       
+        } | to yaml | kubectl apply --filename -
 
     }
 

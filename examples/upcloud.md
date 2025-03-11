@@ -20,31 +20,18 @@ Create a local Kubernetes cluster with `kind`.
 source .env
 ```
 
-
-
-
-
-
 ## Create a PostgreSQL Instance
 
-Take a look at the initial root password.
-
-```sh
-cat examples/google-secret.yaml
-```
-
 Take a look at the example Claim.
 
 ```sh
-cat examples/google.yaml
+cat examples/upcloud.yaml
 ```
 
 Apply the secret and the example Claim.
 
 ```sh
-kubectl --namespace infra apply --filename examples/google-secret.yaml
-
-kubectl --namespace infra apply --filename examples/google.yaml
+kubectl --namespace infra apply --filename examples/upcloud.yaml
 ```
 
 Take a look at the status of the SQL Claim.
@@ -56,41 +43,7 @@ crossplane beta trace sqlclaim my-db --namespace infra
 Delete the example Claim.
 
 ```sh
-kubectl --namespace infra delete --filename examples/google.yaml
-```
-
-## Create a PostgreSQL Instance with Credentials Pulled From and Pushed to Secrets Store and Atlas Schema
-
-Create a secret with the root password.
-
-```sh
-echo "{\"password\": \"IWillNeverTell\" }" \
-    | gcloud secrets --project $PROJECT_ID \
-    create db-root-password --data-file=-
-```
-
-Take a look at the example Claim.
-
-```sh
-cat examples/google-eso.yaml
-```
-
-Apply the secret and the example Claim.
-
-```sh
-kubectl --namespace infra apply --filename examples/google-eso.yaml
-```
-
-Take a look at the status of the SQL Claim.
-
-```sh
-crossplane beta trace sqlclaim my-db --namespace infra
-```
-
-Delete the example Claim.
-
-```sh
-kubectl --namespace infra delete --filename examples/google-eso.yaml
+kubectl --namespace infra delete --filename examples/upcloud.yaml
 ```
 
 ## Destroy

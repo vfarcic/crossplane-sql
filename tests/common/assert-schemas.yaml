@@ -71,7 +71,7 @@ spec:
             secretKeyRef:
               key: password
               name: (join('-', ['my-db', $hyperscaler]))
-          port: 5432
+          port: ($dbPort)
           scheme: postgres
           userFrom:
             secretKeyRef:
@@ -132,7 +132,7 @@ spec:
             secretKeyRef:
               key: password
               name: (join('-', ['my-db', $hyperscaler]))
-          port: 5432
+          port: ($dbPort)
           scheme: postgres
           userFrom:
             secretKeyRef:

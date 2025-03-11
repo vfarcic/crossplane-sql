@@ -1,0 +1,40 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: upcloud
+spec:
+  template: true
+  bindings:
+    - name: hyperscaler
+      value: upcloud
+    - name: cluster
+      value: upcloud
+    - name: dbPort
+      value: 11569
+  steps:
+    - try:
+        - apply:
+            file: ../common/install.yaml
+        - assert:
+            file: ../common/assert-install.yaml
+        - assert:
+            file: assert-install.yaml
+        - patch:
+            file: db-network.yaml
+        - assert:
+            file: assert-db-network.yaml
+        - patch:
+            file: ../common/db.yaml
+        - patch:
+            file: ../common/schemas.yaml
+        - assert:
+            file: ../common/assert-db.yaml
+        - assert:
+            file: ../common/assert-schemas.yaml
+      # catch:
+      #   - script:
+      #       content: kubectl --namespace $NAMESPACE describe sqlclaim my-db
+      #   - script:
+      #       content: kubectl describe sqls --selector crossplane.io/claim-namespace=$NAMESPACE
+      #   - script:
+      #       content: kubectl get managed

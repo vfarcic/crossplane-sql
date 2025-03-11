@@ -43,6 +43,8 @@ _items = [
             namespace = oxr.spec.claimRef.namespace
           }
         }
+        if oxr.spec.compositionSelector.matchLabels.provider == "upcloud":
+            defaultDatabase = "defaultdb"
         sslMode = "require"
     }
 }]
@@ -186,7 +188,10 @@ if oxr.spec.parameters?.schemas:
                             key = "endpoint"
                             name = oxr.spec.id
                         }
-                        port = 5432
+                        if oxr.spec.compositionSelector.matchLabels.provider == "upcloud":
+                            port = 11569
+                        if oxr.spec.compositionSelector.matchLabels.provider != "upcloud":
+                            port = 5432
                         userFrom.secretKeyRef = {
                             key = "username"
                             name = oxr.spec.id

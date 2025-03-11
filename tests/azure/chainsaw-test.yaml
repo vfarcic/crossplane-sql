@@ -9,6 +9,8 @@ spec:
       value: azure
     - name: cluster
       value: aks
+    - name: dbPort
+      value: 5432
   steps:
     - try:
         - apply:
