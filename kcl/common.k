@@ -156,6 +156,7 @@ if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pus
                             remoteRef.remoteKey = oxr.spec.id
                         }
                     }]
+                    deletionPolicy = "Orphan"
                 }
             }
         }
