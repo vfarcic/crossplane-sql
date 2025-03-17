@@ -6,7 +6,7 @@ metadata:
     meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
     meta.crossplane.io/source: github.com/vfarcic/crossplane-sql
     meta.crossplane.io/license: MIT
-    meta.crossplane.io/description: Fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
+    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS, Google Cloud Platform, Azure, and UpCloud.
     meta.crossplane.io/readme: A Configuration package that defines a SQL and SQLClaim types that can be used to create and provision fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
 spec:
   crossplane:

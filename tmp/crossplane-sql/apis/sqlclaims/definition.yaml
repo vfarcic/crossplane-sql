@@ -1,0 +1,44 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: sqlclaims.devopstoolkit.live
+spec:
+  group: devopstoolkit.live
+  names:
+    categories:
+    - crossplane
+    kind: SQLClaim
+    plural: sqlclaims
+  versions:
+  - name: v1alpha1
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        description: SQLClaim is the Schema for the SQLClaim API.
+        properties:
+          spec:
+            description: SQLClaimSpec defines the desired state of SQLClaim.
+            properties:
+              id:
+                type: string
+              parameters:
+                properties:
+                  databases:
+                    items:
+                      type: string
+                    type: array
+                  region:
+                    type: string
+                  size:
+                    type: string
+                  version:
+                    type: string
+                type: object
+            type: object
+          status:
+            description: SQLClaimStatus defines the observed state of SQLClaim.
+            type: object
+        required:
+        - spec
+        type: object
+    served: true

@@ -1,6 +1,5 @@
 /kubeconfig*
 /.task
-/tmp
 /.vscode
 /gcp-creds.json
 /aws-creds.conf

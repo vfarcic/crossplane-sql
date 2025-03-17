@@ -1,0 +1,17 @@
+apiVersion: devopstoolkit.live/v1alpha1
+kind: SQLClaim
+metadata:
+  name: my-db
+spec:
+  id: my-db
+  compositionSelector:
+    matchLabels:
+      provider: aws
+      db: postgresql
+  parameters:
+    version: "16.3"
+    size: medium
+    region: us-east-1
+    databases:
+      - db-01
+      - db-02
