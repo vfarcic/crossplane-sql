@@ -22,7 +22,7 @@ schema composition:
     }
     spec = {
         compositeTypeRef = {
-            apiVersion = "devopstoolkit.live/v1alpha1"
+            apiVersion = "devopstoolkit.live/v1beta1"
             kind = "SQL"
         }
         mode = "Pipeline"

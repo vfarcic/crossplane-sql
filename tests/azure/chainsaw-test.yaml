@@ -43,9 +43,8 @@ spec:
             file: ../common/region.yaml
         - assert:
             file: region.yaml
-    #   catch:
-    #     - get:
-    #         resource: managed
-    #     - describe:
-    #         resource: sqls
-    #         selector: crossplane.io/claim-namespace=$NAMESPACE
+      catch:
+        - script:
+            content: kubectl describe sqls my-db-azure --namespace $NAMESPACE
+        - script:
+            content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE

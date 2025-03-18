@@ -1,16 +1,18 @@
 oxr = option("params").oxr
 ocds = option("params").ocds
 
+_name = oxr.metadata.name
+_namespace = oxr.metadata.namespace
 _region = "us-nyc1"
-if oxr.spec?.parameters?.region:
-    _region = oxr.spec.parameters.region
+if oxr.spec?.region:
+    _region = oxr.spec.region
 _address = "10.0.0.0/24"
-if oxr.spec?.parameters?.upcloud?.networkAddress:
-    _address = oxr.spec.parameters.upcloud.networkAddress
+if oxr.spec?.upcloud?.networkAddress:
+    _address = oxr.spec.upcloud.networkAddress
 
 _metadata = lambda resourceName: str -> any {
     {
-        name = oxr.spec.id
+        name = _name
         annotations = {
             "krm.kcl.dev/composition-resource-name" = resourceName
         }
@@ -24,7 +26,7 @@ _items = [{
     spec = {
         forProvider = {
             labels = {}
-            name = oxr.spec.id
+            name = _name
             staticRoute: []
         }
     }
@@ -39,7 +41,7 @@ _items = [{
             dhcpDefaultRoute = False
             family = "IPv4"
         }]
-        name = oxr.spec.id
+        name = _name
         routerSelector.matchControllerRef = True
         zone = _region
     }
@@ -49,20 +51,20 @@ _items = [{
     metadata = _metadata("manageddatabasepostgresql")
     spec = {
         forProvider = {
-            name = oxr.spec.id
+            name = _name
             network = [{
                 family = "IPv4"
-                name = oxr.spec.id
+                name = _name
                 type = "private"
                 uuidSelector.matchControllerRef = True
             }]
-            if oxr.spec.parameters.size == "small":
+            if oxr.spec.size == "small":
                 plan = "1x1xCPU-2GB-25GB"
-            elif oxr.spec.parameters.size == "medium":
+            elif oxr.spec.size == "medium":
                 plan = "2x6xCPU-16GB-100GB"
             else:
                 plan = "2x16xCPU-64GB-1000GB"
-            title: oxr.spec.id
+            title: _name
             zone: _region
             properties = [{
                 publicAccess = True
@@ -70,15 +72,15 @@ _items = [{
             }]
         }
         writeConnectionSecretToRef = {
-            name = oxr.spec.id + "-password"
-            namespace = oxr.spec.claimRef.namespace
+            name = _name + "-password"
+            namespace = _namespace
         }
     }
 }, {
     apiVersion = "kubernetes.crossplane.io/v1alpha2"
     kind = "Object"
     metadata = {
-        name = oxr.spec.id + "-secret"
+        name = _name + "-secret"
         annotations = {
             "krm.kcl.dev/ready": "True"
             "krm.kcl.dev/composition-resource-name" = "sql-secret"
@@ -89,8 +91,8 @@ _items = [{
             patchesFrom = {
                 apiVersion = "v1"
                 kind = "Secret"
-                name = oxr.spec.id + "-password"
-                namespace = oxr.spec.claimRef.namespace
+                name = _name + "-password"
+                namespace = _namespace
                 fieldPath = "data[attribute.service_password]"
             }
             toFieldPath = "data.password"
@@ -99,8 +101,7 @@ _items = [{
             apiVersion = "v1"
             kind = "Secret"
             metadata = {
-                name = oxr.spec.id
-                namespace = oxr.spec.claimRef.namespace
+                name = _name
             }
             data = {
                 port = "MTE1Njk="
@@ -109,7 +110,7 @@ _items = [{
             if "manageddatabasepostgresql" in ocds and ocds["manageddatabasepostgresql"]?.Resource?.status?.atProvider?.serviceHost:
                 stringData.endpoint = "public-" + ocds["manageddatabasepostgresql"].Resource.status.atProvider.serviceHost
         }
-        providerConfigRef.name = oxr.spec.id + "-sql"
+        providerConfigRef.name = _name + "-sql"
     }
 }, {
     **oxr

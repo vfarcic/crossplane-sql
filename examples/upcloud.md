@@ -22,25 +22,25 @@ source .env
 
 ## Create a PostgreSQL Instance
 
-Take a look at the example Claim.
+Take a look at the example Composite Resource.
 
 ```sh
 cat examples/upcloud.yaml
 ```
 
-Apply the secret and the example Claim.
+Apply the secret and the example Composite Resource.
 
 ```sh
 kubectl --namespace infra apply --filename examples/upcloud.yaml
 ```
 
-Take a look at the status of the SQL Claim.
+Take a look at the status of the SQL Composite Resource.
 
 ```sh
-crossplane beta trace sqlclaim my-db --namespace infra
+crossplane beta trace sql my-db --namespace infra
 ```
 
-Delete the example Claim.
+Delete the example Composite Resource.
 
 ```sh
 kubectl --namespace infra delete --filename examples/upcloud.yaml

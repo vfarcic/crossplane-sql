@@ -1,36 +1,35 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
-kind: SQLClaim
+apiVersion: devopstoolkit.live/v1beta1
+kind: SQL
 metadata:
   name: my-db
 spec:
-  id: my-db
-  compositionSelector:
-    matchLabels:
-      provider: google
-      db: postgresql
-  parameters:
-    version: "13"
-    size: small
-    region: us-east1
-    databases:
-      - main
-    schemas:
-      - database: main
-        sql: |
-          create table videos (
-            id varchar(50) not null,
-            description text,
-            primary key (id)
-          );
-          create table comments (
-            id serial,
-            video_id varchar(50) not null,
-            description text not null,
-            primary key (id),
-            CONSTRAINT fk_videos FOREIGN KEY(video_id) REFERENCES videos(id)
-          );
-    secrets:
-      storeName: google
-      pullRootPasswordKey: db-root-password
-      pushToStore: true
+  version: "13"
+  size: small
+  region: us-east1
+  databases:
+    - main
+  schemas:
+    - database: main
+      sql: |
+        create table videos (
+          id varchar(50) not null,
+          description text,
+          primary key (id)
+        );
+        create table comments (
+          id serial,
+          video_id varchar(50) not null,
+          description text not null,
+          primary key (id),
+          CONSTRAINT fk_videos FOREIGN KEY(video_id) REFERENCES videos(id)
+        );
+  secrets:
+    storeName: google
+    pullRootPasswordKey: db-root-password
+    pushToStore: true
+  crossplane:
+    compositionSelector:
+      matchLabels:
+        provider: google
+        db: postgresql

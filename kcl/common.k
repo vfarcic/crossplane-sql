@@ -1,34 +1,28 @@
 oxr = option("params").oxr
 
+_name = oxr.metadata.name
+_namespace = oxr.metadata.namespace
 schema providerConfig:
     _apiVersion: str
     _suffix: str
     apiVersion = _apiVersion
     kind = "ProviderConfig"
     metadata = {
-        name = oxr.spec.id + "-sql"
+        name = _name + "-sql"
         annotations = {
             "krm.kcl.dev/ready": "True"
-            "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-provider-config-" + _suffix
+            "krm.kcl.dev/composition-resource-name" = _name + "-provider-config-" + _suffix
         }
     }
     spec = {
         credentials.source = "InjectedIdentity"
     }
 
-_items = [
-    providerConfig {
-        _apiVersion = "kubernetes.crossplane.io/v1alpha1"
-        _suffix = "kubernetes"
-    },
-    providerConfig {
-        _apiVersion = "helm.crossplane.io/v1beta1"
-        _suffix = "helm"
-}, {
+_items = [{
     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
     kind = "ProviderConfig"
     metadata = {
-        name = oxr.spec.id
+        name = _name
         annotations = {
             "krm.kcl.dev/ready": "True"
             "krm.kcl.dev/composition-resource-name" = "sql-config"
@@ -39,78 +33,68 @@ _items = [
         credentials = {
           source = "PostgreSQLConnectionSecret"
           connectionSecretRef = {
-            name = oxr.spec.id
-            namespace = oxr.spec.claimRef.namespace
+            name = _name
+            namespace = _namespace
           }
         }
-        if oxr.spec.compositionSelector.matchLabels.provider == "upcloud":
+        if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
             defaultDatabase = "defaultdb"
         sslMode = "require"
     }
 }]
 
-if oxr.spec.parameters?.databases:
+if oxr.spec?.databases:
     _items += [{
         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
         kind = "Database"
         metadata = {
-            name = oxr.spec.id + "-" + _database
+            name = _name + "-" + _database
             annotations = {
                 "crossplane.io/external-name" = _database
-                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-" + _database
+                "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
             }
         }
         spec = {
-            providerConfigRef.name = oxr.spec.id
+            providerConfigRef.name = _name
             forProvider = {}
             deletionPolicy = "Orphan"
         }
-    } for _database in oxr.spec.parameters.databases ]
+    } for _database in oxr.spec.databases ]
 
-if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pullRootPasswordKey:
+if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
     _items += [{
-        apiVersion = "kubernetes.crossplane.io/v1alpha2"
-        kind = "Object"
+        apiVersion = "external-secrets.io/v1beta1"
+        kind = "ExternalSecret"
         metadata = {
-            name = oxr.spec.id + "-secret-pull"
+            name = _name + "-password"
             annotations = {
-                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-secret-pull"
+                "krm.kcl.dev/ready" = "True"
+                "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull"
             }
         }
         spec = {
-            providerConfigRef.name = oxr.spec.id + "-sql"
-            forProvider.manifest = {
-                apiVersion = "external-secrets.io/v1beta1"
-                kind = "ExternalSecret"
-                metadata = {
-                    name = oxr.spec.id + "-password"
-                    namespace: oxr.spec.claimRef.namespace
+            dataFrom = [{
+                extract = {
+                    conversionStrategy = "Default"
+                    decodingStrategy = "None"
+                    key = oxr.spec.secrets.pullRootPasswordKey
+                    metadataPolicy = "None"
                 }
-                spec = {
-                    dataFrom = [{
-                        extract = {
-                            conversionStrategy = "Default"
-                            decodingStrategy = "None"
-                            key = oxr.spec.parameters.secrets.pullRootPasswordKey
-                            metadataPolicy = "None"
-                        }
-                    }]
-                    refreshInterval = "1h"
-                    secretStoreRef = {
-                        kind = "ClusterSecretStore"
-                        name = oxr.spec.parameters.secrets.storeName
-                    }
-                    target = {
-                        creationPolicy = "Owner"
-                        deletionPolicy = "Retain"
-                        name = oxr.spec.id + "-password"
-                    }
-                }
+            }]
+            refreshInterval = "1h"
+            secretStoreRef = {
+                kind = "ClusterSecretStore"
+                name = oxr.spec.secrets.storeName
+            }
+            target = {
+                creationPolicy = "Owner"
+                deletionPolicy = "Retain"
+                name = _name + "-password"
             }
         }
     }]
 
-if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pushToStore:
+if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
     _endpoint = """\
 {
   "endpoint": "{{ .endpoint }}",
@@ -118,172 +102,106 @@ if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pus
   "username": "{{ .username }}",
   "password": "{{ .password }}",
   """
-    _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.parameters.databases ]
+    _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.databases ]
     _endpoint += ",\n  ".join(_conns)
     _endpoint += """
 }
 """
     _items += [{
-        apiVersion = "kubernetes.crossplane.io/v1alpha2"
-        kind = "Object"
+        apiVersion = "external-secrets.io/v1alpha1"
+        kind = "PushSecret"
         metadata = {
-            name = oxr.spec.id + "-secret-push-store"
+            name = _name
             annotations = {
-                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-secret-push-store"
+                "krm.kcl.dev/ready" = "True"
+                "krm.kcl.dev/composition-resource-name" = _name + "-secret-push-store"
             }
         }
         spec = {
-            providerConfigRef.name = oxr.spec.id + "-sql"
-            forProvider.manifest = {
-                apiVersion = "external-secrets.io/v1alpha1"
-                kind = "PushSecret"
-                metadata = {
-                    name = oxr.spec.id
-                    namespace: oxr.spec.claimRef.namespace
+            refreshInterval = "1h"
+            secretStoreRefs = [{
+                name = oxr.spec.secrets.storeName
+                kind = "ClusterSecretStore"
+            }]
+            selector.secret.name = _name
+            template.data.endpoint = _endpoint
+            data = [{
+                match = {
+                    secretKey = "endpoint"
+                    remoteRef.remoteKey = _name
                 }
-                spec = {
-                    deletionPolicy = "Delete"
-                    refreshInterval = "1h"
-                    secretStoreRefs = [{
-                        name = oxr.spec.parameters.secrets.storeName
-                        kind = "ClusterSecretStore"
-                    }]
-                    selector.secret.name = oxr.spec.id
-                    template.data.endpoint = _endpoint
-                    data = [{
-                        match = {
-                            secretKey = "endpoint"
-                            remoteRef.remoteKey = oxr.spec.id
-                        }
-                    }]
-                    deletionPolicy = "Orphan"
-                }
-            }
+            }]
+            deletionPolicy = "Delete"
         }
     }]
 
-if oxr.spec.parameters?.schemas:
+if oxr.spec.schemas:
     _items += [{
-        apiVersion = "kubernetes.crossplane.io/v1alpha2"
-        kind = "Object"
+        apiVersion = "db.atlasgo.io/v1alpha1"
+        kind = "AtlasSchema"
         metadata = {
-            name = oxr.spec.id + "-schema-" + _schema.database
+            name = _name + "-" + _schema.database
             annotations = {
-                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-schema-" + _schema.database
+                "krm.kcl.dev/ready" = "True"
+                "krm.kcl.dev/composition-resource-name" = _name + "-schema-" + _schema.database
             }
         }
         spec = {
-            providerConfigRef.name = oxr.spec.id + "-sql"
-            forProvider.manifest = {
-                apiVersion = "db.atlasgo.io/v1alpha1"
-                kind = "AtlasSchema"
-                metadata = {
-                    name = oxr.spec.id + "-" + _schema.database
-                    namespace = oxr.spec.claimRef.namespace
+            credentials = {
+                scheme = "postgres"
+                hostFrom.secretKeyRef = {
+                    key = "endpoint"
+                    name = _name
                 }
-                toFieldPath = "spec.credentials.connectionSecretRef.namespace"
-                spec = {
-                    credentials = {
-                        scheme = "postgres"
-                        hostFrom.secretKeyRef = {
-                            key = "endpoint"
-                            name = oxr.spec.id
-                        }
-                        if oxr.spec.compositionSelector.matchLabels.provider == "upcloud":
-                            port = 11569
-                        if oxr.spec.compositionSelector.matchLabels.provider != "upcloud":
-                            port = 5432
-                        userFrom.secretKeyRef = {
-                            key = "username"
-                            name = oxr.spec.id
-                        }
-                        passwordFrom.secretKeyRef = {
-                            key = "password"
-                            name = oxr.spec.id
-                        }
-                        database = _schema.database
-                        parameters.sslmode = "require"
-                    }
-                    schema.sql = _schema.sql
+                if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                    port = 11569
+                if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
+                    port = 5432
+                userFrom.secretKeyRef = {
+                    key = "username"
+                    name = _name
                 }
+                passwordFrom.secretKeyRef = {
+                    key = "password"
+                    name = _name
+                }
+                database = _schema.database
+                parameters.sslmode = "require"
             }
+            schema.sql = _schema.sql
         }
-    } for _schema in oxr.spec.parameters.schemas ]
+    } for _schema in oxr.spec.schemas ]
 
-if oxr.spec.parameters?.secrets?.daprComponents and oxr.spec.parameters?.secrets?.pullToCluster:
+if oxr.spec.secrets?.pullToCluster:
     _items += [{
-        apiVersion = "kubernetes.crossplane.io/v1alpha2"
-        kind = "Object"
+        apiVersion = "external-secrets.io/v1beta1"
+        kind = "ExternalSecret"
         metadata = {
-            name = oxr.spec.id + "-dapr-component-" + _database
+            name = _name
             annotations = {
-                "crossplane.io/external-name" = oxr.spec.id + "-dapr-component-" + _database
-                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-dapr-component-" + _database
+                "krm.kcl.dev/ready" = "True"
+                "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull-cluster"
             }
+            namespace = oxr.spec.secrets.pullToClusterNamespace
         }
         spec = {
-            providerConfigRef.name = oxr.spec.parameters.secrets.pullToCluster
-            forProvider = {
-                manifest = {
-                    apiVersion = "dapr.io/v1alpha1"
-                    kind = "Component"
-                    metadata = {
-                        name = oxr.spec.id + "-" + _database
-                        namespace = oxr.spec.parameters.secrets.pullToClusterNamespace
-                    }
-                    spec = {
-                        type = "state.postgresql"
-                        version = "v1"
-                        metadata = [{
-                            name = "connectionString"
-                            secretKeyRef = {
-                                name = oxr.spec.id
-                                key = "conn-" + _database
-                            }
-                        }]
-                    }
+            dataFrom = [{
+                extract = {
+                    conversionStrategy = "Default"
+                    decodingStrategy = "None"
+                    key = _name
+                    metadataPolicy = "None"
                 }
+            }]
+            refreshInterval = "1h"
+            secretStoreRef = {
+                kind = "ClusterSecretStore"
+                name = oxr.spec.secrets.storeName
             }
-        }
-    } for _database in oxr.spec.parameters.databases ]
-    _items += [{
-        apiVersion = "kubernetes.crossplane.io/v1alpha2"
-        kind = "Object"
-        metadata = {
-            name = oxr.spec.id + "-secret-pull-cluster"
-            annotations = {
-                "krm.kcl.dev/composition-resource-name" = oxr.spec.id + "-secret-pull-cluster"
-            }
-        }
-        spec = {
-            providerConfigRef.name = oxr.spec.parameters.secrets.pullToCluster
-            forProvider.manifest = {
-                apiVersion = "external-secrets.io/v1beta1"
-                kind = "ExternalSecret"
-                metadata = {
-                    name = oxr.spec.id
-                    namespace = oxr.spec.parameters.secrets.pullToClusterNamespace
-                }
-                spec = {
-                    dataFrom = [{
-                        extract = {
-                            conversionStrategy = "Default"
-                            decodingStrategy = "None"
-                            key = oxr.spec.id
-                            metadataPolicy = "None"
-                        }
-                    }]
-                    refreshInterval = "1h"
-                    secretStoreRef = {
-                        kind = "ClusterSecretStore"
-                        name = oxr.spec.parameters.secrets.storeName
-                    }
-                    target = {
-                        creationPolicy = "Owner"
-                        deletionPolicy = "Retain"
-                        name = oxr.spec.id
-                    }
-                }
+            target = {
+                creationPolicy = "Owner"
+                deletionPolicy = "Retain"
+                name = _name
             }
         }
     }]

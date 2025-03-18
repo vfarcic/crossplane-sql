@@ -1,4 +1,4 @@
-apiVersion: apiextensions.crossplane.io/v1
+apiVersion: apiextensions.crossplane.io/v2alpha1
 kind: CompositeResourceDefinition
 metadata:
   name: sqls.devopstoolkit.live
@@ -9,16 +9,13 @@ spec:
   names:
     kind: SQL
     plural: sqls
-  claimNames:
-    kind: SQLClaim
-    plural: sqlclaims
   connectionSecretKeys:
   - username
   - password
   - endpoint
   - port
   versions:
-  - name: v1alpha1
+  - name: v1beta1
     served: true
     referenceable: true
     schema:
@@ -28,75 +25,63 @@ spec:
           spec:
             type: object
             properties:
-              id:
+              version:
+                description: The DB version depends on the DB type and versions available in the selected provider.
                 type: string
-                description: Database ID
-              parameters:
+              size:
+                description: "Supported sizes: small, medium, large"
+                type: string
+                default: small
+              databases:
+                description: The list of databases to create inside the DB server.
+                type: array
+                items:
+                  type: string
+              region:
+                description: The region where the DB server should run. The default value depends on the selected provider. For AWS it is `us-east-1`, for Google Cloud it is `us-east1`, and for Azure it is `eastus`.
+                type: string
+              schemas:
+                description: Database schema. Atlas operator (https://atlasgo.io/integrations/kubernetes/operator) needs to be installed in the cluster. Leave empty if schema should NOT be applied.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    database:
+                      description: The name of the database where to apply the schema.
+                      type: string
+                    sql:
+                      description: The SQL to apply.
+                      type: string
+              upcloud:
+                description: UpCloud specific parameters.
                 type: object
                 properties:
-                  version:
-                    description: The DB version depends on the DB type and versions available in the selected provider.
+                  networkAddress:
+                    description: The address to use for network that will be created for the database server.
                     type: string
-                  size:
-                    description: "Supported sizes: small, medium, large"
+                    default: "10.0.0.0/24"
+              secrets:
+                description: Pushing and pulling secrets from a secret store. External Secrets Operator must be installed for this feature to work. UpCloud is currently not supported since it does not have a Secrets Store.
+                type: object
+                properties:
+                  storeName:
+                    description: The name of the secret store to use.
                     type: string
-                    default: small
-                  databases:
-                    description: The list of databases to create inside the DB server.
-                    type: array
-                    items:
-                      type: string
-                  region:
-                    description: The region where the DB server should run. The default value depends on the selected provider. For AWS it is `us-east-1`, for Google Cloud it is `us-east1`, and for Azure it is `eastus`.
+                  pullRootPasswordKey:
+                    description: The key in the secrets store with the secret with the root password.
                     type: string
-                  schemas:
-                    description: Database schema. Atlas operator (https://atlasgo.io/integrations/kubernetes/operator) needs to be installed in the cluster. Leave empty if schema should NOT be applied.
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        database:
-                          description: The name of the database where to apply the schema.
-                          type: string
-                        sql:
-                          description: The SQL to apply.
-                          type: string
-                  upcloud:
-                    description: UpCloud specific parameters.
-                    type: object
-                    properties:
-                      networkAddress:
-                        description: The address to use for network that will be created for the database server.
-                        type: string
-                        default: "10.0.0.0/24"
-                  secrets:
-                    description: Pushing and pulling secrets from a secret store. External Secrets Operator must be installed for this feature to work. UpCloud is currently not supported since it does not have a Secrets Store.
-                    type: object
-                    properties:
-                      storeName:
-                        description: The name of the secret store to use.
-                        type: string
-                      pullRootPasswordKey:
-                        description: The key in the secrets store with the secret with the root password.
-                        type: string
-                      pushToStore:
-                        description: Whether to push DB credentials to the secret store.
-                        type: boolean
-                        default: false
-                      pullToCluster:
-                        description: To which cluster to push the DB credentials.
-                        type: string
-                      pullToClusterNamespace:
-                        description: To which Namespace to push the DB credentials.
-                        type: string
-                      daprComponents:
-                        description: Whether to create a Dapr components for the DBs. `pullToCluster` needs to be set to `true` to use this feature. If enabled, Dapr needs to installed in the destination cluster (directly or through OpenFunction).
-                        type: boolean
-                required:
-                  - size
+                  pushToStore:
+                    description: Whether to push DB credentials to the secret store.
+                    type: boolean
+                    default: false
+                  pullToCluster:
+                    description: To which cluster to push the DB credentials.
+                    type: string
+                  pullToClusterNamespace:
+                    description: To which Namespace to push the DB credentials.
+                    type: string
             required:
-              - id
-              - parameters
+              - size
           status:
             type: object
             properties:

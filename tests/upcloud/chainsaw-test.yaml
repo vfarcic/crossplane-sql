@@ -25,16 +25,14 @@ spec:
             file: assert-db-network.yaml
         - patch:
             file: ../common/db.yaml
+        - assert:
+            file: ../common/assert-db.yaml
         - patch:
             file: ../common/schemas.yaml
         - assert:
-            file: ../common/assert-db.yaml
-        - assert:
             file: ../common/assert-schemas.yaml
-      # catch:
-      #   - script:
-      #       content: kubectl --namespace $NAMESPACE describe sqlclaim my-db
-      #   - script:
-      #       content: kubectl describe sqls --selector crossplane.io/claim-namespace=$NAMESPACE
-      #   - script:
-      #       content: kubectl get managed
+      catch:
+        - script:
+            content: kubectl describe sqls my-db-upcloud --namespace $NAMESPACE
+        - script:
+            content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE

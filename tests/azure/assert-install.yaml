@@ -1,44 +1,33 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
+apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  labels:
-    crossplane.io/claim-name: my-db
+  name: my-db-azure
 spec:
-  claimRef:
-    apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQLClaim
-    name: my-db
-  compositionRef:
-    name: azure-postgresql
-  compositionSelector:
-    matchLabels:
-      db: postgresql
-      provider: azure
-  compositionUpdatePolicy: Automatic
-  id: my-db-azure
-  parameters:
-    size: medium
-    version: "13.4"
-  resourceRefs:
-  - apiVersion: azure.upbound.io/v1beta1
-    kind: ResourceGroup
-    name: my-db-azure
-  - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
-    kind: FirewallRule
-    name: my-db-azure
-  - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
-    kind: Server
-    name: my-db-azure
-  - apiVersion: helm.crossplane.io/v1beta1
-    kind: ProviderConfig
-    name: my-db-azure-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-azure-sql
-  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-azure
+  size: medium
+  version: "13.4"
+  crossplane:
+    compositionRef:
+      name: azure-postgresql
+    compositionSelector:
+      matchLabels:
+        db: postgresql
+        provider: azure
+    compositionUpdatePolicy: Automatic
+    resourceRefs:
+    - apiVersion: azure.upbound.io/v1beta1
+      kind: ResourceGroup
+      name: my-db-azure
+    - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+      kind: FirewallRule
+      name: my-db-azure
+    - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+      kind: Server
+      name: my-db-azure
+    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-azure
+
 ---
 apiVersion: azure.upbound.io/v1beta1
 kind: ResourceGroup
@@ -46,12 +35,9 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: resourcegroup
     crossplane.io/external-name: my-db-azure
-  generation: 2
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-azure
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -71,11 +57,9 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: firewall-rule
     crossplane.io/external-name: my-db-azure
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-azure
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -96,6 +80,7 @@ spec:
     startIpAddress: 0.0.0.0
   providerConfigRef:
     name: default
+
 ---
 apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
 kind: Server
@@ -103,11 +88,9 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: server
     crossplane.io/external-name: my-db-azure
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-azure
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -141,11 +124,9 @@ kind: ProviderConfig
 metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-config
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-azure
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL

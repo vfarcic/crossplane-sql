@@ -1,13 +1,15 @@
 oxr = option("params").oxr
 ocds = option("params").ocds
 
+_name = oxr.metadata.name
+_namespace = oxr.metadata.namespace
 _region = "us-east1"
-if oxr.spec?.parameters?.region:
-    _region = oxr.spec.parameters.region
+if oxr.spec?.region:
+    _region = oxr.spec.region
 
 _metadata = lambda resourceName: str -> any {
     {
-        name = oxr.spec.id
+        name = _name
         annotations = {
             "krm.kcl.dev/composition-resource-name" = resourceName
         }
@@ -21,16 +23,16 @@ _items = [{
     spec = {
         forProvider = {
             region = _region
-            databaseVersion = "POSTGRES_" + oxr.spec.parameters.version
+            databaseVersion = "POSTGRES_" + oxr.spec.version
             rootPasswordSecretRef = {
-                name = oxr.spec.id + "-password"
-                namespace = oxr.spec.claimRef.namespace
+                name = _name + "-password"
                 key = "password"
+                namespace = _namespace
             }
             settings = [{
-                if oxr.spec.parameters.size == "small":
+                if oxr.spec.size == "small":
                     tier = "db-custom-1-3840"
-                elif oxr.spec.parameters.size == "medium":
+                elif oxr.spec.size == "medium":
                     tier = "db-custom-16-61440"
                 else:
                     tier = "db-custom-64-245760"
@@ -57,19 +59,19 @@ _items = [{
     spec = {
         deletionPolicy = "Orphan"
         forProvider = {
-          passwordSecretRef = {
-             key = "password"
-             name = oxr.spec.id + "-password"
-            namespace = oxr.spec.claimRef.namespace
-          }
-          instanceSelector.matchControllerRef = True
+            passwordSecretRef = {
+                key = "password"
+                name = _name + "-password"
+                namespace = _namespace
+            }
+            instanceSelector.matchControllerRef = True
         }
     }
 }, {
     apiVersion = "kubernetes.crossplane.io/v1alpha2"
     kind = "Object"
     metadata = {
-        name = oxr.spec.id + "-secret"
+        name = _name + "-secret"
         annotations = {
             "krm.kcl.dev/ready": "True"
             "krm.kcl.dev/composition-resource-name" = "sql-secret"
@@ -80,7 +82,7 @@ _items = [{
             patchesFrom = {
                 apiVersion = "sql.gcp.upbound.io/v1beta1"
                 kind = "User"
-                name = oxr.spec.id
+                name = _name
                 namespace = "crossplane-system"
                 fieldPath = "metadata.name"
             }
@@ -89,8 +91,8 @@ _items = [{
             patchesFrom = {
                 apiVersion = "v1"
                 kind = "Secret"
-                name = oxr.spec.id + "-password"
-                namespace = oxr.spec.claimRef.namespace
+                name = _name + "-password"
+                namespace = _namespace
                 fieldPath = "data.password"
             }
             toFieldPath = "data.password"
@@ -98,7 +100,7 @@ _items = [{
             patchesFrom = {
                 apiVersion = "sql.gcp.upbound.io/v1beta1"
                 kind = "DatabaseInstance"
-                name = oxr.spec.id
+                name = _name
                 namespace = "crossplane-system"
                 fieldPath = "status.atProvider.publicIpAddress"
             }
@@ -108,12 +110,11 @@ _items = [{
             apiVersion = "v1"
             kind = "Secret"
             metadata = {
-                name = oxr.spec.id
-                namespace = oxr.spec.claimRef.namespace
+                name = _name
             }
             data.port = "NTQzMg=="
         }
-        providerConfigRef.name = oxr.spec.id + "-sql"
+        providerConfigRef.name = _name + "-sql"
     }
 }, {
     **oxr

@@ -1,12 +1,10 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
+apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  labels:
-    crossplane.io/claim-name: my-db
+  name: my-db-azure
 spec:
-  parameters:
-    region: other-region
+  region: other-region
 ---
 apiVersion: azure.upbound.io/v1beta1
 kind: ResourceGroup
