@@ -2,19 +2,19 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: (join('-', ['my-db', $hyperscaler, 'password']))
+  name: (join('-', ['my-db', $provider, 'password']))
 data:
   password: cG9zdGdyZXM=
 ---
 apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  name: (join('-', ['my-db', $hyperscaler]))
+  name: (join('-', ['my-db', $provider]))
 spec:
   version: "13.4"
   size: medium
   crossplane:
     compositionSelector:
       matchLabels:
-        provider: ($hyperscaler)
+        provider: ($provider)
         db: postgresql

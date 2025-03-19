@@ -6,11 +6,11 @@ metadata:
     meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
     meta.crossplane.io/source: github.com/vfarcic/crossplane-sql
     meta.crossplane.io/license: MIT
-    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS, Google Cloud Platform, Azure, and UpCloud.
-    meta.crossplane.io/readme: A Configuration package that defines a SQL type that can be used to create and provision fully operational PostgreSQL database servers, databases, and schemas in AWS, Google Cloud Platform, Azure, and UpCloud.
+    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS, Google Cloud Platform, Azure, UpCloud, and a local in-cluster CNPG.
+    meta.crossplane.io/readme: A Configuration package that defines a SQL type that can be used to create and provision fully operational PostgreSQL database servers, databases, and schemas in AWS, Google Cloud Platform, Azure, UpCloud, and a local in-cluster CNPG.
 spec:
   crossplane:
-    version: ">=v1.14.0"
+    version: ">=v2.0.0"
   dependsOn:
   - provider: xpkg.upbound.io/upbound/provider-aws-ec2
     version: ">=v1.0.0"

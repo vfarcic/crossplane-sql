@@ -5,7 +5,7 @@ metadata:
 spec:
   template: true
   bindings:
-    - name: hyperscaler
+    - name: provider
       value: aws
     - name: cluster
       value: eks

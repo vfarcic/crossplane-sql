@@ -1,16 +1,16 @@
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
-  name: upcloud
+  name: cnpg
 spec:
   template: true
   bindings:
     - name: provider
-      value: upcloud
+      value: local
     - name: cluster
-      value: upcloud
+      value: local
     - name: dbPort
-      value: 11569
+      value: 5432
   steps:
     - try:
         - apply:
@@ -19,10 +19,6 @@ spec:
             file: ../common/assert-install.yaml
         - assert:
             file: assert-install.yaml
-        - patch:
-            file: db-network.yaml
-        - assert:
-            file: assert-db-network.yaml
         - patch:
             file: ../common/db.yaml
         - assert:
@@ -33,6 +29,6 @@ spec:
             file: ../common/assert-schemas.yaml
       catch:
         - script:
-            content: kubectl describe sqls my-db-upcloud --namespace $NAMESPACE
+            content: kubectl describe sqls my-db-local --namespace $NAMESPACE
         - script:
             content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE

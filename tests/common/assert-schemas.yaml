@@ -2,7 +2,7 @@
 apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  name: (join('-', ['my-db', $hyperscaler]))
+  name: (join('-', ['my-db', $provider]))
 spec:
   schemas:
     - database: db-01
@@ -30,27 +30,27 @@ spec:
 apiVersion: db.atlasgo.io/v1alpha1
 kind: AtlasSchema
 metadata:
-  name: (join('-', ['my-db', $hyperscaler, 'db-01']))
+  name: (join('-', ['my-db', $provider, 'db-01']))
 spec:
   credentials:
     database: db-01
     hostFrom:
       secretKeyRef:
         key: endpoint
-        name: (join('-', ['my-db', $hyperscaler]))
+        name: (join('-', ['my-db', $provider]))
     parameters:
       # sslmode: disable
       sslmode: require
     passwordFrom:
       secretKeyRef:
         key: password
-        name: (join('-', ['my-db', $hyperscaler]))
+        name: (join('-', ['my-db', $provider]))
     port: ($dbPort)
     scheme: postgres
     userFrom:
       secretKeyRef:
         key: username
-        name: (join('-', ['my-db', $hyperscaler]))
+        name: (join('-', ['my-db', $provider]))
   schema:
     sql: |-
       create table videos (
@@ -69,27 +69,27 @@ spec:
 apiVersion: db.atlasgo.io/v1alpha1
 kind: AtlasSchema
 metadata:
-  name: (join('-', ['my-db', $hyperscaler, 'db-02']))
+  name: (join('-', ['my-db', $provider, 'db-02']))
 spec:
   credentials:
     database: db-02
     hostFrom:
       secretKeyRef:
         key: endpoint
-        name: (join('-', ['my-db', $hyperscaler]))
+        name: (join('-', ['my-db', $provider]))
     parameters:
       # sslmode: disable
       sslmode: require
     passwordFrom:
       secretKeyRef:
         key: password
-        name: (join('-', ['my-db', $hyperscaler]))
+        name: (join('-', ['my-db', $provider]))
     port: ($dbPort)
     scheme: postgres
     userFrom:
       secretKeyRef:
         key: username
-        name: (join('-', ['my-db', $hyperscaler]))
+        name: (join('-', ['my-db', $provider]))
   schema:
     sql: |
       create table videos (

@@ -5,7 +5,7 @@ metadata:
 spec:
   template: true
   bindings:
-    - name: hyperscaler
+    - name: provider
       value: azure
     - name: cluster
       value: aks

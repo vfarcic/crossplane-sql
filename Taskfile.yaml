@@ -34,6 +34,10 @@ tasks:
     desc: Runs tests assuming that the cluster is already created and everything is installed.
     cmds:
       - watchexec -w kcl -w tests "task test-once"
+  test-watch-cnpg:
+    desc: Runs tests assuming that the cluster is already created and everything is installed.
+    cmds:
+      - watchexec -w kcl -w tests "task test-once-cnpg"
   test-once:
     desc: Runs tests once assuming that the cluster is already created and everything is installed.
     deps:
@@ -41,6 +45,13 @@ tasks:
     cmds:
       - task: package-apply
       - chainsaw test
+  test-once-cnpg:
+    desc: Runs tests once assuming that the cluster is already created and everything is installed.
+    deps:
+      - task: package-generate
+    cmds:
+      - task: package-apply
+      - chainsaw test tests/cnpg
 
   # Cluster
   cluster-create:
@@ -60,6 +71,7 @@ tasks:
       - helm repo update
       - helm upgrade --install external-secrets external-secrets/external-secrets --namespace external-secrets --create-namespace --wait
       - helm upgrade --install atlas-operator oci://ghcr.io/ariga/charts/atlas-operator --namespace atlas-operator --create-namespace --wait
+      - helm upgrade --install cnpg cloudnative-pg --repo https://cloudnative-pg.github.io/charts --namespace cnpg-system --create-namespace --wait
       - for: { var: PROVIDERS }
         cmd: kubectl apply --filename providers/{{ .ITEM }}
       - task: package-apply

@@ -26,7 +26,7 @@ spec:
             type: object
             properties:
               version:
-                description: The DB version depends on the DB type and versions available in the selected provider.
+                description: The DB version depends on the DB type and versions available in the selected provider. This field is not used with the cnpg provider.
                 type: string
               size:
                 description: "Supported sizes: small, medium, large"

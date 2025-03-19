@@ -2,15 +2,15 @@
 apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  name: (join('-', ['my-db', $hyperscaler]))
+  name: (join('-', ['my-db', $provider]))
   namespace: ($namespace)
 spec:
   size: medium
   version: "13.4"
   crossplane:
     compositionRef:
-      name: (join('-', [$hyperscaler, 'postgresql']))
+      name: (join('-', [$provider, 'postgresql']))
     compositionSelector:
       matchLabels:
         db: postgresql
-        provider: ($hyperscaler)
+        provider: ($provider)

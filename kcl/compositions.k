@@ -99,6 +99,16 @@ schema composition:
     composition {
         _provider = "upcloud"
         _source = file.read("kcl/upcloud.k")
+        _serverApiVersion = "postgresql.cnpg.io/v1"
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "cluster", upcloudstatuses.upcloudDataList
+        )
+        _serverKind = "Cluster"
+    }
+
+    composition {
+        _provider = "local"
+        _source = file.read("kcl/cnpg.k")
         _serverApiVersion = "database.upcloud.com/v1alpha1"
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "network", upcloudstatuses.upcloudDataList

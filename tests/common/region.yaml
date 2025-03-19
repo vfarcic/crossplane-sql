@@ -1,6 +1,6 @@
 apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  name: (join('-', ['my-db', $hyperscaler]))
+  name: (join('-', ['my-db', $provider]))
 spec:
   region: other-region
