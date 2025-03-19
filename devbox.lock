@@ -560,51 +560,51 @@
         }
       }
     },
-    "kubernetes-helm@3.17.1": {
-      "last_modified": "2025-02-23T09:42:26Z",
-      "resolved": "github:NixOS/nixpkgs/2d068ae5c6516b2d04562de50a58c682540de9bf#kubernetes-helm",
+    "kubernetes-helm@3.17.2": {
+      "last_modified": "2025-03-16T16:17:41Z",
+      "resolved": "github:NixOS/nixpkgs/8f76cf16b17c51ae0cc8e55488069593f6dab645#kubernetes-helm",
       "source": "devbox-search",
-      "version": "3.17.1",
+      "version": "3.17.2",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/bzzy1zzckgl7sxr7jnsgf5vkskzd0qgv-kubernetes-helm-3.17.1",
+              "path": "/nix/store/brc3q5prx53ip89csfg37g9ydwwgfd1p-kubernetes-helm-3.17.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/bzzy1zzckgl7sxr7jnsgf5vkskzd0qgv-kubernetes-helm-3.17.1"
+          "store_path": "/nix/store/brc3q5prx53ip89csfg37g9ydwwgfd1p-kubernetes-helm-3.17.2"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/w1yy5hhh6idsryy0ssigwrbazxa4kfkz-kubernetes-helm-3.17.1",
+              "path": "/nix/store/xrgs4la1szz3f3kf7w9g21wzp30mdfy2-kubernetes-helm-3.17.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/w1yy5hhh6idsryy0ssigwrbazxa4kfkz-kubernetes-helm-3.17.1"
+          "store_path": "/nix/store/xrgs4la1szz3f3kf7w9g21wzp30mdfy2-kubernetes-helm-3.17.2"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/ag4d5787s6r15mzrn5cqg04v7f6w5n88-kubernetes-helm-3.17.1",
+              "path": "/nix/store/r10crkfz1nfn5yq18670jbsbjf09l4fg-kubernetes-helm-3.17.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/ag4d5787s6r15mzrn5cqg04v7f6w5n88-kubernetes-helm-3.17.1"
+          "store_path": "/nix/store/r10crkfz1nfn5yq18670jbsbjf09l4fg-kubernetes-helm-3.17.2"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/gwxrxx8a1vnv9ig3q2wjhbv6sbww9k9d-kubernetes-helm-3.17.1",
+              "path": "/nix/store/0lhjm5b1k49rsirsrvsqasbrv1im6w6j-kubernetes-helm-3.17.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/gwxrxx8a1vnv9ig3q2wjhbv6sbww9k9d-kubernetes-helm-3.17.1"
+          "store_path": "/nix/store/0lhjm5b1k49rsirsrvsqasbrv1im6w6j-kubernetes-helm-3.17.2"
         }
       }
     },
@@ -874,6 +874,54 @@
             }
           ],
           "store_path": "/nix/store/9ssz9ywlwr182cf2x5sa2kicjsrgq7nw-teller-2.0.7"
+        }
+      }
+    },
+    "upbound@0.38.1": {
+      "last_modified": "2025-03-16T16:17:41Z",
+      "resolved": "github:NixOS/nixpkgs/8f76cf16b17c51ae0cc8e55488069593f6dab645#upbound",
+      "source": "devbox-search",
+      "version": "0.38.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/n3r8cv818048jbj5vzk5flsh1s8vr1i5-upbound-0.38.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/n3r8cv818048jbj5vzk5flsh1s8vr1i5-upbound-0.38.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/i28hb6qwjwmgk574pk2yiiprlqlhhcv1-upbound-0.38.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/i28hb6qwjwmgk574pk2yiiprlqlhhcv1-upbound-0.38.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/i818wbdj0xcfgffn7qcz1hhjc383nbwl-upbound-0.38.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/i818wbdj0xcfgffn7qcz1hhjc383nbwl-upbound-0.38.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/d1jwf8zisi2ibxj1jcw28z55zxvgnpsz-upbound-0.38.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/d1jwf8zisi2ibxj1jcw28z55zxvgnpsz-upbound-0.38.1"
         }
       }
     },
