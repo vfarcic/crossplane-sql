@@ -53,6 +53,17 @@ _items = [
             gatewayIdSelector.matchControllerRef = True
         }
     },
+    # {
+    #     apiVersion = "ec2.m.aws.upbound.io/v1beta2"
+    #     kind = "Route"
+    #     metadata = _metadata("route")
+    #     spec.forProvider = {
+    #         region = _region
+    #         routeTableIdSelector.matchControllerRef = True
+    #         destinationCidrBlock = "0.0.0.0/0"
+    #         gatewayIdSelector.matchControllerRef = True
+    #     }
+    # },
     ec2v1beta1.SecurityGroupRule {
         metadata = _metadata("securityGroupRule")
         spec.forProvider = {

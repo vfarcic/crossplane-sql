@@ -3,7 +3,7 @@
 ```sh
 devbox shell
 
-task cluster-create
+./dot.nu setup --preview true
 
 task test-watch
 

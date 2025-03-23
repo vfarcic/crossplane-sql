@@ -4,74 +4,88 @@ source scripts/kubernetes.nu
 source scripts/crossplane.nu
 source scripts/external-secrets.nu
 source scripts/atlas.nu
+source scripts/ingress.nu
+source scripts/common.nu
+source scripts/cnpg.nu
 
 def main [] {}
 
 def "main setup" [
-    provider: string
+    --preview = false
 ] {
 
     rm --force .env
 
     main create kubernetes kind
 
-    main apply crossplane --provider $provider
+    main apply ingress nginx --provider kind
 
-    kubectl apply --filename config.yaml
+    main apply crossplane --preview $preview
 
-    wait crossplane
+    print $"Applying (ansi yellow_bold)Crossplane Providers(ansi reset)..."
 
-    kubectl create namespace infra
-
-    if $provider == "google" {
-
-        (
-            apply providerconfig $provider
-                --google_project_id $env.PROJECT_ID
-        )
-
-        start $"https://console.cloud.google.com/marketplace/product/google/sqladmin.googleapis.com?project=($env.PROJECT_ID)"
-            
-        print $"
-(ansi yellow_bold)ENABLE(ansi reset) the API.
-Press any key to continue.
-"
-        input
-
-        (
-            main apply external_secrets $provider
-                --google_project_id $env.PROJECT_ID
-        )
-
-    } else {
-
-        apply providerconfig $provider 
-
+    let provider_files = [
+        # TODO: Uncomment
+        "aws.yaml"
+        "azure.yaml"
+        "cluster-role.yaml"
+        "function-auto-ready.yaml"
+        "function-kcl.yaml"
+        "function-status-transformer.yaml"
+        "google.yaml"
+        "provider-kubernetes-incluster.yaml"
+        "sql.yaml"
+        "upcloud.yaml"
+    ]  
+    for file in $provider_files {
+        kubectl apply --filename $"providers/($file)"
     }
+
+    # TODO: Remove
+    # kubectl apply --filename tmp/aws.yaml
+
+    print $"Applying (ansi yellow_bold)Crossplane Composition(ansi reset)..."
+
+    kubectl apply --filename package/definition.yaml
+
+    sleep 1sec
+
+    kubectl apply --filename "package/compositions.yaml"
+
+    main apply external_secrets
 
     main apply atlas
 
-    if $provider == "google" {
-        
-        (
-            main apply external_secrets google
-                --google_project_id $env.PROJECT_ID
-        )
+    main apply cnpg
 
-    } else if $provider == "azure" {
-        
-        (
-            main apply external_secrets azure
-                --azure_key_vault_name $env.RESOURCE_GROUP
-        )
-        
-    }
+    print $"Waiting for (ansi yellow_bold)Crossplane providers(ansi reset) to be healthy..."
+
+    (
+        kubectl wait
+            --for=condition=healthy provider.pkg.crossplane.io
+            --all --timeout 300s
+    )
+
+    kubectl create namespace a-team
+
+    main print source
+    
+}
+
+def "main package apply" [] {
+
+    kcl run kcl/compositions.k |
+        save package/compositions.yaml --force
+
+    kubectl apply --filename package/definition.yaml
+    
+    sleep 1sec
+
+    kubectl apply --filename package/compositions.yaml
 
 }
 
-def "main destroy" [
-    provider: string
-] {
+def "main destroy" [] {
 
     main destroy kubernetes kind
 

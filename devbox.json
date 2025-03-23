@@ -20,7 +20,8 @@
     "git@2.48.1",
     "upcloud-cli@3.15.0",
     "postgresql@17.4",
-    "kubectl-tree@0.4.3"
+    "kubectl-tree@0.4.3",
+    "upbound@0.38.1"
   ],
   "shell": {
     "init_hook": [],

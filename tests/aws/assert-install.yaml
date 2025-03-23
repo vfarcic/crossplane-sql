@@ -34,9 +34,6 @@ spec:
       kind: RouteTable
       name: my-db-aws
     - apiVersion: ec2.aws.upbound.io/v1beta1
-      kind: Route
-      name: my-db-aws
-    - apiVersion: ec2.aws.upbound.io/v1beta1
       kind: SecurityGroupRule
       name: my-db-aws
     - apiVersion: ec2.aws.upbound.io/v1beta1
@@ -53,6 +50,9 @@ spec:
       name: my-db-aws-c
     - apiVersion: ec2.aws.upbound.io/v1beta1
       kind: VPC
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta2
+      kind: Route
       name: my-db-aws
     - apiVersion: kubernetes.crossplane.io/v1alpha2
       kind: Object
@@ -109,12 +109,13 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.m.aws.upbound.io/v1beta2
 kind: Route
 metadata:
   annotations:
     crossplane.io/composition-resource-name: route
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
   - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
