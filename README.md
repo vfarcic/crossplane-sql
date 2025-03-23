@@ -5,9 +5,9 @@ devbox shell
 
 ./dot.nu setup --preview true
 
-task test-watch
+./dot.nu test watch
 
-task cluster-destroy
+./dot.nu destroy
 
 exit
 ```

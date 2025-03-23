@@ -12,12 +12,14 @@ spec:
   crossplane:
     version: ">=v2.0.0"
   dependsOn:
-  - provider: xpkg.upbound.io/upbound/provider-aws-ec2
-    version: ">=v1.0.0"
-  # - provider: index.docker.io/jbw976/provider-aws-ec2
-  #   version: "v1.21.0-rc.0.51.gde5db998a.dirty"
-  - provider: xpkg.upbound.io/upbound/provider-aws-rds
-    version: ">=v1.0.0"
+  # - provider: xpkg.upbound.io/upbound/provider-aws-ec2
+  #   version: ">=v1.0.0"
+  - provider: index.docker.io/jbw976/provider-aws-ec2
+    version: "v1.21.0-rc.0.51.gde5db998a.dirty"
+  # - provider: xpkg.upbound.io/upbound/provider-aws-rds
+  #   version: ">=v1.0.0"
+  - provider: index.docker.io/jbw976/provider-aws-rds
+    version: "v1.21.0-rc.0.51.gde5db998a.dirty"
   - provider: xpkg.upbound.io/upbound/provider-azure-dbforpostgresql
     version: ">=v0.33.0"
   - provider: xpkg.upbound.io/upbound/provider-gcp-sql

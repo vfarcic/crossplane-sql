@@ -48,5 +48,13 @@ spec:
       catch:
         - script:
             content: kubectl describe sqls my-db-aws --namespace $NAMESPACE
-        - script:
-            content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE
+    #     - script:
+    #         content: kubectl get aws,externalsecrets,pushsecrets --namespace $NAMESPACE
+    #   FIXME: Remove when v2 fixes the problem with the deletion of cluster-scoped resources.
+    #   finally:
+    #     - script:
+    #         content: |
+    #           kubectl delete object my-db-aws-secret
+    #           kubectl delete database.postgresql.sql.crossplane.io my-db-aws-db-01
+    #           kubectl delete database.postgresql.sql.crossplane.io my-db-aws-db-02
+    #           kubectl delete database.postgresql.sql.crossplane.io my-db-aws-db-03

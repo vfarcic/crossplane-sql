@@ -20,8 +20,6 @@ def --env "main apply crossplane" [
 
     helm repo update
 
-    mut chart = "crossplane"
-    mut devel = ""
     if $preview {
 
         (

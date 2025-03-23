@@ -26,7 +26,7 @@ def "main setup" [
 
     let provider_files = [
         # TODO: Uncomment
-        "aws.yaml"
+        # "aws.yaml"
         "azure.yaml"
         "cluster-role.yaml"
         "function-auto-ready.yaml"
@@ -42,7 +42,7 @@ def "main setup" [
     }
 
     # TODO: Remove
-    # kubectl apply --filename tmp/aws.yaml
+    kubectl apply --filename tmp/aws.yaml
 
     print $"Applying (ansi yellow_bold)Crossplane Composition(ansi reset)..."
 
@@ -82,6 +82,24 @@ def "main package apply" [] {
     sleep 1sec
 
     kubectl apply --filename package/compositions.yaml
+
+}
+
+def "main test once" [
+    --dir = "tests"
+] {
+
+    main package apply
+    
+    chainsaw test $dir
+
+}
+
+def "main test watch" [
+    --dir = "tests"
+] {
+
+    watchexec -w kcl -w tests $"./dot.nu test once --dir ($dir)"
 
 }
 

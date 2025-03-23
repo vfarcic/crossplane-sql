@@ -22,29 +22,35 @@ _metadata = lambda resourceName: str -> any {
 }
 
 _items = [
-    ec2v1beta1.InternetGateway {
+    {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "InternetGateway"
         metadata = _metadata("gateway")
         spec.forProvider = {
             region = _region
             vpcIdSelector.matchControllerRef = True
         }
     },
-    ec2v1beta1.MainRouteTableAssociation {
+    {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "MainRouteTableAssociation"
         metadata = _metadata("mainRouteTableAssociation")
         spec.forProvider = {
             region = _region
             routeTableIdSelector.matchControllerRef = True
             vpcIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.RouteTable {
+    }, {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "RouteTable"
         metadata = _metadata("routeTable")
         spec.forProvider = {
             region = _region
             vpcIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.Route {
+    }, {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta2"
+        kind = "Route"
         metadata = _metadata("route")
         spec.forProvider = {
             region = _region
@@ -52,19 +58,9 @@ _items = [
             destinationCidrBlock = "0.0.0.0/0"
             gatewayIdSelector.matchControllerRef = True
         }
-    },
-    # {
-    #     apiVersion = "ec2.m.aws.upbound.io/v1beta2"
-    #     kind = "Route"
-    #     metadata = _metadata("route")
-    #     spec.forProvider = {
-    #         region = _region
-    #         routeTableIdSelector.matchControllerRef = True
-    #         destinationCidrBlock = "0.0.0.0/0"
-    #         gatewayIdSelector.matchControllerRef = True
-    #     }
-    # },
-    ec2v1beta1.SecurityGroupRule {
+    }, {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "SecurityGroupRule"
         metadata = _metadata("securityGroupRule")
         spec.forProvider = {
             region = _region
@@ -76,16 +72,18 @@ _items = [
             cidrBlocks = ["0.0.0.0/0"]
             securityGroupIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.SecurityGroup {
+    }, {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "SecurityGroup"
         metadata = _metadata("securityGroup")
         spec.forProvider = {
             region = _region
             description = "I am too lazy to write descriptions"
             vpcIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.VPC {
+    }, {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "VPC"
         metadata = _metadata("vpc")
         spec.forProvider = {
             region = _region
@@ -93,16 +91,18 @@ _items = [
             enableDnsSupport = True
             enableDnsHostnames = True
         }
-    },
-    rdsv1beta1.SubnetGroup {
+    }, {
+        apiVersion = "rds.m.aws.upbound.io/v1beta1"
+        kind = "SubnetGroup"
         metadata = _metadata("subnetgroup")    
         spec.forProvider = {
             region = _region
             description = "I'm too lazy to write a good description"
             subnetIdSelector.matchControllerRef = True
         }
-    },
-    rdsv1beta2.Instance {
+    }, {
+        apiVersion = "rds.m.aws.upbound.io/v1beta3"
+        kind = "Instance"
         metadata = _metadata("rdsinstance")
         spec.forProvider = {
             region = _region
@@ -190,7 +190,9 @@ _zoneList = [
 ]
 
 _routeTableAssociations = [
-    ec2v1beta1.RouteTableAssociation {
+    {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "RouteTableAssociation"
         metadata = {
             name = _name + "-1" + _data.zone
             annotations = {
@@ -209,7 +211,9 @@ _routeTableAssociations = [
 ]
 
 _subnets = [
-    ec2v1beta1.Subnet {
+    {
+        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        kind = "Subnet"
         metadata = {
             name = _name + "-" + _data.zone
             annotations = {

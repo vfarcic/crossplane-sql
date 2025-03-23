@@ -30,5 +30,5 @@ spec:
       catch:
         - script:
             content: kubectl describe sqls my-db-local --namespace $NAMESPACE
-        - script:
-            content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE
+        # - script:
+        #     content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE

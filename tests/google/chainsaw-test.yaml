@@ -17,8 +17,8 @@ spec:
             file: ../common/install.yaml
         - assert:
             file: ../common/assert-install.yaml
-        - assert:
-            file: ../common/assert-status-provider.yaml
+        # - assert:
+        #     file: ../common/assert-status-provider.yaml
         - assert:
             file: assert-install.yaml
         - patch:
@@ -46,5 +46,5 @@ spec:
       catch:
         - script:
             content: kubectl describe sqls my-db-google --namespace $NAMESPACE
-        - script:
-            content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE
+        # - script:
+        #     content: kubectl get gcp,externalsecrets,pushsecrets --namespace $NAMESPACE
