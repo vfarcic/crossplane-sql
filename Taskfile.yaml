@@ -54,7 +54,13 @@ tasks:
       - cluster-create-kind
       - helm-repo
     cmds:
-      - helm upgrade --install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace --wait
+      # - helm upgrade --install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace --wait
+      - helm upgrade --install crossplane crossplane-preview/crossplane --namespace crossplane-system --create-namespace --devel --wait
+      - helm repo add external-secrets https://charts.external-secrets.io
+      - helm repo update
+      - helm upgrade --install external-secrets external-secrets/external-secrets --namespace external-secrets --create-namespace --wait
+      - helm upgrade --install atlas-operator oci://ghcr.io/ariga/charts/atlas-operator --namespace atlas-operator --create-namespace --wait
+      - helm upgrade --install cnpg cloudnative-pg --repo https://cloudnative-pg.github.io/charts --namespace cnpg-system --create-namespace --wait
       - for: { var: PROVIDERS }
         cmd: kubectl apply --filename providers/{{ .ITEM }}
       - task: package-apply
