@@ -79,6 +79,7 @@ tasks:
     internal: true
   helm-repo:
     cmds:
-      - helm repo add crossplane-stable https://charts.crossplane.io/stable
+      # - helm repo add crossplane-stable https://charts.crossplane.io/stable
+      - helm repo add crossplane-preview https://charts.crossplane.io/preview
       - helm repo update
     internal: true
