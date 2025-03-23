@@ -25,8 +25,7 @@ def "main setup" [
     print $"Applying (ansi yellow_bold)Crossplane Providers(ansi reset)..."
 
     let provider_files = [
-        # TODO: Uncomment
-        # "aws.yaml"
+        "aws.yaml"
         "azure.yaml"
         "cluster-role.yaml"
         "function-auto-ready.yaml"
@@ -40,9 +39,6 @@ def "main setup" [
     for file in $provider_files {
         kubectl apply --filename $"providers/($file)"
     }
-
-    # TODO: Remove
-    kubectl apply --filename tmp/aws.yaml
 
     print $"Applying (ansi yellow_bold)Crossplane Composition(ansi reset)..."
 

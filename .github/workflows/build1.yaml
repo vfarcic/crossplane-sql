@@ -19,6 +19,7 @@ jobs:
         run: |
           devbox run test
       - name: Build the package
+        if: github.ref == 'refs/heads/main'
         run: |
           GOBIN=$PWD go install github.com/maykonlsf/semver-cli/cmd/semver@latest
           export UP_TOKEN=${{ secrets.UP_TOKEN }}
