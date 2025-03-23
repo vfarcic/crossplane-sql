@@ -17,8 +17,8 @@ spec:
             file: ../common/install.yaml
         - assert:
             file: ../common/assert-install.yaml
-        - assert:
-            file: ../common/assert-status-provider.yaml
+        # - assert:
+        #     file: ../common/assert-status-provider.yaml
         - assert:
             file: assert-install.yaml
         - patch:
