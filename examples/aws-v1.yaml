@@ -30,11 +30,6 @@ spec:
       storeName: aws
       pullRootPasswordKey: db-root-password
       pushToStore: true
-    crossplane:
-      compositionSelector:
-        matchLabels:
-          provider: aws
-          db: postgresql
   compositionSelector:
     matchLabels:
       provider: aws
