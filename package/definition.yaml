@@ -9,6 +9,9 @@ spec:
   names:
     kind: SQL
     plural: sqls
+  # claimNames:
+  #   kind: SQLClaim
+  #   plural: sqlclaims
   connectionSecretKeys:
   - username
   - password
