@@ -74,21 +74,32 @@ Press (ansi yellow_bold)any key(ansi reset) to continue.
             $vm_size = "8xCPU-32GB"
         }
 
+        print $"Creating (ansi yellow_bold)network(ansi reset)..."
+
         do --ignore-errors {(
             upctl network create --name $name --zone us-nyc1
                 --ip-network address="10.0.1.0/24,dhcp=true"
         )}
 
+        print $"Creating (ansi yellow_bold)Kubernetes(ansi reset) cluster..."
+
         (
             upctl kubernetes create --name $name --zone us-nyc1
-                --node-group $"count=($min_nodes),name=main,plan=($vm_size)"
-                --network dot --kubernetes-api-allow-ip 
+                --node-group $"count=($min_nodes),name=dot,plan=($vm_size)"
+                --plan dev-md  --network $name --version "1.30"
+                --kubernetes-api-allow-ip "0.0.0.0/0" --wait
         )
+
+        print $"Getting (ansi yellow_bold)kubeconfig(ansi reset)..."
 
         (
             upctl kubernetes config $name --output yaml
                 --write $env.KUBECONFIG
         )
+
+        print $"Waiting for (ansi yellow_bold)5 minutes(ansi reset) to fully set up the cluster..."
+
+        sleep 300sec
 
     } else if $provider == "kind" {
 
@@ -191,9 +202,15 @@ def "main destroy kubernetes" [
 
     } else if $provider == "upcloud" {
 
+        print $"Deleting (ansi yellow_bold)Kubernetes(ansi reset)..."
+
         upctl kubernetes delete $name
 
-        # FIXME: Sleep for 60 seconds?
+        print $"Waiting for (ansi yellow_bold)10 minutes(ansi reset) to fully clean up the cluster..."
+
+        sleep 600sec
+
+        print $"Deleting (ansi yellow_bold)network(ansi reset)..."
 
         upctl network delete $name
 
@@ -203,7 +220,9 @@ def "main destroy kubernetes" [
 
     }
 
-    rm --force $env.KUBECONFIG
+    if "KUBECONFIG" in $env {
+        rm --force $env.KUBECONFIG
+    }
 
 }
 
@@ -431,12 +450,10 @@ def --env "create eks" [
     $"export AWS_SECRET_ACCESS_KEY=($aws_secret_access_key)\n"
         | save --append .env
 
-    mut aws_account_id = ""
-    if AWS_ACCOUNT_ID in $env {
-        $aws_account_id = $env.AWS_ACCOUNT_ID
-    } else {
-        $aws_account_id = input $"(ansi green_bold)Enter AWS Account ID: (ansi reset)"
-    }
+    let aws_account_id = (
+        aws sts get-caller-identity --query "Account" 
+        --output text
+    )
     $"export AWS_ACCOUNT_ID=($aws_account_id)\n"
         | save --append .env
 
