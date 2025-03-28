@@ -90,7 +90,18 @@ def --env "main test full" [] {
 
     main setup --preview true
 
-    main test once
+    main package apply
+
+    let dirs = [
+        "aws"
+        "aws-ack"
+        "azure"
+        "google"
+        "upcloud"
+    ]  
+    for dir in $dirs {
+        chainsaw test $"tests/($dir)"
+    }
 
 }
 
