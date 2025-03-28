@@ -111,6 +111,7 @@ _items = [{
             kind = "Secret"
             metadata = {
                 name = _name
+                namespace = _namespace
             }
             data.port = "NTQzMg=="
         }

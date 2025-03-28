@@ -18,7 +18,11 @@ schema providerConfig:
         credentials.source = "InjectedIdentity"
     }
 
-_items = [{
+_items = [
+    providerConfig {
+        _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+        _suffix = "kubernetes"
+}, {
     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
     kind = "ProviderConfig"
     metadata = {

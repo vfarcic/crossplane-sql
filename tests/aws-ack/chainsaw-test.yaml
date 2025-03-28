@@ -1,0 +1,51 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: aws-ack
+spec:
+  template: true
+  bindings:
+    - name: provider
+      value: aws-ack
+    - name: cluster
+      value: eks
+    # - name: dbPort
+    #   value: 5432
+  steps:
+    - try:
+        - apply:
+            file: ../common/install.yaml
+        - assert:
+            file: ../common/assert-install.yaml
+        - assert:
+            file: assert-install.yaml
+        # - assert:
+        #     file: ../common/assert-db.yaml
+        # - patch:
+        #     file: ../common/schemas.yaml
+        # - assert:
+        #     file: ../common/assert-schemas.yaml
+        # - patch:
+        #     file: ../common/secret-pull.yaml
+        # - assert:
+        #     file: ../common/assert-secret-pull.yaml
+        # - patch:
+        #     file: ../common/secret-push.yaml
+        # - assert:
+        #     file: ../common/assert-secret-push.yaml
+        # - patch:
+        #     file: ../common/secret-pull-cluster.yaml
+        # - assert:
+        #     file: ../common/assert-secret-pull-cluster.yaml
+        # - patch:
+        #     file: ../common/region.yaml
+        # - assert:
+        #     file: region.yaml
+      catch:
+        - script:
+            content: |
+              kubectl describe sqls my-db-aws-ack
+              # kubectl --namespace $NAMESPACE get secret my-db-aws-ack-password --output yaml
+              kubectl describe object my-db-aws-ack-secret
+        # - script:
+        #     content: kubectl get fieldexports,secrets --namespace $NAMESPACE

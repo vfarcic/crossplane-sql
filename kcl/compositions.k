@@ -49,15 +49,18 @@ schema composition:
                         source = file.read("kcl/common.k")
                     }
                 }
-            }, {
-                step = "statuses"
-                functionRef.name = "crossplane-contrib-function-status-transformer"
-                input = {
-                    apiVersion = "function-status-transformer.fn.crossplane.io/v1beta1"
-                    kind = "StatusTransformation"
-                    statusConditionHooks = _statusConditionHooks
-                }
-            }, {
+            },
+            if _statusConditionHooks != {}:
+                {
+                    step = "statuses"
+                    functionRef.name = "crossplane-contrib-function-status-transformer"
+                    input = {
+                        apiVersion = "function-status-transformer.fn.crossplane.io/v1beta1"
+                        kind = "StatusTransformation"
+                        statusConditionHooks = _statusConditionHooks
+                    }
+                },
+            {
                 step = "automatically-detect-ready-composed-resources"
                 functionRef.name = "crossplane-contrib-function-auto-ready"
             }
@@ -66,15 +69,6 @@ schema composition:
     }
         
 [
-    composition {
-        _provider = "google"
-        _source = file.read("kcl/google.k")
-        _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "databaseinstance", googlestatuses.googleDataList
-        )
-        _serverApiVersion = "sql.gcp.upbound.io/v1beta1"
-        _serverKind = "DatabaseInstance"
-    }
 
     composition {
         _provider = "aws"
@@ -84,6 +78,14 @@ schema composition:
         )
         _serverApiVersion = "rds.m.aws.upbound.io/v1beta1"
         _serverKind = "SubnetGroup"
+    }
+
+    composition {
+        _provider = "aws-ack"
+        _source = file.read("kcl/aws-ack.k")
+        _statusConditionHooks = {}
+        _serverApiVersion = ""
+        _serverKind = ""
     }
 
     composition {
@@ -97,13 +99,13 @@ schema composition:
     }
 
     composition {
-        _provider = "upcloud"
-        _source = file.read("kcl/upcloud.k")
-        _serverApiVersion = "postgresql.cnpg.io/v1"
+        _provider = "google"
+        _source = file.read("kcl/google.k")
         _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "cluster", upcloudstatuses.upcloudDataList
+            "databaseinstance", googlestatuses.googleDataList
         )
-        _serverKind = "Cluster"
+        _serverApiVersion = "sql.gcp.upbound.io/v1beta1"
+        _serverKind = "DatabaseInstance"
     }
 
     composition {
@@ -114,6 +116,16 @@ schema composition:
             "network", upcloudstatuses.upcloudDataList
         )
         _serverKind = "ManagedDatabasePostgresql"
+    }
+
+    composition {
+        _provider = "upcloud"
+        _source = file.read("kcl/upcloud.k")
+        _serverApiVersion = "postgresql.cnpg.io/v1"
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "cluster", upcloudstatuses.upcloudDataList
+        )
+        _serverKind = "Cluster"
     }
 
 ]

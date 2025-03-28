@@ -3,427 +3,6 @@ kind: Composition
 metadata:
   labels:
     db: postgresql
-    provider: google
-  name: google-postgresql
-spec:
-  compositeTypeRef:
-    apiVersion: devopstoolkit.live/v1beta1
-    kind: SQL
-  mode: Pipeline
-  pipeline:
-  - step: main
-    functionRef:
-      name: crossplane-contrib-function-kcl
-    input:
-      apiVersion: krm.kcl.dev/v1alpha1
-      kind: KCLRun
-      spec:
-        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
-        source: |
-          oxr = option("params").oxr
-          ocds = option("params").ocds
-
-          _name = oxr.metadata.name
-          _namespace = oxr.metadata.namespace
-          _region = "us-east1"
-          if oxr.spec?.region:
-              _region = oxr.spec.region
-
-          _metadata = lambda resourceName: str -> any {
-              {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/composition-resource-name" = resourceName
-                  }
-              }
-          }
-
-          _items = [{
-              apiVersion = "sql.gcp.upbound.io/v1beta1"
-              kind = "DatabaseInstance"
-              metadata = _metadata("databaseinstance")
-              spec = {
-                  forProvider = {
-                      region = _region
-                      databaseVersion = "POSTGRES_" + oxr.spec.version
-                      rootPasswordSecretRef = {
-                          name = _name + "-password"
-                          key = "password"
-                          namespace = _namespace
-                      }
-                      settings = [{
-                          if oxr.spec.size == "small":
-                              tier = "db-custom-1-3840"
-                          elif oxr.spec.size == "medium":
-                              tier = "db-custom-16-61440"
-                          else:
-                              tier = "db-custom-64-245760"
-                          availabilityType = "REGIONAL"
-                          backupConfiguration = [{
-                              enabled = True
-                              binaryLogEnabled = False
-                          }]
-                          ipConfiguration = [{
-                              ipv4Enabled = True
-                              authorizedNetworks = [{
-                                  name = "all"
-                                  value = "0.0.0.0/0"
-                              }]
-                          }]
-                      }]
-                      deletionProtection = False
-                  }
-              }
-          }, {
-              apiVersion = "sql.gcp.upbound.io/v1beta1"
-              kind = "User"
-              metadata = _metadata("user")
-              spec = {
-                  deletionPolicy = "Orphan"
-                  forProvider = {
-                      passwordSecretRef = {
-                          key = "password"
-                          name = _name + "-password"
-                          namespace = _namespace
-                      }
-                      instanceSelector.matchControllerRef = True
-                  }
-              }
-          }, {
-              apiVersion = "kubernetes.crossplane.io/v1alpha2"
-              kind = "Object"
-              metadata = {
-                  name = _name + "-secret"
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-secret"
-                  }
-              }
-              spec = {
-                  references = [{
-                      patchesFrom = {
-                          apiVersion = "sql.gcp.upbound.io/v1beta1"
-                          kind = "User"
-                          name = _name
-                          namespace = "crossplane-system"
-                          fieldPath = "metadata.name"
-                      }
-                      toFieldPath = "stringData.username"
-                  }, {
-                      patchesFrom = {
-                          apiVersion = "v1"
-                          kind = "Secret"
-                          name = _name + "-password"
-                          namespace = _namespace
-                          fieldPath = "data.password"
-                      }
-                      toFieldPath = "data.password"
-                  }, {
-                      patchesFrom = {
-                          apiVersion = "sql.gcp.upbound.io/v1beta1"
-                          kind = "DatabaseInstance"
-                          name = _name
-                          namespace = "crossplane-system"
-                          fieldPath = "status.atProvider.publicIpAddress"
-                      }
-                      toFieldPath = "stringData.endpoint"
-                  }]
-                  forProvider.manifest = {
-                      apiVersion = "v1"
-                      kind = "Secret"
-                      metadata = {
-                          name = _name
-                      }
-                      data.port = "NTQzMg=="
-                  }
-                  providerConfigRef.name = _name + "-sql"
-              }
-          }, {
-              **oxr
-              if "databaseinstance" in ocds:
-                  status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
-          }]
-
-          items = _items
-  - step: common
-    functionRef:
-      name: crossplane-contrib-function-kcl
-    input:
-      apiVersion: krm.kcl.dev/v1alpha1
-      kind: KCLRun
-      spec:
-        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
-        source: |
-          oxr = option("params").oxr
-
-          _name = oxr.metadata.name
-          _namespace = oxr.metadata.namespace
-          schema providerConfig:
-              _apiVersion: str
-              _suffix: str
-              apiVersion = _apiVersion
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name + "-sql"
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = _name + "-provider-config-" + _suffix
-                  }
-              }
-              spec = {
-                  credentials.source = "InjectedIdentity"
-              }
-
-          _items = [{
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
-          }]
-
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
-
-          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
-              _items += [{
-                  apiVersion = "external-secrets.io/v1beta1"
-                  kind = "ExternalSecret"
-                  metadata = {
-                      name = _name + "-password"
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull"
-                      }
-                  }
-                  spec = {
-                      dataFrom = [{
-                          extract = {
-                              conversionStrategy = "Default"
-                              decodingStrategy = "None"
-                              key = oxr.spec.secrets.pullRootPasswordKey
-                              metadataPolicy = "None"
-                          }
-                      }]
-                      refreshInterval = "1h"
-                      secretStoreRef = {
-                          kind = "ClusterSecretStore"
-                          name = oxr.spec.secrets.storeName
-                      }
-                      target = {
-                          creationPolicy = "Owner"
-                          deletionPolicy = "Retain"
-                          name = _name + "-password"
-                      }
-                  }
-              }]
-
-          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
-              _endpoint = """\
-          {
-            "endpoint": "{{ .endpoint }}",
-            "port": "{{ .port }}",
-            "username": "{{ .username }}",
-            "password": "{{ .password }}",
-            """
-              _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.databases ]
-              _endpoint += ",\n  ".join(_conns)
-              _endpoint += """
-          }
-          """
-              _items += [{
-                  apiVersion = "external-secrets.io/v1alpha1"
-                  kind = "PushSecret"
-                  metadata = {
-                      name = _name
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-push-store"
-                      }
-                  }
-                  spec = {
-                      refreshInterval = "1h"
-                      secretStoreRefs = [{
-                          name = oxr.spec.secrets.storeName
-                          kind = "ClusterSecretStore"
-                      }]
-                      selector.secret.name = _name
-                      template.data.endpoint = _endpoint
-                      data = [{
-                          match = {
-                              secretKey = "endpoint"
-                              remoteRef.remoteKey = _name
-                          }
-                      }]
-                      deletionPolicy = "Delete"
-                  }
-              }]
-
-          if oxr.spec.schemas:
-              _items += [{
-                  apiVersion = "db.atlasgo.io/v1alpha1"
-                  kind = "AtlasSchema"
-                  metadata = {
-                      name = _name + "-" + _schema.database
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-schema-" + _schema.database
-                      }
-                  }
-                  spec = {
-                      credentials = {
-                          scheme = "postgres"
-                          hostFrom.secretKeyRef = {
-                              key = "endpoint"
-                              name = _name
-                          }
-                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                              port = 11569
-                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
-                              port = 5432
-                          userFrom.secretKeyRef = {
-                              key = "username"
-                              name = _name
-                          }
-                          passwordFrom.secretKeyRef = {
-                              key = "password"
-                              name = _name
-                          }
-                          database = _schema.database
-                          parameters.sslmode = "require"
-                      }
-                      schema.sql = _schema.sql
-                  }
-              } for _schema in oxr.spec.schemas ]
-
-          if oxr.spec.secrets?.pullToCluster:
-              _items += [{
-                  apiVersion = "external-secrets.io/v1beta1"
-                  kind = "ExternalSecret"
-                  metadata = {
-                      name = _name
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull-cluster"
-                      }
-                      namespace = oxr.spec.secrets.pullToClusterNamespace
-                  }
-                  spec = {
-                      dataFrom = [{
-                          extract = {
-                              conversionStrategy = "Default"
-                              decodingStrategy = "None"
-                              key = _name
-                              metadataPolicy = "None"
-                          }
-                      }]
-                      refreshInterval = "1h"
-                      secretStoreRef = {
-                          kind = "ClusterSecretStore"
-                          name = oxr.spec.secrets.storeName
-                      }
-                      target = {
-                          creationPolicy = "Owner"
-                          deletionPolicy = "Retain"
-                          name = _name
-                      }
-                  }
-              }]
-
-          items = _items
-  - step: statuses
-    functionRef:
-      name: crossplane-contrib-function-status-transformer
-    input:
-      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
-      kind: StatusTransformation
-      statusConditionHooks:
-      - matchers:
-        - resources:
-          - name: databaseinstance
-          conditions:
-          - type: Synced
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'True'
-            message: So far so good
-      - matchers:
-        - resources:
-          - name: databaseinstance
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: (.*)cannot get referenced ProviderConfig(.*)
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: ProviderConfig is missing. Contact service owner.
-      - matchers:
-        - resources:
-          - name: databaseinstance
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: '(.*)Invalid value for region: (?P<Region>.*)., invalid(.*)'
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: Selected region {{ .Region }} is not available. Double check the `spec.region` value.
-  - step: automatically-detect-ready-composed-resources
-    functionRef:
-      name: crossplane-contrib-function-auto-ready
-  writeConnectionSecretsToNamespace: crossplane-system
----
-apiVersion: apiextensions.crossplane.io/v1
-kind: Composition
-metadata:
-  labels:
-    db: postgresql
     provider: aws
   name: aws-postgresql
 spec:
@@ -440,7 +19,7 @@ spec:
       kind: KCLRun
       spec:
         dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
-        source: "import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1\nimport models.io.upbound.aws.rds.v1beta1 as rdsv1beta1\nimport models.io.upbound.aws.rds.v1beta2 as rdsv1beta2\nimport models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2\n\noxr = option(\"params\").oxr\nocds = option(\"params\").ocds\n\n_name = oxr.metadata.name\n_namespace = oxr.metadata.namespace\n_region = \"us-east-1\"\nif oxr.spec?.region:\n    _region = oxr.spec.region\n\n_metadata = lambda resourceName: str -> any {\n    {\n        name = _name\n        annotations = {\n            \"krm.kcl.dev/composition-resource-name\" = resourceName\n        }\n    }\n}\n\n_items = [\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"InternetGateway\"\n        metadata = _metadata(\"gateway\")\n        spec.forProvider = {\n            region = _region\n            vpcIdSelector.matchControllerRef = True\n        }\n    },\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"MainRouteTableAssociation\"\n        metadata = _metadata(\"mainRouteTableAssociation\")\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"RouteTable\"\n        metadata = _metadata(\"routeTable\")\n        spec.forProvider = {\n            region = _region\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta2\"\n        kind = \"Route\"\n        metadata = _metadata(\"route\")\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            destinationCidrBlock = \"0.0.0.0/0\"\n            gatewayIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"SecurityGroupRule\"\n        metadata = _metadata(\"securityGroupRule\")\n        spec.forProvider = {\n            region = _region\n            description = \"I am too lazy to write descriptions\"\n            type = \"ingress\"\n            fromPort = 5432\n            toPort = 5432\n            protocol = \"tcp\"\n            cidrBlocks = [\"0.0.0.0/0\"]\n            securityGroupIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"SecurityGroup\"\n        metadata = _metadata(\"securityGroup\")\n        spec.forProvider = {\n            region = _region\n            description = \"I am too lazy to write descriptions\"\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"VPC\"\n        metadata = _metadata(\"vpc\")\n        spec.forProvider = {\n            region = _region\n            cidrBlock = \"11.0.0.0/16\"\n            enableDnsSupport = True\n            enableDnsHostnames = True\n        }\n    }, {\n        apiVersion = \"rds.m.aws.upbound.io/v1beta1\"\n        kind = \"SubnetGroup\"\n        metadata = _metadata(\"subnetgroup\")    \n        spec.forProvider = {\n            region = _region\n            description = \"I'm too lazy to write a good description\"\n            subnetIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"rds.m.aws.upbound.io/v1beta3\"\n        kind = \"Instance\"\n        metadata = _metadata(\"rdsinstance\")\n        spec.forProvider = {\n            region = _region\n            dbSubnetGroupNameSelector.matchControllerRef = True\n            vpcSecurityGroupIdSelector.matchControllerRef = True\n            username = \"masteruser\"\n            engine = \"postgres\"\n            skipFinalSnapshot = True\n            publiclyAccessible = True\n            allocatedStorage = 200\n            passwordSecretRef = {\n                name = _name + \"-password\"\n                key = \"password\"\n                namespace = _namespace\n            }\n            storageEncrypted = True\n            identifier = _name\n            if oxr.spec.size == \"small\":\n                instanceClass = \"db.m5.large\"\n            elif oxr.spec.size == \"medium\":\n                instanceClass = \"db.m5.2xlarge\"\n            else:\n                instanceClass = \"db.m5.8xlarge\"\n            engineVersion = oxr.spec.version\n        }\n    },\n    k8sv1alpha2.Object {\n        metadata = {\n            name = _name + \"-secret\"\n            annotations = {\n                \"krm.kcl.dev/ready\": \"True\"\n                \"krm.kcl.dev/composition-resource-name\" = \"sql-secret\"\n            }\n        }\n        spec = {\n            references = [{\n                patchesFrom = {\n                    apiVersion = \"rds.aws.upbound.io/v1beta1\"\n                    kind = \"Instance\"\n                    name = _name\n                    namespace = \"crossplane-system\"\n                    fieldPath = \"spec.forProvider.username\"\n                }\n                toFieldPath = \"stringData.username\"\n            }, {\n                patchesFrom = {\n                    apiVersion = \"v1\"\n                    kind = \"Secret\"\n                    name = _name + \"-password\"\n                    namespace = _namespace\n                    fieldPath = \"data.password\"\n                }\n                toFieldPath = \"data.password\"\n            }, {\n                patchesFrom = {\n                    apiVersion = \"rds.aws.upbound.io/v1beta1\"\n                    kind = \"Instance\"\n                    name = _name\n                    namespace = \"crossplane-system\"\n                    fieldPath = \"status.atProvider.address\"\n                }\n                toFieldPath = \"stringData.endpoint\"\n            }]\n            forProvider.manifest = {\n                apiVersion = \"v1\"\n                kind = \"Secret\"\n                metadata = {\n                    name = _name\n                }\n                data.port = \"NTQzMg==\"\n            }\n            providerConfigRef.name = _name + \"-sql\"\n        }\n    }, {\n        **oxr\n        if \"rdsinstance\" in ocds:\n            status.address = ocds[\"rdsinstance\"].Resource.status.atProvider.address\n    }\n]\n\n_zoneList = [\n    { zone = \"a\", cidrBlock = \"11.0.0.0/24\" },\n    { zone = \"b\", cidrBlock = \"11.0.1.0/24\"  },\n    { zone = \"c\", cidrBlock = \"11.0.2.0/24\"  }\n]\n\n_routeTableAssociations = [\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"RouteTableAssociation\"\n        metadata = {\n            name = _name + \"-1\" + _data.zone\n            annotations = {\n                \"krm.kcl.dev/composition-resource-name\" = \"routeTableAssociation1\" + _data.zone\n            }\n        }\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            subnetIdSelector = {\n                matchControllerRef = True\n                matchLabels.zone = _region + _data.zone\n            }\n        }\n    } for _data in _zoneList\n]\n\n_subnets = [\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"Subnet\"\n        metadata = {\n            name = _name + \"-\" + _data.zone\n            annotations = {\n                \"krm.kcl.dev/composition-resource-name\" = \"subnet-\" + _data.zone\n            }\n            labels = {\n                zone = _region + _data.zone\n            }\n        }\n        spec.forProvider = {\n            region = _region\n            availabilityZone = _region + _data.zone\n            cidrBlock = _data.cidrBlock\n            vpcIdSelector.matchControllerRef = True\n        }\n    } for _data in _zoneList\n]\n\nitems = _items + _routeTableAssociations + _subnets\n"
+        source: "import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1\nimport models.io.upbound.aws.rds.v1beta1 as rdsv1beta1\nimport models.io.upbound.aws.rds.v1beta2 as rdsv1beta2\nimport models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2\n\noxr = option(\"params\").oxr\nocds = option(\"params\").ocds\n\n_name = oxr.metadata.name\n_namespace = oxr.metadata.namespace\n_region = \"us-east-1\"\nif oxr.spec?.region:\n    _region = oxr.spec.region\n\n_metadata = lambda resourceName: str -> any {\n    {\n        name = _name\n        annotations = {\n            \"krm.kcl.dev/composition-resource-name\" = resourceName\n        }\n    }\n}\n\n_items = [\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"InternetGateway\"\n        metadata = _metadata(\"gateway\")\n        spec.forProvider = {\n            region = _region\n            vpcIdSelector.matchControllerRef = True\n        }\n    },\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"MainRouteTableAssociation\"\n        metadata = _metadata(\"mainRouteTableAssociation\")\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"RouteTable\"\n        metadata = _metadata(\"routeTable\")\n        spec.forProvider = {\n            region = _region\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta2\"\n        kind = \"Route\"\n        metadata = _metadata(\"route\")\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            destinationCidrBlock = \"0.0.0.0/0\"\n            gatewayIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"SecurityGroupRule\"\n        metadata = _metadata(\"securityGroupRule\")\n        spec.forProvider = {\n            region = _region\n            description = \"I am too lazy to write descriptions\"\n            type = \"ingress\"\n            fromPort = 5432\n            toPort = 5432\n            protocol = \"tcp\"\n            cidrBlocks = [\"0.0.0.0/0\"]\n            securityGroupIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"SecurityGroup\"\n        metadata = _metadata(\"securityGroup\")\n        spec.forProvider = {\n            region = _region\n            description = \"I am too lazy to write descriptions\"\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"VPC\"\n        metadata = _metadata(\"vpc\")\n        spec.forProvider = {\n            region = _region\n            cidrBlock = \"11.0.0.0/16\"\n            enableDnsSupport = True\n            enableDnsHostnames = True\n        }\n    }, {\n        apiVersion = \"rds.m.aws.upbound.io/v1beta1\"\n        kind = \"SubnetGroup\"\n        metadata = _metadata(\"subnetgroup\")    \n        spec.forProvider = {\n            region = _region\n            description = \"I'm too lazy to write a good description\"\n            subnetIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"rds.m.aws.upbound.io/v1beta3\"\n        kind = \"Instance\"\n        metadata = _metadata(\"rdsinstance\")\n        spec.forProvider = {\n            region = _region\n            dbSubnetGroupNameSelector.matchControllerRef = True\n            vpcSecurityGroupIdSelector.matchControllerRef = True\n            username = \"masteruser\"\n            engine = \"postgres\"\n            skipFinalSnapshot = True\n            publiclyAccessible = True\n            allocatedStorage = 200\n            passwordSecretRef = {\n                name = _name + \"-password\"\n                key = \"password\"\n                namespace = _namespace\n            }\n            storageEncrypted = True\n            identifier = _name\n            if oxr.spec.size == \"small\":\n                instanceClass = \"db.m5.large\"\n            elif oxr.spec.size == \"medium\":\n                instanceClass = \"db.m5.2xlarge\"\n            else:\n                instanceClass = \"db.m5.8xlarge\"\n            engineVersion = oxr.spec.version\n        }\n    },\n    k8sv1alpha2.Object {\n        metadata = {\n            name = _name + \"-secret\"\n            annotations = {\n                \"krm.kcl.dev/ready\": \"True\"\n                \"krm.kcl.dev/composition-resource-name\" = \"sql-secret\"\n            }\n        }\n        spec = {\n            references = [{\n                patchesFrom = {\n                    apiVersion = \"rds.aws.upbound.io/v1beta1\"\n                    kind = \"Instance\"\n                    name = _name\n                    namespace = \"crossplane-system\"\n                    fieldPath = \"spec.forProvider.username\"\n                }\n                toFieldPath = \"stringData.username\"\n            }, {\n                patchesFrom = {\n                    apiVersion = \"v1\"\n                    kind = \"Secret\"\n                    name = _name + \"-password\"\n                    namespace = _namespace\n                    fieldPath = \"data.password\"\n                }\n                toFieldPath = \"data.password\"\n            }, {\n                patchesFrom = {\n                    apiVersion = \"rds.aws.upbound.io/v1beta1\"\n                    kind = \"Instance\"\n                    name = _name\n                    namespace = \"crossplane-system\"\n                    fieldPath = \"status.atProvider.address\"\n                }\n                toFieldPath = \"stringData.endpoint\"\n            }]\n            forProvider.manifest = {\n                apiVersion = \"v1\"\n                kind = \"Secret\"\n                metadata = {\n                    name = _name\n                    namespace = _namespace\n                }\n                data.port = \"NTQzMg==\"\n            }\n            providerConfigRef.name = _name + \"-sql\"\n        }\n    }, {\n        **oxr\n        if \"rdsinstance\" in ocds:\n            status.address = ocds[\"rdsinstance\"].Resource.status.atProvider.address\n    }\n]\n\n_zoneList = [\n    { zone = \"a\", cidrBlock = \"11.0.0.0/24\" },\n    { zone = \"b\", cidrBlock = \"11.0.1.0/24\"  },\n    { zone = \"c\", cidrBlock = \"11.0.2.0/24\"  }\n]\n\n_routeTableAssociations = [\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"RouteTableAssociation\"\n        metadata = {\n            name = _name + \"-1\" + _data.zone\n            annotations = {\n                \"krm.kcl.dev/composition-resource-name\" = \"routeTableAssociation1\" + _data.zone\n            }\n        }\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            subnetIdSelector = {\n                matchControllerRef = True\n                matchLabels.zone = _region + _data.zone\n            }\n        }\n    } for _data in _zoneList\n]\n\n_subnets = [\n    {\n        apiVersion = \"ec2.m.aws.upbound.io/v1beta1\"\n        kind = \"Subnet\"\n        metadata = {\n            name = _name + \"-\" + _data.zone\n            annotations = {\n                \"krm.kcl.dev/composition-resource-name\" = \"subnet-\" + _data.zone\n            }\n            labels = {\n                zone = _region + _data.zone\n            }\n        }\n        spec.forProvider = {\n            region = _region\n            availabilityZone = _region + _data.zone\n            cidrBlock = _data.cidrBlock\n            vpcIdSelector.matchControllerRef = True\n        }\n    } for _data in _zoneList\n]\n\nitems = _items + _routeTableAssociations + _subnets\n"
   - step: common
     functionRef:
       name: crossplane-contrib-function-kcl
@@ -470,7 +49,11 @@ spec:
                   credentials.source = "InjectedIdentity"
               }
 
-          _items = [{
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+          }, {
               apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
               kind = "ProviderConfig"
               metadata = {
@@ -720,6 +303,473 @@ kind: Composition
 metadata:
   labels:
     db: postgresql
+    provider: aws-ack
+  name: aws-ack-postgresql
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkit.live/v1beta1
+    kind: SQL
+  mode: Pipeline
+  pipeline:
+  - step: main
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
+        source: |
+          import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
+
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+          _region = "us-east-1"
+          if oxr.spec?.region:
+              _region = oxr.spec.region
+
+          _metadata = lambda resourceName: str -> any {
+              _metadataSuffix(resourceName, "")
+          }
+          _metadataSuffix = lambda resourceName: str, nameSuffix: str -> any {
+              {
+                  _fullName = _name
+                  if nameSuffix:
+                      _fullName = "{}-{}".format(_name, nameSuffix)
+                  name = _fullName
+                  annotations = {
+                      "krm.kcl.dev/composition-resource-name" = resourceName
+                      "services.k8s.aws/region" = _region
+                  }
+              }
+          }
+          _tags = [{key = "name", value = _name}]
+
+          _zoneList = [
+              { zone = "a", cidrBlock = "11.0.0.0/24" },
+              { zone = "b", cidrBlock = "11.0.1.0/24"  },
+              { zone = "c", cidrBlock = "11.0.2.0/24"  }
+          ]
+
+          _items = [
+              {
+                  apiVersion = "ec2.services.k8s.aws/v1alpha1"
+                  kind = "VPC"
+                  metadata =_metadata("vpc")
+                  spec = {
+                      cidrBlocks = ["11.0.0.0/16"]
+                      enableDNSSupport = True
+                      enableDNSHostnames = True
+                      tags = _tags
+                  }
+              }, {
+                  apiVersion = "ec2.services.k8s.aws/v1alpha1"
+                  kind = "InternetGateway"
+                  metadata =_metadata("internetgateway")
+                  spec = {
+                      vpcRef.from.name = _name
+                      tags = _tags
+                  }
+              }, {
+                  apiVersion = "ec2.services.k8s.aws/v1alpha1"
+                  kind = "RouteTable"
+                  metadata = _metadata("routetable")
+                  spec = {
+                      vpcRef.from.name = _name
+                      routes = [{
+                          destinationCIDRBlock = "0.0.0.0/0"
+                          gatewayRef.from.name = _name
+                      }]
+                      tags = _tags
+                  }
+              }, {
+                  apiVersion = "ec2.services.k8s.aws/v1alpha1"
+                  kind = "SecurityGroup"
+                  metadata = _metadata("securitygroup")
+                  spec = {
+                      name = _name
+                      description = "I am too lazy to write descriptions"
+                      vpcRef.from.name = _name
+                      ingressRules = [{
+                          fromPort = 5432
+                          toPort = 5432
+                          ipProtocol = "tcp"
+                          ipRanges = [{
+                              cidrIP = "0.0.0.0/0"
+                              description = "I am too lazy to write descriptions"
+                          }]
+                      }]
+                      tags = _tags
+                  }
+              }, {
+                  apiVersion = "rds.services.k8s.aws/v1alpha1"
+                  kind = "DBSubnetGroup"
+                  metadata = _metadata("dbsubnetgroup")
+                  spec = {
+                      name = _name
+                      description = "I am too lazy to write descriptions"
+                      subnetRefs = [
+                          {from.name = "{}-{}".format(_name, _data.zone)} for _data in _zoneList
+                      ]
+                  }
+              }, {
+                  apiVersion = "rds.services.k8s.aws/v1alpha1"
+                  kind = "DBInstance"
+                  metadata = _metadata("dbinstance")
+                  spec = {
+                      dbSubnetGroupRef.from.name = _name
+                      vpcSecurityGroupRefs = [{from.name = _name}]
+                      masterUsername = "masteruser"
+                      engine = "postgres"
+                      # skipFinalSnapshot: true
+                      publiclyAccessible = True
+                      allocatedStorage = 200
+                      masterUserPassword = {
+                          key = "password"
+                          name = "{}-password".format(_name)
+                      }
+                      storageEncrypted = True
+                      dbInstanceIdentifier = _name
+                      if oxr.spec.size == "small":
+                          dbInstanceClass = "db.m5.large"
+                      elif oxr.spec.size == "medium":
+                          dbInstanceClass = "db.m5.2xlarge"
+                      else:
+                          dbInstanceClass = "db.m5.8xlarge"
+                      engineVersion = oxr.spec.version
+                  }
+              },
+              k8sv1alpha2.Object {
+                  metadata = {
+                      name = "{}-secret".format(_name)
+                      annotations = {
+                          "krm.kcl.dev/ready": "True"
+                          "krm.kcl.dev/composition-resource-name" = "sql-secret"
+                      }
+                  }
+                  spec = {
+                      references = [{
+                          patchesFrom = {
+                              apiVersion = "rds.services.k8s.aws/v1alpha1"
+                              kind = "DBInstance"
+                              name = _name
+                              namespace = _namespace
+                              fieldPath = "spec.masterUsername"
+                          }
+                          toFieldPath = "stringData.username"
+                      }, {
+                          patchesFrom = {
+                              apiVersion = "v1"
+                              kind = "Secret"
+                              name = "{}-password".format(_name)
+                              namespace = _namespace
+                              fieldPath = "data.password"
+                          }
+                          toFieldPath = "data.password"
+                      }, {
+                          patchesFrom = {
+                              apiVersion = "rds.services.k8s.aws/v1alpha1"
+                              kind = "DBInstance"
+                              name = _name
+                              namespace = _namespace
+                              fieldPath = "status.endpoint.address"
+                          }
+                          toFieldPath = "stringData.endpoint"
+                      }]
+                      forProvider.manifest = {
+                          apiVersion = "v1"
+                          kind = "Secret"
+                          metadata = {
+                              name = _name
+                              namespace = _namespace
+                          }
+                          data.port = "NTQzMg=="
+                      }
+                      providerConfigRef.name = _name + "-sql"
+                  }
+              # }, {
+              #     **oxr
+              #     if "rdsinstance" in ocds:
+              #         status.address = ocds["rdsinstance"].Resource.status.atProvider.address
+              }
+          ]
+
+          # _routeTableAssociations = [
+          #     {
+          #         apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+          #         kind = "RouteTableAssociation"
+          #         metadata = {
+          #             name = _name + "-1" + _data.zone
+          #             annotations = {
+          #                 "krm.kcl.dev/composition-resource-name" = "routeTableAssociation1" + _data.zone
+          #             }
+          #         }
+          #         spec.forProvider = {
+          #             region = _region
+          #             routeTableIdSelector.matchControllerRef = True
+          #             subnetIdSelector = {
+          #                 matchControllerRef = True
+          #                 matchLabels.zone = _region + _data.zone
+          #             }
+          #         }
+          #     } for _data in _zoneList
+          # ]
+
+          _subnets = [
+              {
+                  apiVersion = "ec2.services.k8s.aws/v1alpha1"
+                  kind = "Subnet"
+                  metadata = _metadataSuffix("subnet-{}".format(_data.zone), _data.zone)
+                  spec = {
+                      availabilityZone: "{}{}".format(_region, _data.zone)
+                      cidrBlock: _data.cidrBlock
+                      vpcRef.from.name = _name
+                      routeTableRefs = [{from.name = _name}]
+                      tags = [
+                      {key = "name", value = _name},
+                      {key: "zone", value: "{}{}".format(_region, _data.zone)}]
+                  }
+              } for _data in _zoneList
+          ]
+
+          # items = _items + _routeTableAssociations + _subnets
+
+          items = _items + _subnets
+  - step: common
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
+        source: |
+          oxr = option("params").oxr
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+          schema providerConfig:
+              _apiVersion: str
+              _suffix: str
+              apiVersion = _apiVersion
+              kind = "ProviderConfig"
+              metadata = {
+                  name = _name + "-sql"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = _name + "-provider-config-" + _suffix
+                  }
+              }
+              spec = {
+                  credentials.source = "InjectedIdentity"
+              }
+
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+          }, {
+              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+              kind = "ProviderConfig"
+              metadata = {
+                  name = _name
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = "sql-config"
+                      "crossplane.io/external-name" = "default"
+                  }
+              }
+              spec = {
+                  credentials = {
+                    source = "PostgreSQLConnectionSecret"
+                    connectionSecretRef = {
+                      name = _name
+                      namespace = _namespace
+                    }
+                  }
+                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                      defaultDatabase = "defaultdb"
+                  sslMode = "require"
+              }
+          }]
+
+          if oxr.spec?.databases:
+              _items += [{
+                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+                  kind = "Database"
+                  metadata = {
+                      name = _name + "-" + _database
+                      annotations = {
+                          "crossplane.io/external-name" = _database
+                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+                      }
+                  }
+                  spec = {
+                      providerConfigRef.name = _name
+                      forProvider = {}
+                      deletionPolicy = "Orphan"
+                  }
+              } for _database in oxr.spec.databases ]
+
+          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
+              _items += [{
+                  apiVersion = "external-secrets.io/v1beta1"
+                  kind = "ExternalSecret"
+                  metadata = {
+                      name = _name + "-password"
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull"
+                      }
+                  }
+                  spec = {
+                      dataFrom = [{
+                          extract = {
+                              conversionStrategy = "Default"
+                              decodingStrategy = "None"
+                              key = oxr.spec.secrets.pullRootPasswordKey
+                              metadataPolicy = "None"
+                          }
+                      }]
+                      refreshInterval = "1h"
+                      secretStoreRef = {
+                          kind = "ClusterSecretStore"
+                          name = oxr.spec.secrets.storeName
+                      }
+                      target = {
+                          creationPolicy = "Owner"
+                          deletionPolicy = "Retain"
+                          name = _name + "-password"
+                      }
+                  }
+              }]
+
+          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
+              _endpoint = """\
+          {
+            "endpoint": "{{ .endpoint }}",
+            "port": "{{ .port }}",
+            "username": "{{ .username }}",
+            "password": "{{ .password }}",
+            """
+              _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.databases ]
+              _endpoint += ",\n  ".join(_conns)
+              _endpoint += """
+          }
+          """
+              _items += [{
+                  apiVersion = "external-secrets.io/v1alpha1"
+                  kind = "PushSecret"
+                  metadata = {
+                      name = _name
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-push-store"
+                      }
+                  }
+                  spec = {
+                      refreshInterval = "1h"
+                      secretStoreRefs = [{
+                          name = oxr.spec.secrets.storeName
+                          kind = "ClusterSecretStore"
+                      }]
+                      selector.secret.name = _name
+                      template.data.endpoint = _endpoint
+                      data = [{
+                          match = {
+                              secretKey = "endpoint"
+                              remoteRef.remoteKey = _name
+                          }
+                      }]
+                      deletionPolicy = "Delete"
+                  }
+              }]
+
+          if oxr.spec.schemas:
+              _items += [{
+                  apiVersion = "db.atlasgo.io/v1alpha1"
+                  kind = "AtlasSchema"
+                  metadata = {
+                      name = _name + "-" + _schema.database
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-schema-" + _schema.database
+                      }
+                  }
+                  spec = {
+                      credentials = {
+                          scheme = "postgres"
+                          hostFrom.secretKeyRef = {
+                              key = "endpoint"
+                              name = _name
+                          }
+                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                              port = 11569
+                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
+                              port = 5432
+                          userFrom.secretKeyRef = {
+                              key = "username"
+                              name = _name
+                          }
+                          passwordFrom.secretKeyRef = {
+                              key = "password"
+                              name = _name
+                          }
+                          database = _schema.database
+                          parameters.sslmode = "require"
+                      }
+                      schema.sql = _schema.sql
+                  }
+              } for _schema in oxr.spec.schemas ]
+
+          if oxr.spec.secrets?.pullToCluster:
+              _items += [{
+                  apiVersion = "external-secrets.io/v1beta1"
+                  kind = "ExternalSecret"
+                  metadata = {
+                      name = _name
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull-cluster"
+                      }
+                      namespace = oxr.spec.secrets.pullToClusterNamespace
+                  }
+                  spec = {
+                      dataFrom = [{
+                          extract = {
+                              conversionStrategy = "Default"
+                              decodingStrategy = "None"
+                              key = _name
+                              metadataPolicy = "None"
+                          }
+                      }]
+                      refreshInterval = "1h"
+                      secretStoreRef = {
+                          kind = "ClusterSecretStore"
+                          name = oxr.spec.secrets.storeName
+                      }
+                      target = {
+                          creationPolicy = "Owner"
+                          deletionPolicy = "Retain"
+                          name = _name
+                      }
+                  }
+              }]
+
+          items = _items
+  - step: automatically-detect-ready-composed-resources
+    functionRef:
+      name: crossplane-contrib-function-auto-ready
+  writeConnectionSecretsToNamespace: crossplane-system
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  labels:
+    db: postgresql
     provider: azure
   name: azure-postgresql
 spec:
@@ -857,7 +907,11 @@ spec:
                   credentials.source = "InjectedIdentity"
               }
 
-          _items = [{
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+          }, {
               apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
               kind = "ProviderConfig"
               metadata = {
@@ -1123,6 +1177,805 @@ kind: Composition
 metadata:
   labels:
     db: postgresql
+    provider: google
+  name: google-postgresql
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkit.live/v1beta1
+    kind: SQL
+  mode: Pipeline
+  pipeline:
+  - step: main
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
+        source: |
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+          _region = "us-east1"
+          if oxr.spec?.region:
+              _region = oxr.spec.region
+
+          _metadata = lambda resourceName: str -> any {
+              {
+                  name = _name
+                  annotations = {
+                      "krm.kcl.dev/composition-resource-name" = resourceName
+                  }
+              }
+          }
+
+          _items = [{
+              apiVersion = "sql.gcp.upbound.io/v1beta1"
+              kind = "DatabaseInstance"
+              metadata = _metadata("databaseinstance")
+              spec = {
+                  forProvider = {
+                      region = _region
+                      databaseVersion = "POSTGRES_" + oxr.spec.version
+                      rootPasswordSecretRef = {
+                          name = _name + "-password"
+                          key = "password"
+                          namespace = _namespace
+                      }
+                      settings = [{
+                          if oxr.spec.size == "small":
+                              tier = "db-custom-1-3840"
+                          elif oxr.spec.size == "medium":
+                              tier = "db-custom-16-61440"
+                          else:
+                              tier = "db-custom-64-245760"
+                          availabilityType = "REGIONAL"
+                          backupConfiguration = [{
+                              enabled = True
+                              binaryLogEnabled = False
+                          }]
+                          ipConfiguration = [{
+                              ipv4Enabled = True
+                              authorizedNetworks = [{
+                                  name = "all"
+                                  value = "0.0.0.0/0"
+                              }]
+                          }]
+                      }]
+                      deletionProtection = False
+                  }
+              }
+          }, {
+              apiVersion = "sql.gcp.upbound.io/v1beta1"
+              kind = "User"
+              metadata = _metadata("user")
+              spec = {
+                  deletionPolicy = "Orphan"
+                  forProvider = {
+                      passwordSecretRef = {
+                          key = "password"
+                          name = _name + "-password"
+                          namespace = _namespace
+                      }
+                      instanceSelector.matchControllerRef = True
+                  }
+              }
+          }, {
+              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              kind = "Object"
+              metadata = {
+                  name = _name + "-secret"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = "sql-secret"
+                  }
+              }
+              spec = {
+                  references = [{
+                      patchesFrom = {
+                          apiVersion = "sql.gcp.upbound.io/v1beta1"
+                          kind = "User"
+                          name = _name
+                          namespace = "crossplane-system"
+                          fieldPath = "metadata.name"
+                      }
+                      toFieldPath = "stringData.username"
+                  }, {
+                      patchesFrom = {
+                          apiVersion = "v1"
+                          kind = "Secret"
+                          name = _name + "-password"
+                          namespace = _namespace
+                          fieldPath = "data.password"
+                      }
+                      toFieldPath = "data.password"
+                  }, {
+                      patchesFrom = {
+                          apiVersion = "sql.gcp.upbound.io/v1beta1"
+                          kind = "DatabaseInstance"
+                          name = _name
+                          namespace = "crossplane-system"
+                          fieldPath = "status.atProvider.publicIpAddress"
+                      }
+                      toFieldPath = "stringData.endpoint"
+                  }]
+                  forProvider.manifest = {
+                      apiVersion = "v1"
+                      kind = "Secret"
+                      metadata = {
+                          name = _name
+                          namespace = _namespace
+                      }
+                      data.port = "NTQzMg=="
+                  }
+                  providerConfigRef.name = _name + "-sql"
+              }
+          }, {
+              **oxr
+              if "databaseinstance" in ocds:
+                  status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
+          }]
+
+          items = _items
+  - step: common
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
+        source: |
+          oxr = option("params").oxr
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+          schema providerConfig:
+              _apiVersion: str
+              _suffix: str
+              apiVersion = _apiVersion
+              kind = "ProviderConfig"
+              metadata = {
+                  name = _name + "-sql"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = _name + "-provider-config-" + _suffix
+                  }
+              }
+              spec = {
+                  credentials.source = "InjectedIdentity"
+              }
+
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+          }, {
+              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+              kind = "ProviderConfig"
+              metadata = {
+                  name = _name
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = "sql-config"
+                      "crossplane.io/external-name" = "default"
+                  }
+              }
+              spec = {
+                  credentials = {
+                    source = "PostgreSQLConnectionSecret"
+                    connectionSecretRef = {
+                      name = _name
+                      namespace = _namespace
+                    }
+                  }
+                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                      defaultDatabase = "defaultdb"
+                  sslMode = "require"
+              }
+          }]
+
+          if oxr.spec?.databases:
+              _items += [{
+                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+                  kind = "Database"
+                  metadata = {
+                      name = _name + "-" + _database
+                      annotations = {
+                          "crossplane.io/external-name" = _database
+                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+                      }
+                  }
+                  spec = {
+                      providerConfigRef.name = _name
+                      forProvider = {}
+                      deletionPolicy = "Orphan"
+                  }
+              } for _database in oxr.spec.databases ]
+
+          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
+              _items += [{
+                  apiVersion = "external-secrets.io/v1beta1"
+                  kind = "ExternalSecret"
+                  metadata = {
+                      name = _name + "-password"
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull"
+                      }
+                  }
+                  spec = {
+                      dataFrom = [{
+                          extract = {
+                              conversionStrategy = "Default"
+                              decodingStrategy = "None"
+                              key = oxr.spec.secrets.pullRootPasswordKey
+                              metadataPolicy = "None"
+                          }
+                      }]
+                      refreshInterval = "1h"
+                      secretStoreRef = {
+                          kind = "ClusterSecretStore"
+                          name = oxr.spec.secrets.storeName
+                      }
+                      target = {
+                          creationPolicy = "Owner"
+                          deletionPolicy = "Retain"
+                          name = _name + "-password"
+                      }
+                  }
+              }]
+
+          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
+              _endpoint = """\
+          {
+            "endpoint": "{{ .endpoint }}",
+            "port": "{{ .port }}",
+            "username": "{{ .username }}",
+            "password": "{{ .password }}",
+            """
+              _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.databases ]
+              _endpoint += ",\n  ".join(_conns)
+              _endpoint += """
+          }
+          """
+              _items += [{
+                  apiVersion = "external-secrets.io/v1alpha1"
+                  kind = "PushSecret"
+                  metadata = {
+                      name = _name
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-push-store"
+                      }
+                  }
+                  spec = {
+                      refreshInterval = "1h"
+                      secretStoreRefs = [{
+                          name = oxr.spec.secrets.storeName
+                          kind = "ClusterSecretStore"
+                      }]
+                      selector.secret.name = _name
+                      template.data.endpoint = _endpoint
+                      data = [{
+                          match = {
+                              secretKey = "endpoint"
+                              remoteRef.remoteKey = _name
+                          }
+                      }]
+                      deletionPolicy = "Delete"
+                  }
+              }]
+
+          if oxr.spec.schemas:
+              _items += [{
+                  apiVersion = "db.atlasgo.io/v1alpha1"
+                  kind = "AtlasSchema"
+                  metadata = {
+                      name = _name + "-" + _schema.database
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-schema-" + _schema.database
+                      }
+                  }
+                  spec = {
+                      credentials = {
+                          scheme = "postgres"
+                          hostFrom.secretKeyRef = {
+                              key = "endpoint"
+                              name = _name
+                          }
+                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                              port = 11569
+                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
+                              port = 5432
+                          userFrom.secretKeyRef = {
+                              key = "username"
+                              name = _name
+                          }
+                          passwordFrom.secretKeyRef = {
+                              key = "password"
+                              name = _name
+                          }
+                          database = _schema.database
+                          parameters.sslmode = "require"
+                      }
+                      schema.sql = _schema.sql
+                  }
+              } for _schema in oxr.spec.schemas ]
+
+          if oxr.spec.secrets?.pullToCluster:
+              _items += [{
+                  apiVersion = "external-secrets.io/v1beta1"
+                  kind = "ExternalSecret"
+                  metadata = {
+                      name = _name
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull-cluster"
+                      }
+                      namespace = oxr.spec.secrets.pullToClusterNamespace
+                  }
+                  spec = {
+                      dataFrom = [{
+                          extract = {
+                              conversionStrategy = "Default"
+                              decodingStrategy = "None"
+                              key = _name
+                              metadataPolicy = "None"
+                          }
+                      }]
+                      refreshInterval = "1h"
+                      secretStoreRef = {
+                          kind = "ClusterSecretStore"
+                          name = oxr.spec.secrets.storeName
+                      }
+                      target = {
+                          creationPolicy = "Owner"
+                          deletionPolicy = "Retain"
+                          name = _name
+                      }
+                  }
+              }]
+
+          items = _items
+  - step: statuses
+    functionRef:
+      name: crossplane-contrib-function-status-transformer
+    input:
+      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+      kind: StatusTransformation
+      statusConditionHooks:
+      - matchers:
+        - resources:
+          - name: databaseinstance
+          conditions:
+          - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: databaseinstance
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: (.*)cannot get referenced ProviderConfig(.*)
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'False'
+            reason: FailedToConnect
+            message: ProviderConfig is missing. Contact service owner.
+      - matchers:
+        - resources:
+          - name: databaseinstance
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: '(.*)Invalid value for region: (?P<Region>.*)., invalid(.*)'
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'False'
+            reason: FailedToConnect
+            message: Selected region {{ .Region }} is not available. Double check the `spec.region` value.
+  - step: automatically-detect-ready-composed-resources
+    functionRef:
+      name: crossplane-contrib-function-auto-ready
+  writeConnectionSecretsToNamespace: crossplane-system
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  labels:
+    db: postgresql
+    provider: local
+  name: local-postgresql
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkit.live/v1beta1
+    kind: SQL
+  mode: Pipeline
+  pipeline:
+  - step: main
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
+        source: |
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+
+          _metadata = lambda resourceName: str -> any {
+              {
+                  name = _name
+                  annotations = {
+                      "krm.kcl.dev/composition-resource-name" = resourceName
+                  }
+              }
+          }
+
+          _items = [{
+              apiVersion = "postgresql.cnpg.io/v1"
+              kind = "Cluster"
+              metadata = _metadata("cluster")
+              spec = {
+                  if oxr.spec.size == "small":
+                      instances = 1
+                      storage.size = "1Gi"
+                  elif oxr.spec.size == "medium":
+                      instances = 3
+                      storage.size = "3Gi"
+                  else:
+                      instances = 6
+                      storage.size = "6Gi"
+              }
+          }, {
+              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              kind = "Object"
+              metadata = {
+                  name = _name + "-secret"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = "sql-secret"
+                  }
+              }
+              spec = {
+                  references = [{
+                      patchesFrom = {
+                          apiVersion = "v1"
+                          kind = "Secret"
+                          name = "{}-app".format(_name)
+                          namespace = _namespace
+                          fieldPath = "data.password"
+                      }
+                      toFieldPath = "data.password"
+                  }]
+                  forProvider.manifest = {
+                      apiVersion = "v1"
+                      kind = "Secret"
+                      metadata = {
+                          name = _name
+                          namespace = _namespace
+                      }
+                      data = {
+                          port = "NTQzMg=="
+                          username = "YXBw"
+                      }
+                      stringData.endpoint = "{}-rw".format(_name)
+                  }
+                  providerConfigRef.name = _name + "-sql"
+              }
+          # }, {
+          #     **oxr
+          #     if "cluster" in ocds:
+          #         status.address = ocds["cluster"].Resource.status.atProvider.serviceHost
+          }]
+
+          items = _items
+  - step: common
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      spec:
+        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
+        source: |
+          oxr = option("params").oxr
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+          schema providerConfig:
+              _apiVersion: str
+              _suffix: str
+              apiVersion = _apiVersion
+              kind = "ProviderConfig"
+              metadata = {
+                  name = _name + "-sql"
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = _name + "-provider-config-" + _suffix
+                  }
+              }
+              spec = {
+                  credentials.source = "InjectedIdentity"
+              }
+
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
+          }, {
+              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+              kind = "ProviderConfig"
+              metadata = {
+                  name = _name
+                  annotations = {
+                      "krm.kcl.dev/ready": "True"
+                      "krm.kcl.dev/composition-resource-name" = "sql-config"
+                      "crossplane.io/external-name" = "default"
+                  }
+              }
+              spec = {
+                  credentials = {
+                    source = "PostgreSQLConnectionSecret"
+                    connectionSecretRef = {
+                      name = _name
+                      namespace = _namespace
+                    }
+                  }
+                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                      defaultDatabase = "defaultdb"
+                  sslMode = "require"
+              }
+          }]
+
+          if oxr.spec?.databases:
+              _items += [{
+                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+                  kind = "Database"
+                  metadata = {
+                      name = _name + "-" + _database
+                      annotations = {
+                          "crossplane.io/external-name" = _database
+                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+                      }
+                  }
+                  spec = {
+                      providerConfigRef.name = _name
+                      forProvider = {}
+                      deletionPolicy = "Orphan"
+                  }
+              } for _database in oxr.spec.databases ]
+
+          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
+              _items += [{
+                  apiVersion = "external-secrets.io/v1beta1"
+                  kind = "ExternalSecret"
+                  metadata = {
+                      name = _name + "-password"
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull"
+                      }
+                  }
+                  spec = {
+                      dataFrom = [{
+                          extract = {
+                              conversionStrategy = "Default"
+                              decodingStrategy = "None"
+                              key = oxr.spec.secrets.pullRootPasswordKey
+                              metadataPolicy = "None"
+                          }
+                      }]
+                      refreshInterval = "1h"
+                      secretStoreRef = {
+                          kind = "ClusterSecretStore"
+                          name = oxr.spec.secrets.storeName
+                      }
+                      target = {
+                          creationPolicy = "Owner"
+                          deletionPolicy = "Retain"
+                          name = _name + "-password"
+                      }
+                  }
+              }]
+
+          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
+              _endpoint = """\
+          {
+            "endpoint": "{{ .endpoint }}",
+            "port": "{{ .port }}",
+            "username": "{{ .username }}",
+            "password": "{{ .password }}",
+            """
+              _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.databases ]
+              _endpoint += ",\n  ".join(_conns)
+              _endpoint += """
+          }
+          """
+              _items += [{
+                  apiVersion = "external-secrets.io/v1alpha1"
+                  kind = "PushSecret"
+                  metadata = {
+                      name = _name
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-push-store"
+                      }
+                  }
+                  spec = {
+                      refreshInterval = "1h"
+                      secretStoreRefs = [{
+                          name = oxr.spec.secrets.storeName
+                          kind = "ClusterSecretStore"
+                      }]
+                      selector.secret.name = _name
+                      template.data.endpoint = _endpoint
+                      data = [{
+                          match = {
+                              secretKey = "endpoint"
+                              remoteRef.remoteKey = _name
+                          }
+                      }]
+                      deletionPolicy = "Delete"
+                  }
+              }]
+
+          if oxr.spec.schemas:
+              _items += [{
+                  apiVersion = "db.atlasgo.io/v1alpha1"
+                  kind = "AtlasSchema"
+                  metadata = {
+                      name = _name + "-" + _schema.database
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-schema-" + _schema.database
+                      }
+                  }
+                  spec = {
+                      credentials = {
+                          scheme = "postgres"
+                          hostFrom.secretKeyRef = {
+                              key = "endpoint"
+                              name = _name
+                          }
+                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+                              port = 11569
+                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
+                              port = 5432
+                          userFrom.secretKeyRef = {
+                              key = "username"
+                              name = _name
+                          }
+                          passwordFrom.secretKeyRef = {
+                              key = "password"
+                              name = _name
+                          }
+                          database = _schema.database
+                          parameters.sslmode = "require"
+                      }
+                      schema.sql = _schema.sql
+                  }
+              } for _schema in oxr.spec.schemas ]
+
+          if oxr.spec.secrets?.pullToCluster:
+              _items += [{
+                  apiVersion = "external-secrets.io/v1beta1"
+                  kind = "ExternalSecret"
+                  metadata = {
+                      name = _name
+                      annotations = {
+                          "krm.kcl.dev/ready" = "True"
+                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull-cluster"
+                      }
+                      namespace = oxr.spec.secrets.pullToClusterNamespace
+                  }
+                  spec = {
+                      dataFrom = [{
+                          extract = {
+                              conversionStrategy = "Default"
+                              decodingStrategy = "None"
+                              key = _name
+                              metadataPolicy = "None"
+                          }
+                      }]
+                      refreshInterval = "1h"
+                      secretStoreRef = {
+                          kind = "ClusterSecretStore"
+                          name = oxr.spec.secrets.storeName
+                      }
+                      target = {
+                          creationPolicy = "Owner"
+                          deletionPolicy = "Retain"
+                          name = _name
+                      }
+                  }
+              }]
+
+          items = _items
+  - step: statuses
+    functionRef:
+      name: crossplane-contrib-function-status-transformer
+    input:
+      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
+      kind: StatusTransformation
+      statusConditionHooks:
+      - matchers:
+        - resources:
+          - name: network
+          conditions:
+          - type: Synced
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'True'
+            message: So far so good
+      - matchers:
+        - resources:
+          - name: network
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: (.*)cannot get referenced ProviderConfig(.*)
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'False'
+            reason: FailedToConnect
+            message: ProviderConfig is missing. Contact service owner.
+      - matchers:
+        - resources:
+          - name: network
+          conditions:
+          - type: Synced
+            status: 'False'
+            reason: ReconcileError
+            message: '(.*)Invalid value for region: (?P<Region>.*)., invalid(.*)'
+        setConditions:
+        - target: CompositeAndClaim
+          force: true
+          condition:
+            type: Developer
+            status: 'False'
+            reason: FailedToConnect
+            message: Selected region {{ .Region }} is not available. Double check the `spec.region` value.
+  - step: automatically-detect-ready-composed-resources
+    functionRef:
+      name: crossplane-contrib-function-auto-ready
+  writeConnectionSecretsToNamespace: crossplane-system
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  labels:
+    db: postgresql
     provider: upcloud
   name: upcloud-postgresql
 spec:
@@ -1244,6 +2097,7 @@ spec:
                       kind = "Secret"
                       metadata = {
                           name = _name
+                          namespace = _namespace
                       }
                       data = {
                           port = "MTE1Njk="
@@ -1290,375 +2144,11 @@ spec:
                   credentials.source = "InjectedIdentity"
               }
 
-          _items = [{
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
-          }]
-
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
-
-          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
-              _items += [{
-                  apiVersion = "external-secrets.io/v1beta1"
-                  kind = "ExternalSecret"
-                  metadata = {
-                      name = _name + "-password"
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull"
-                      }
-                  }
-                  spec = {
-                      dataFrom = [{
-                          extract = {
-                              conversionStrategy = "Default"
-                              decodingStrategy = "None"
-                              key = oxr.spec.secrets.pullRootPasswordKey
-                              metadataPolicy = "None"
-                          }
-                      }]
-                      refreshInterval = "1h"
-                      secretStoreRef = {
-                          kind = "ClusterSecretStore"
-                          name = oxr.spec.secrets.storeName
-                      }
-                      target = {
-                          creationPolicy = "Owner"
-                          deletionPolicy = "Retain"
-                          name = _name + "-password"
-                      }
-                  }
-              }]
-
-          if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
-              _endpoint = """\
-          {
-            "endpoint": "{{ .endpoint }}",
-            "port": "{{ .port }}",
-            "username": "{{ .username }}",
-            "password": "{{ .password }}",
-            """
-              _conns = [ "\"conn-{}\": \"host=[[ .endpoint ]] user=[[ .username ]] password=[[ .password ]] port=[[ .port ]] connect_timeout=10 database={}\"".format(_db, _db).replace("[[", "{{").replace("]]", "}}") for _db in oxr.spec.databases ]
-              _endpoint += ",\n  ".join(_conns)
-              _endpoint += """
-          }
-          """
-              _items += [{
-                  apiVersion = "external-secrets.io/v1alpha1"
-                  kind = "PushSecret"
-                  metadata = {
-                      name = _name
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-push-store"
-                      }
-                  }
-                  spec = {
-                      refreshInterval = "1h"
-                      secretStoreRefs = [{
-                          name = oxr.spec.secrets.storeName
-                          kind = "ClusterSecretStore"
-                      }]
-                      selector.secret.name = _name
-                      template.data.endpoint = _endpoint
-                      data = [{
-                          match = {
-                              secretKey = "endpoint"
-                              remoteRef.remoteKey = _name
-                          }
-                      }]
-                      deletionPolicy = "Delete"
-                  }
-              }]
-
-          if oxr.spec.schemas:
-              _items += [{
-                  apiVersion = "db.atlasgo.io/v1alpha1"
-                  kind = "AtlasSchema"
-                  metadata = {
-                      name = _name + "-" + _schema.database
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-schema-" + _schema.database
-                      }
-                  }
-                  spec = {
-                      credentials = {
-                          scheme = "postgres"
-                          hostFrom.secretKeyRef = {
-                              key = "endpoint"
-                              name = _name
-                          }
-                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                              port = 11569
-                          if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
-                              port = 5432
-                          userFrom.secretKeyRef = {
-                              key = "username"
-                              name = _name
-                          }
-                          passwordFrom.secretKeyRef = {
-                              key = "password"
-                              name = _name
-                          }
-                          database = _schema.database
-                          parameters.sslmode = "require"
-                      }
-                      schema.sql = _schema.sql
-                  }
-              } for _schema in oxr.spec.schemas ]
-
-          if oxr.spec.secrets?.pullToCluster:
-              _items += [{
-                  apiVersion = "external-secrets.io/v1beta1"
-                  kind = "ExternalSecret"
-                  metadata = {
-                      name = _name
-                      annotations = {
-                          "krm.kcl.dev/ready" = "True"
-                          "krm.kcl.dev/composition-resource-name" = _name + "-secret-pull-cluster"
-                      }
-                      namespace = oxr.spec.secrets.pullToClusterNamespace
-                  }
-                  spec = {
-                      dataFrom = [{
-                          extract = {
-                              conversionStrategy = "Default"
-                              decodingStrategy = "None"
-                              key = _name
-                              metadataPolicy = "None"
-                          }
-                      }]
-                      refreshInterval = "1h"
-                      secretStoreRef = {
-                          kind = "ClusterSecretStore"
-                          name = oxr.spec.secrets.storeName
-                      }
-                      target = {
-                          creationPolicy = "Owner"
-                          deletionPolicy = "Retain"
-                          name = _name
-                      }
-                  }
-              }]
-
-          items = _items
-  - step: statuses
-    functionRef:
-      name: crossplane-contrib-function-status-transformer
-    input:
-      apiVersion: function-status-transformer.fn.crossplane.io/v1beta1
-      kind: StatusTransformation
-      statusConditionHooks:
-      - matchers:
-        - resources:
-          - name: cluster
-          conditions:
-          - type: Synced
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'True'
-            message: So far so good
-      - matchers:
-        - resources:
-          - name: cluster
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: (.*)cannot get referenced ProviderConfig(.*)
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: ProviderConfig is missing. Contact service owner.
-      - matchers:
-        - resources:
-          - name: cluster
-          conditions:
-          - type: Synced
-            status: 'False'
-            reason: ReconcileError
-            message: '(.*)Invalid value for region: (?P<Region>.*)., invalid(.*)'
-        setConditions:
-        - target: CompositeAndClaim
-          force: true
-          condition:
-            type: Developer
-            status: 'False'
-            reason: FailedToConnect
-            message: Selected region {{ .Region }} is not available. Double check the `spec.region` value.
-  - step: automatically-detect-ready-composed-resources
-    functionRef:
-      name: crossplane-contrib-function-auto-ready
-  writeConnectionSecretsToNamespace: crossplane-system
----
-apiVersion: apiextensions.crossplane.io/v1
-kind: Composition
-metadata:
-  labels:
-    db: postgresql
-    provider: local
-  name: local-postgresql
-spec:
-  compositeTypeRef:
-    apiVersion: devopstoolkit.live/v1beta1
-    kind: SQL
-  mode: Pipeline
-  pipeline:
-  - step: main
-    functionRef:
-      name: crossplane-contrib-function-kcl
-    input:
-      apiVersion: krm.kcl.dev/v1alpha1
-      kind: KCLRun
-      spec:
-        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
-        source: |
-          oxr = option("params").oxr
-          ocds = option("params").ocds
-
-          _name = oxr.metadata.name
-          _namespace = oxr.metadata.namespace
-
-          _metadata = lambda resourceName: str -> any {
-              {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/composition-resource-name" = resourceName
-                  }
-              }
-          }
-
-          _items = [{
-              apiVersion = "postgresql.cnpg.io/v1"
-              kind = "Cluster"
-              metadata = _metadata("cluster")
-              spec = {
-                  if oxr.spec.size == "small":
-                      instances = 1
-                      storage.size = "1Gi"
-                  elif oxr.spec.size == "medium":
-                      instances = 3
-                      storage.size = "3Gi"
-                  else:
-                      instances = 6
-                      storage.size = "6Gi"
-              }
+          _items = [
+              providerConfig {
+                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _suffix = "kubernetes"
           }, {
-              apiVersion = "kubernetes.crossplane.io/v1alpha2"
-              kind = "Object"
-              metadata = {
-                  name = _name + "-secret"
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-secret"
-                  }
-              }
-              spec = {
-                  references = [{
-                      patchesFrom = {
-                          apiVersion = "v1"
-                          kind = "Secret"
-                          name = "{}-app".format(_name)
-                          namespace = _namespace
-                          fieldPath = "data.password"
-                      }
-                      toFieldPath = "data.password"
-                  }]
-                  forProvider.manifest = {
-                      apiVersion = "v1"
-                      kind = "Secret"
-                      metadata = {
-                          name = _name
-                      }
-                      data = {
-                          port = "NTQzMg=="
-                          username = "YXBw"
-                      }
-                      stringData.endpoint = "{}-rw".format(_name)
-                  }
-                  providerConfigRef.name = _name + "-sql"
-              }
-          # }, {
-          #     **oxr
-          #     if "cluster" in ocds:
-          #         status.address = ocds["cluster"].Resource.status.atProvider.serviceHost
-          }]
-
-          items = _items
-  - step: common
-    functionRef:
-      name: crossplane-contrib-function-kcl
-    input:
-      apiVersion: krm.kcl.dev/v1alpha1
-      kind: KCLRun
-      spec:
-        dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
-        source: |
-          oxr = option("params").oxr
-
-          _name = oxr.metadata.name
-          _namespace = oxr.metadata.namespace
-          schema providerConfig:
-              _apiVersion: str
-              _suffix: str
-              apiVersion = _apiVersion
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name + "-sql"
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = _name + "-provider-config-" + _suffix
-                  }
-              }
-              spec = {
-                  credentials.source = "InjectedIdentity"
-              }
-
-          _items = [{
               apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
               kind = "ProviderConfig"
               metadata = {
@@ -1856,7 +2346,7 @@ spec:
       statusConditionHooks:
       - matchers:
         - resources:
-          - name: network
+          - name: cluster
           conditions:
           - type: Synced
         setConditions:
@@ -1868,7 +2358,7 @@ spec:
             message: So far so good
       - matchers:
         - resources:
-          - name: network
+          - name: cluster
           conditions:
           - type: Synced
             status: 'False'
@@ -1884,7 +2374,7 @@ spec:
             message: ProviderConfig is missing. Contact service owner.
       - matchers:
         - resources:
-          - name: network
+          - name: cluster
           conditions:
           - type: Synced
             status: 'False'

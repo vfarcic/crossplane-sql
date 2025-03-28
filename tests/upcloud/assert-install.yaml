@@ -17,6 +17,9 @@ spec:
     - apiVersion: database.upcloud.com/v1alpha1
       kind: ManagedDatabasePostgresql
       name: my-db-upcloud
+    - apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-upcloud-sql
     - apiVersion: kubernetes.crossplane.io/v1alpha2
       kind: Object
       name: my-db-upcloud-secret

@@ -15,6 +15,9 @@ spec:
         provider: local
     compositionUpdatePolicy: Automatic
     resourceRefs:
+    - apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-local-sql
     - apiVersion: kubernetes.crossplane.io/v1alpha2
       kind: Object
       name: my-db-local-secret

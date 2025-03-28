@@ -7,6 +7,7 @@ source scripts/atlas.nu
 source scripts/ingress.nu
 source scripts/common.nu
 source scripts/cnpg.nu
+source scripts/ack.nu
 
 def main [] {}
 
@@ -22,7 +23,7 @@ def "main setup" [
 
     main apply crossplane --preview $preview
 
-    print $"Applying (ansi yellow_bold)Crossplane Providers(ansi reset)..."
+    print $"\nApplying (ansi yellow_bold)Crossplane Providers(ansi reset)...\n"
 
     let provider_files = [
         "aws.yaml"
@@ -40,7 +41,11 @@ def "main setup" [
         kubectl apply --filename $"providers/($file)"
     }
 
-    print $"Applying (ansi yellow_bold)Crossplane Composition(ansi reset)..."
+    print $"\nApplying (ansi yellow_bold)ACK Controllers(ansi reset)...\n"
+
+    main apply ack
+
+    print $"\nApplying (ansi yellow_bold)Crossplane Composition(ansi reset)...\n"
 
     kubectl apply --filename package/definition.yaml
 
@@ -54,7 +59,7 @@ def "main setup" [
 
     main apply cnpg
 
-    print $"Waiting for (ansi yellow_bold)Crossplane providers(ansi reset) to be healthy..."
+    print $"\nWaiting for (ansi yellow_bold)Crossplane providers(ansi reset) to be healthy...\n"
 
     (
         kubectl wait

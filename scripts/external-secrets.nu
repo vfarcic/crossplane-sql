@@ -6,7 +6,7 @@ def "main apply external_secrets" [
     --azure_key_vault_name: string # Used only if `provider` is `azure`
 ] {
 
-    print $"Installing (ansi yellow_bold)External Secrets Operator \(ESO\)(ansi reset)..."
+    print $"\nInstalling (ansi yellow_bold)External Secrets Operator \(ESO\)(ansi reset)...\n"
 
     (
         helm repo add external-secrets

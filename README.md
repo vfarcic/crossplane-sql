@@ -5,6 +5,8 @@ devbox shell
 
 ./dot.nu setup --preview true
 
+source .env
+
 ./dot.nu test watch
 
 ./dot.nu destroy
