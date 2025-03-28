@@ -11,7 +11,7 @@ source scripts/ack.nu
 
 def main [] {}
 
-def "main setup" [
+def --env "main setup" [
     --preview = false
 ] {
 
@@ -73,7 +73,7 @@ def "main setup" [
     
 }
 
-def "main package apply" [] {
+def --env "main package apply" [] {
 
     kcl run kcl/compositions.k |
         save package/compositions.yaml --force
@@ -86,7 +86,7 @@ def "main package apply" [] {
 
 }
 
-def "main test full" [] {
+def --env "main test full" [] {
 
     main setup --preview true
 
