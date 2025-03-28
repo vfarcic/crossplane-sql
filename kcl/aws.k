@@ -23,7 +23,7 @@ _metadata = lambda resourceName: str -> any {
 
 _items = [
     {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "InternetGateway"
         metadata = _metadata("gateway")
         spec.forProvider = {
@@ -32,7 +32,7 @@ _items = [
         }
     },
     {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "MainRouteTableAssociation"
         metadata = _metadata("mainRouteTableAssociation")
         spec.forProvider = {
@@ -41,7 +41,7 @@ _items = [
             vpcIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "RouteTable"
         metadata = _metadata("routeTable")
         spec.forProvider = {
@@ -49,7 +49,7 @@ _items = [
             vpcIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta2"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta2"
         kind = "Route"
         metadata = _metadata("route")
         spec.forProvider = {
@@ -59,7 +59,7 @@ _items = [
             gatewayIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "SecurityGroupRule"
         metadata = _metadata("securityGroupRule")
         spec.forProvider = {
@@ -73,7 +73,7 @@ _items = [
             securityGroupIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "SecurityGroup"
         metadata = _metadata("securityGroup")
         spec.forProvider = {
@@ -82,7 +82,7 @@ _items = [
             vpcIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "VPC"
         metadata = _metadata("vpc")
         spec.forProvider = {
@@ -92,7 +92,7 @@ _items = [
             enableDnsHostnames = True
         }
     }, {
-        apiVersion = "rds.m.aws.upbound.io/v1beta1"
+        apiVersion = "rds.aws.m.upbound.io/v1beta1"
         kind = "SubnetGroup"
         metadata = _metadata("subnetgroup")    
         spec.forProvider = {
@@ -101,7 +101,7 @@ _items = [
             subnetIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "rds.m.aws.upbound.io/v1beta3"
+        apiVersion = "rds.aws.m.upbound.io/v1beta3"
         kind = "Instance"
         metadata = _metadata("rdsinstance")
         spec.forProvider = {
@@ -192,7 +192,7 @@ _zoneList = [
 
 _routeTableAssociations = [
     {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "RouteTableAssociation"
         metadata = {
             name = _name + "-1" + _data.zone
@@ -213,7 +213,7 @@ _routeTableAssociations = [
 
 _subnets = [
     {
-        apiVersion = "ec2.m.aws.upbound.io/v1beta1"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "Subnet"
         metadata = {
             name = _name + "-" + _data.zone

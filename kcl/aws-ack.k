@@ -168,33 +168,8 @@ _items = [
             }
             providerConfigRef.name = _name + "-sql"
         }
-    # }, {
-    #     **oxr
-    #     if "rdsinstance" in ocds:
-    #         status.address = ocds["rdsinstance"].Resource.status.atProvider.address
     }
 ]
-
-# _routeTableAssociations = [
-#     {
-#         apiVersion = "ec2.m.aws.upbound.io/v1beta1"
-#         kind = "RouteTableAssociation"
-#         metadata = {
-#             name = _name + "-1" + _data.zone
-#             annotations = {
-#                 "krm.kcl.dev/composition-resource-name" = "routeTableAssociation1" + _data.zone
-#             }
-#         }
-#         spec.forProvider = {
-#             region = _region
-#             routeTableIdSelector.matchControllerRef = True
-#             subnetIdSelector = {
-#                 matchControllerRef = True
-#                 matchLabels.zone = _region + _data.zone
-#             }
-#         }
-#     } for _data in _zoneList
-# ]
 
 _subnets = [
     {
@@ -212,7 +187,5 @@ _subnets = [
         }
     } for _data in _zoneList
 ]
-
-# items = _items + _routeTableAssociations + _subnets
 
 items = _items + _subnets

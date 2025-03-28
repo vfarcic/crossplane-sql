@@ -15,43 +15,43 @@ spec:
         provider: aws
     compositionUpdatePolicy: Automatic
     resourceRefs:
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: InternetGateway
       name: my-db-aws
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: MainRouteTableAssociation
       name: my-db-aws
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: RouteTableAssociation
       name: my-db-aws-1a
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: RouteTableAssociation
       name: my-db-aws-1b
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: RouteTableAssociation
       name: my-db-aws-1c
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: RouteTable
       name: my-db-aws
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: SecurityGroupRule
       name: my-db-aws
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: SecurityGroup
       name: my-db-aws
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: Subnet
       name: my-db-aws-a
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: Subnet
       name: my-db-aws-b
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: Subnet
       name: my-db-aws-c
-    - apiVersion: ec2.m.aws.upbound.io/v1beta1
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: VPC
       name: my-db-aws
-    - apiVersion: ec2.m.aws.upbound.io/v1beta2
+    - apiVersion: ec2.aws.m.upbound.io/v1beta2
       kind: Route
       name: my-db-aws
     - apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -63,14 +63,14 @@ spec:
     - apiVersion: postgresql.sql.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-aws
-    - apiVersion: rds.m.aws.upbound.io/v1beta1
+    - apiVersion: rds.aws.m.upbound.io/v1beta1
       kind: SubnetGroup
       name: my-db-aws
-    - apiVersion: rds.m.aws.upbound.io/v1beta3
+    - apiVersion: rds.aws.m.upbound.io/v1beta3
       kind: Instance
       name: my-db-aws
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: InternetGateway
 metadata:
   annotations:
@@ -91,7 +91,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: MainRouteTableAssociation
 metadata:
   annotations:
@@ -114,7 +114,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta2
+apiVersion: ec2.aws.m.upbound.io/v1beta2
 kind: Route
 metadata:
   annotations:
@@ -138,7 +138,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   annotations:
@@ -163,7 +163,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   annotations:
@@ -188,7 +188,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   annotations:
@@ -213,7 +213,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTable
 metadata:
   annotations:
@@ -234,7 +234,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: SecurityGroupRule
 metadata:
   annotations:
@@ -262,7 +262,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: SecurityGroup
 metadata:
   annotations:
@@ -284,7 +284,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   annotations:
@@ -307,7 +307,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   annotations:
@@ -330,7 +330,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   annotations:
@@ -353,7 +353,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: VPC
 metadata:
   annotations:
@@ -425,7 +425,7 @@ spec:
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
-apiVersion: rds.m.aws.upbound.io/v1beta3
+apiVersion: rds.aws.m.upbound.io/v1beta3
 kind: Instance
 metadata:
   annotations:
@@ -459,7 +459,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: rds.m.aws.upbound.io/v1beta1
+apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: SubnetGroup
 metadata:
   annotations:

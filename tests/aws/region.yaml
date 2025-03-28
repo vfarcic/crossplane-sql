@@ -6,7 +6,7 @@ metadata:
 spec:
   region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: InternetGateway
 metadata:
   name: my-db-aws
@@ -15,7 +15,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: MainRouteTableAssociation
 metadata:
   name: my-db-aws
@@ -24,7 +24,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta2
+apiVersion: ec2.aws.m.upbound.io/v1beta2
 kind: Route
 metadata:
   name: my-db-aws
@@ -33,7 +33,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   name: my-db-aws-1a
@@ -45,7 +45,7 @@ spec:
       matchLabels:
         zone: other-regiona
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   name: my-db-aws-1b
@@ -57,7 +57,7 @@ spec:
       matchLabels:
         zone: other-regionb
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   name: my-db-aws-1c
@@ -71,7 +71,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTable
 metadata:
   name: my-db-aws
@@ -80,7 +80,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: SecurityGroupRule
 metadata:
   name: my-db-aws
@@ -89,7 +89,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: SecurityGroup
 metadata:
   name: my-db-aws
@@ -97,7 +97,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   name: my-db-aws-a
@@ -107,7 +107,7 @@ spec:
     availabilityZone: other-regiona
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   name: my-db-aws-b
@@ -117,7 +117,7 @@ spec:
     availabilityZone: other-regionb
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   name: my-db-aws-c
@@ -127,7 +127,7 @@ spec:
     availabilityZone: other-regionc
     region: other-region
 ---
-apiVersion: ec2.m.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: VPC
 metadata:
   name: my-db-aws
@@ -136,7 +136,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: rds.m.aws.upbound.io/v1beta3
+apiVersion: rds.aws.m.upbound.io/v1beta3
 kind: Instance
 metadata:
   name: my-db-aws
@@ -145,7 +145,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: rds.m.aws.upbound.io/v1beta1
+apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: SubnetGroup
 metadata:
   name: my-db-aws
