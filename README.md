@@ -26,10 +26,7 @@ export UP_ACCOUNT=[...]
 export UP_TOKEN=[...]
 
 # Replace `[...]` with the version of the package (e.g., `v0.5.0`)
-export VERSION=[...]
-
-task package-publish
+./dot.nu publish --version [...]
 
 exit
 ```
-

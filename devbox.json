@@ -28,8 +28,8 @@
     "init_hook": [],
     "scripts": {
       "cluster-create":  ["./dot.nu setup --preview true"],
-      "cluster-destroy": ["task cluster-destroy"],
-      "package-publish": ["task package-publish"],
+      "cluster-destroy": ["./dot.nu destroy"],
+      "package-publish": ["./dot.nu publish"],
       "test":            ["./dot.nu test full"],
       "test-watch":      ["./dot.nu test watch"]
     }

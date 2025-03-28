@@ -75,8 +75,7 @@ def --env "main setup" [
 
 def --env "main package apply" [] {
 
-    kcl run kcl/compositions.k |
-        save package/compositions.yaml --force
+    package generate
 
     kubectl apply --filename package/definition.yaml
     
@@ -126,5 +125,35 @@ def --env "main test watch" [
 def --env "main destroy" [] {
 
     main destroy kubernetes kind
+
+}
+
+def "main publish" [
+    --version = ""
+] {
+
+    mut version = $version
+    if $version == "" {
+        $version = $env.VERSION
+    }
+
+    package generate
+
+    up login --token $env.UP_TOKEN
+
+    up xpkg build --package-root package --name sql.xpkg
+
+    up xpkg push --package $"package/sql.xpkg xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
+
+    rm package/sql.xpkg
+
+    yq --inplace $".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:($version)\"" config.yaml
+
+}
+
+def "package generate" [] {
+
+    kcl run kcl/compositions.k |
+        save package/compositions.yaml --force
 
 }
