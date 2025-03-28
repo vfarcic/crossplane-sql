@@ -94,7 +94,7 @@ def "main test full" [] {
 
 }
 
-def "main test once" [
+def --env "main test once" [
     --dir = "tests"
 ] {
 
@@ -104,7 +104,7 @@ def "main test once" [
 
 }
 
-def "main test watch" [
+def --env "main test watch" [
     --dir = "tests"
 ] {
 
@@ -112,7 +112,7 @@ def "main test watch" [
 
 }
 
-def "main destroy" [] {
+def --env "main destroy" [] {
 
     main destroy kubernetes kind
 
