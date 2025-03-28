@@ -27,11 +27,11 @@
   "shell": {
     "init_hook": [],
     "scripts": {
-      "cluster-create":  ["task cluster-create"],
+      "cluster-create":  ["./dot.nu setup --preview true"],
       "cluster-destroy": ["task cluster-destroy"],
       "package-publish": ["task package-publish"],
-      "test":            ["task test"],
-      "test-watch":      ["task test-watch"]
+      "test":            ["./dot.nu test full"],
+      "test-watch":      ["./dot.nu test watch"]
     }
   }
 }

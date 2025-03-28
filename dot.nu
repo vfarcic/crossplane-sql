@@ -86,6 +86,14 @@ def "main package apply" [] {
 
 }
 
+def "main test full" [] {
+
+    main setup --preview true
+
+    main test once
+
+}
+
 def "main test once" [
     --dir = "tests"
 ] {
