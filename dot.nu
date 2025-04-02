@@ -139,15 +139,24 @@ def "main publish" [
 
     package generate
 
-    up login --token $env.UP_TOKEN
+    crossplane xpkg login --token $env.UP_TOKEN
 
-    up xpkg build --package-root package --name sql.xpkg
+    (
+        crossplane xpkg build --package-root package
+            --package-file sql.xpkg
+    )
 
-    up xpkg push --package $"package/sql.xpkg xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
+    (
+        crossplane xpkg push --package-files sql.xpkg 
+            $"xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
+    )
 
     rm package/sql.xpkg
 
-    yq --inplace $".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:($version)\"" config.yaml
+    (
+        yq --inplace
+            $".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:($version)\"" config.yaml
+    )
 
 }
 
