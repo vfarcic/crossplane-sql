@@ -2044,6 +2044,17 @@ spec:
                       namespace = _namespace
                   }
               }
+          # }, {
+          #     apiVersion = "meta.krm.kcl.dev/v1alpha1"
+          #     kind = "ExtraResources"
+          #     requirements = {
+          #         secret = {
+          #             apiVersion = "v1"
+          #             kind = "Foo"
+          #             matchName = _name + "-password"
+          #             namespace = _namespace
+          #         }
+          #     }
           }, {
               apiVersion = "kubernetes.crossplane.io/v1alpha2"
               kind = "Object"

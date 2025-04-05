@@ -151,12 +151,11 @@ def "main publish" [
             $"xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
     )
 
-    rm package/sql.xpkg
+    rm --force package/sql.xpkg
 
-    (
-        yq --inplace
-            $".spec.package = \"xpkg.upbound.io/devops-toolkit/dot-sql:($version)\"" config.yaml
-    )
+    open config.yaml
+        | upsert spec.package $"xpkg.upbound.io/devops-toolkit/dot-sql:($version)"
+        | save config.yaml --force
 
 }
 
