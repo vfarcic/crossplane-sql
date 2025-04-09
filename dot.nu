@@ -43,7 +43,7 @@ def --env "main setup" [
 
     print $"\nApplying (ansi yellow_bold)ACK Controllers(ansi reset)...\n"
 
-    main apply ack
+    main apply ack --apply_irsa false
 
     print $"\nApplying (ansi yellow_bold)Crossplane Composition(ansi reset)...\n"
 

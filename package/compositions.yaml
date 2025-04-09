@@ -19,7 +19,243 @@ spec:
       kind: KCLRun
       spec:
         dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
-        source: "import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1\nimport models.io.upbound.aws.rds.v1beta1 as rdsv1beta1\nimport models.io.upbound.aws.rds.v1beta2 as rdsv1beta2\nimport models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2\n\noxr = option(\"params\").oxr\nocds = option(\"params\").ocds\n\n_name = oxr.metadata.name\n_namespace = oxr.metadata.namespace\n_region = \"us-east-1\"\nif oxr.spec?.region:\n    _region = oxr.spec.region\n\n_metadata = lambda resourceName: str -> any {\n    {\n        name = _name\n        annotations = {\n            \"krm.kcl.dev/composition-resource-name\" = resourceName\n        }\n    }\n}\n\n_items = [\n    {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"InternetGateway\"\n        metadata = _metadata(\"gateway\")\n        spec.forProvider = {\n            region = _region\n            vpcIdSelector.matchControllerRef = True\n        }\n    },\n    {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"MainRouteTableAssociation\"\n        metadata = _metadata(\"mainRouteTableAssociation\")\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"RouteTable\"\n        metadata = _metadata(\"routeTable\")\n        spec.forProvider = {\n            region = _region\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta2\"\n        kind = \"Route\"\n        metadata = _metadata(\"route\")\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            destinationCidrBlock = \"0.0.0.0/0\"\n            gatewayIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"SecurityGroupRule\"\n        metadata = _metadata(\"securityGroupRule\")\n        spec.forProvider = {\n            region = _region\n            description = \"I am too lazy to write descriptions\"\n            type = \"ingress\"\n            fromPort = 5432\n            toPort = 5432\n            protocol = \"tcp\"\n            cidrBlocks = [\"0.0.0.0/0\"]\n            securityGroupIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"SecurityGroup\"\n        metadata = _metadata(\"securityGroup\")\n        spec.forProvider = {\n            region = _region\n            description = \"I am too lazy to write descriptions\"\n            vpcIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"VPC\"\n        metadata = _metadata(\"vpc\")\n        spec.forProvider = {\n            region = _region\n            cidrBlock = \"11.0.0.0/16\"\n            enableDnsSupport = True\n            enableDnsHostnames = True\n        }\n    }, {\n        apiVersion = \"rds.aws.m.upbound.io/v1beta1\"\n        kind = \"SubnetGroup\"\n        metadata = _metadata(\"subnetgroup\")    \n        spec.forProvider = {\n            region = _region\n            description = \"I'm too lazy to write a good description\"\n            subnetIdSelector.matchControllerRef = True\n        }\n    }, {\n        apiVersion = \"rds.aws.m.upbound.io/v1beta3\"\n        kind = \"Instance\"\n        metadata = _metadata(\"rdsinstance\")\n        spec.forProvider = {\n            region = _region\n            dbSubnetGroupNameSelector.matchControllerRef = True\n            vpcSecurityGroupIdSelector.matchControllerRef = True\n            username = \"masteruser\"\n            engine = \"postgres\"\n            skipFinalSnapshot = True\n            publiclyAccessible = True\n            allocatedStorage = 200\n            passwordSecretRef = {\n                name = _name + \"-password\"\n                key = \"password\"\n                namespace = _namespace\n            }\n            storageEncrypted = True\n            identifier = _name\n            if oxr.spec.size == \"small\":\n                instanceClass = \"db.m5.large\"\n            elif oxr.spec.size == \"medium\":\n                instanceClass = \"db.m5.2xlarge\"\n            else:\n                instanceClass = \"db.m5.8xlarge\"\n            engineVersion = oxr.spec.version\n        }\n    },\n    k8sv1alpha2.Object {\n        metadata = {\n            name = _name + \"-secret\"\n            annotations = {\n                \"krm.kcl.dev/ready\": \"True\"\n                \"krm.kcl.dev/composition-resource-name\" = \"sql-secret\"\n            }\n        }\n        spec = {\n            references = [{\n                patchesFrom = {\n                    apiVersion = \"rds.aws.upbound.io/v1beta1\"\n                    kind = \"Instance\"\n                    name = _name\n                    namespace = \"crossplane-system\"\n                    fieldPath = \"spec.forProvider.username\"\n                }\n                toFieldPath = \"stringData.username\"\n            }, {\n                patchesFrom = {\n                    apiVersion = \"v1\"\n                    kind = \"Secret\"\n                    name = _name + \"-password\"\n                    namespace = _namespace\n                    fieldPath = \"data.password\"\n                }\n                toFieldPath = \"data.password\"\n            }, {\n                patchesFrom = {\n                    apiVersion = \"rds.aws.upbound.io/v1beta1\"\n                    kind = \"Instance\"\n                    name = _name\n                    namespace = \"crossplane-system\"\n                    fieldPath = \"status.atProvider.address\"\n                }\n                toFieldPath = \"stringData.endpoint\"\n            }]\n            forProvider.manifest = {\n                apiVersion = \"v1\"\n                kind = \"Secret\"\n                metadata = {\n                    name = _name\n                    namespace = _namespace\n                }\n                data.port = \"NTQzMg==\"\n            }\n            providerConfigRef.name = _name + \"-sql\"\n        }\n    }, {\n        **oxr\n        if \"rdsinstance\" in ocds:\n            status.address = ocds[\"rdsinstance\"].Resource.status.atProvider.address\n    }\n]\n\n_zoneList = [\n    { zone = \"a\", cidrBlock = \"11.0.0.0/24\" },\n    { zone = \"b\", cidrBlock = \"11.0.1.0/24\"  },\n    { zone = \"c\", cidrBlock = \"11.0.2.0/24\"  }\n]\n\n_routeTableAssociations = [\n    {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"RouteTableAssociation\"\n        metadata = {\n            name = _name + \"-1\" + _data.zone\n            annotations = {\n                \"krm.kcl.dev/composition-resource-name\" = \"routeTableAssociation1\" + _data.zone\n            }\n        }\n        spec.forProvider = {\n            region = _region\n            routeTableIdSelector.matchControllerRef = True\n            subnetIdSelector = {\n                matchControllerRef = True\n                matchLabels.zone = _region + _data.zone\n            }\n        }\n    } for _data in _zoneList\n]\n\n_subnets = [\n    {\n        apiVersion = \"ec2.aws.m.upbound.io/v1beta1\"\n        kind = \"Subnet\"\n        metadata = {\n            name = _name + \"-\" + _data.zone\n            annotations = {\n                \"krm.kcl.dev/composition-resource-name\" = \"subnet-\" + _data.zone\n            }\n            labels = {\n                zone = _region + _data.zone\n            }\n        }\n        spec.forProvider = {\n            region = _region\n            availabilityZone = _region + _data.zone\n            cidrBlock = _data.cidrBlock\n            vpcIdSelector.matchControllerRef = True\n        }\n    } for _data in _zoneList\n]\n\nitems = _items + _routeTableAssociations + _subnets\n"
+        source: |
+          # import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
+          # import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
+          # import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
+          import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
+
+          oxr = option("params").oxr
+          ocds = option("params").ocds
+
+          _name = oxr.metadata.name
+          _namespace = oxr.metadata.namespace
+          _region = "us-east-1"
+          if oxr.spec?.region:
+              _region = oxr.spec.region
+
+          _metadata = lambda resourceName: str -> any {
+              {
+                  name = _name
+                  annotations = {
+                      "krm.kcl.dev/composition-resource-name" = resourceName
+                  }
+              }
+          }
+
+          _items = [
+              {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "InternetGateway"
+                  metadata = _metadata("gateway")
+                  spec.forProvider = {
+                      region = _region
+                      vpcIdSelector.matchControllerRef = True
+                  }
+              },
+              {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "MainRouteTableAssociation"
+                  metadata = _metadata("mainRouteTableAssociation")
+                  spec.forProvider = {
+                      region = _region
+                      routeTableIdSelector.matchControllerRef = True
+                      vpcIdSelector.matchControllerRef = True
+                  }
+              }, {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "RouteTable"
+                  metadata = _metadata("routeTable")
+                  spec.forProvider = {
+                      region = _region
+                      vpcIdSelector.matchControllerRef = True
+                  }
+              }, {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta2"
+                  kind = "Route"
+                  metadata = _metadata("route")
+                  spec.forProvider = {
+                      region = _region
+                      routeTableIdSelector.matchControllerRef = True
+                      destinationCidrBlock = "0.0.0.0/0"
+                      gatewayIdSelector.matchControllerRef = True
+                  }
+              }, {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "SecurityGroupRule"
+                  metadata = _metadata("securityGroupRule")
+                  spec.forProvider = {
+                      region = _region
+                      description = "I am too lazy to write descriptions"
+                      type = "ingress"
+                      fromPort = 5432
+                      toPort = 5432
+                      protocol = "tcp"
+                      cidrBlocks = ["0.0.0.0/0"]
+                      securityGroupIdSelector.matchControllerRef = True
+                  }
+              }, {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "SecurityGroup"
+                  metadata = _metadata("securityGroup")
+                  spec.forProvider = {
+                      region = _region
+                      description = "I am too lazy to write descriptions"
+                      vpcIdSelector.matchControllerRef = True
+                  }
+              }, {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "VPC"
+                  metadata = _metadata("vpc")
+                  spec.forProvider = {
+                      region = _region
+                      cidrBlock = "11.0.0.0/16"
+                      enableDnsSupport = True
+                      enableDnsHostnames = True
+                  }
+              }, {
+                  apiVersion = "rds.aws.m.upbound.io/v1beta1"
+                  kind = "SubnetGroup"
+                  metadata = _metadata("subnetgroup")
+                  spec.forProvider = {
+                      region = _region
+                      description = "I'm too lazy to write a good description"
+                      subnetIdSelector.matchControllerRef = True
+                  }
+              }, {
+                  apiVersion = "rds.aws.m.upbound.io/v1beta3"
+                  kind = "Instance"
+                  metadata = _metadata("rdsinstance")
+                  spec.forProvider = {
+                      region = _region
+                      dbSubnetGroupNameSelector.matchControllerRef = True
+                      vpcSecurityGroupIdSelector.matchControllerRef = True
+                      username = "masteruser"
+                      engine = "postgres"
+                      skipFinalSnapshot = True
+                      publiclyAccessible = True
+                      allocatedStorage = 200
+                      passwordSecretRef = {
+                          name = _name + "-password"
+                          key = "password"
+                          namespace = _namespace
+                      }
+                      storageEncrypted = True
+                      identifier = _name
+                      if oxr.spec.size == "small":
+                          instanceClass = "db.m5.large"
+                      elif oxr.spec.size == "medium":
+                          instanceClass = "db.m5.2xlarge"
+                      else:
+                          instanceClass = "db.m5.8xlarge"
+                      engineVersion = oxr.spec.version
+                  }
+              },
+              k8sv1alpha2.Object {
+                  metadata = {
+                      name = _name + "-secret"
+                      annotations = {
+                          "krm.kcl.dev/ready": "True"
+                          "krm.kcl.dev/composition-resource-name" = "sql-secret"
+                      }
+                  }
+                  spec = {
+                      references = [{
+                          patchesFrom = {
+                              apiVersion = "rds.aws.upbound.io/v1beta1"
+                              kind = "Instance"
+                              name = _name
+                              namespace = "crossplane-system"
+                              fieldPath = "spec.forProvider.username"
+                          }
+                          toFieldPath = "stringData.username"
+                      }, {
+                          patchesFrom = {
+                              apiVersion = "v1"
+                              kind = "Secret"
+                              name = _name + "-password"
+                              namespace = _namespace
+                              fieldPath = "data.password"
+                          }
+                          toFieldPath = "data.password"
+                      }, {
+                          patchesFrom = {
+                              apiVersion = "rds.aws.upbound.io/v1beta1"
+                              kind = "Instance"
+                              name = _name
+                              namespace = "crossplane-system"
+                              fieldPath = "status.atProvider.address"
+                          }
+                          toFieldPath = "stringData.endpoint"
+                      }]
+                      forProvider.manifest = {
+                          apiVersion = "v1"
+                          kind = "Secret"
+                          metadata = {
+                              name = _name
+                              namespace = _namespace
+                          }
+                          data.port = "NTQzMg=="
+                      }
+                      providerConfigRef.name = _name + "-sql"
+                  }
+              }, {
+                  **oxr
+                  if "rdsinstance" in ocds:
+                      status.address = ocds["rdsinstance"].Resource.status.atProvider.address
+              }
+          ]
+
+          _zoneList = [
+              { zone = "a", cidrBlock = "11.0.0.0/24" },
+              { zone = "b", cidrBlock = "11.0.1.0/24"  },
+              { zone = "c", cidrBlock = "11.0.2.0/24"  }
+          ]
+
+          _routeTableAssociations = [
+              {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "RouteTableAssociation"
+                  metadata = {
+                      name = _name + "-1" + _data.zone
+                      annotations = {
+                          "krm.kcl.dev/composition-resource-name" = "routeTableAssociation1" + _data.zone
+                      }
+                  }
+                  spec.forProvider = {
+                      region = _region
+                      routeTableIdSelector.matchControllerRef = True
+                      subnetIdSelector = {
+                          matchControllerRef = True
+                          matchLabels.zone = _region + _data.zone
+                      }
+                  }
+              } for _data in _zoneList
+          ]
+
+          _subnets = [
+              {
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+                  kind = "Subnet"
+                  metadata = {
+                      name = _name + "-" + _data.zone
+                      annotations = {
+                          "krm.kcl.dev/composition-resource-name" = "subnet-" + _data.zone
+                      }
+                      labels = {
+                          zone = _region + _data.zone
+                      }
+                  }
+                  spec.forProvider = {
+                      region = _region
+                      availabilityZone = _region + _data.zone
+                      cidrBlock = _data.cidrBlock
+                      vpcIdSelector.matchControllerRef = True
+                  }
+              } for _data in _zoneList
+          ]
+
+          items = _items + _routeTableAssociations + _subnets
   - step: common
     functionRef:
       name: crossplane-contrib-function-kcl

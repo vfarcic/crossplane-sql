@@ -1,6 +1,6 @@
-import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
-import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
-import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
+# import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
+# import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
+# import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
 import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
 
 oxr = option("params").oxr
@@ -94,7 +94,7 @@ _items = [
     }, {
         apiVersion = "rds.aws.m.upbound.io/v1beta1"
         kind = "SubnetGroup"
-        metadata = _metadata("subnetgroup")    
+        metadata = _metadata("subnetgroup")
         spec.forProvider = {
             region = _region
             description = "I'm too lazy to write a good description"
