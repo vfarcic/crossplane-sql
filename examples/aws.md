@@ -1,4 +1,4 @@
-# AWS EKS Example
+# AWS RDS Example
 
 ## Setup
 

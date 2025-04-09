@@ -13,6 +13,7 @@ def main [] {}
 
 def --env "main setup" [
     --preview = false
+    --apply_irsa = false
 ] {
 
     rm --force .env
@@ -43,7 +44,7 @@ def --env "main setup" [
 
     print $"\nApplying (ansi yellow_bold)ACK Controllers(ansi reset)...\n"
 
-    main apply ack --apply_irsa false
+    main apply ack --apply_irsa $apply_irsa
 
     print $"\nApplying (ansi yellow_bold)Crossplane Composition(ansi reset)...\n"
 
@@ -139,15 +140,15 @@ def "main publish" [
 
     package generate
 
-    crossplane xpkg login --token $env.UP_TOKEN
+    ./crossplane xpkg login --token $env.UP_TOKEN
 
     (
-        crossplane xpkg build --package-root package
+        ./crossplane xpkg build --package-root package
             --package-file sql.xpkg
     )
 
     (
-        crossplane xpkg push --package-files sql.xpkg 
+        ./crossplane xpkg push --package-files sql.xpkg 
             $"xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
     )
 
