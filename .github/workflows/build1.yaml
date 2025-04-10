@@ -9,8 +9,6 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.2.12
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.12.0
         with:
