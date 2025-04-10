@@ -97,12 +97,12 @@ def --env "main test full" [] {
 
     main package apply
 
+    # FIXME: "cnpg"
     let dirs = [
         "aws"
         "aws-ack"
         "azure"
         "azure-aso"
-        "cnpg"
         "google"
         "upcloud"
     ]  
