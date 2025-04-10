@@ -11,6 +11,8 @@ spec:
       value: upcloud
     - name: dbPort
       value: 11569
+    - name: version
+      value: "14"
   steps:
     - try:
         - apply:

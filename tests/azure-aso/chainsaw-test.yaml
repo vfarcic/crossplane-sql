@@ -1,14 +1,14 @@
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
-  name: aws-ack
+  name: azure-aso
 spec:
   template: true
   bindings:
     - name: provider
-      value: aws-ack
+      value: azure-aso
     - name: cluster
-      value: eks
+      value: aks
     - name: dbPort
       value: 5432
     - name: version
@@ -48,9 +48,9 @@ spec:
       catch:
         - script:
             content: |
-              kubectl --namespace $NAMESPACE describe sqls my-db-aws-ack
-              # kubectl --namespace $NAMESPACE get secret my-db-aws-ack-password --output yaml
-              # kubectl describe object my-db-aws-ack-secret
+              kubectl --namespace $NAMESPACE describe sqls my-db-azure-aso
+              # kubectl --namespace $NAMESPACE get secret my-db-azure-aso-password --output yaml
+              # kubectl describe object my-db-azure-aso-secret
               # kubectl get atlasschemas --all-namespaces
         # - script:
         #     content: kubectl get fieldexports,secrets --namespace $NAMESPACE

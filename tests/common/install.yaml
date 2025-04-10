@@ -11,7 +11,7 @@ kind: SQL
 metadata:
   name: (join('-', ['my-db', $provider]))
 spec:
-  version: "13.4"
+  version: ($version)
   size: medium
   crossplane:
     compositionSelector:

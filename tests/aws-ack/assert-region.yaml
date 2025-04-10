@@ -1,0 +1,72 @@
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: VPC
+metadata:
+  name: my-db-aws-ack
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: InternetGateway
+metadata:
+  name: my-db-aws-ack
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: RouteTable
+metadata:
+  name: my-db-aws-ack
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: SecurityGroup
+metadata:
+  name: my-db-aws-ack
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: Subnet
+metadata:
+  name: my-db-aws-ack-a
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: Subnet
+metadata:
+  name: my-db-aws-ack-b
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: Subnet
+metadata:
+  name: my-db-aws-ack-c
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBSubnetGroup
+metadata:
+  name: my-db-aws-ack
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region
+---
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBInstance
+metadata:
+  name: my-db-aws-ack
+  namespace: ($namespace)
+  annotations:
+    services.k8s.aws/region: other-region

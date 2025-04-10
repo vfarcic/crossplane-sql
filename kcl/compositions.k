@@ -99,6 +99,14 @@ schema composition:
     }
 
     composition {
+        _provider = "azure-aso"
+        _source = file.read("kcl/azure-aso.k")
+        _statusConditionHooks = {}
+        _serverApiVersion = ""
+        _serverKind = ""
+    }
+
+    composition {
         _provider = "google"
         _source = file.read("kcl/google.k")
         _statusConditionHooks = commonstatuses.statusConditionHooks(

@@ -5,7 +5,7 @@ metadata:
   name: my-db-google
 spec:
   size: medium
-  version: "13.4"
+  version: ($version)
   crossplane:
     compositionRef:
       name: google-postgresql
@@ -96,7 +96,7 @@ metadata:
 spec:
   deletionPolicy: Delete
   forProvider:
-    databaseVersion: POSTGRES_13.4
+    databaseVersion: POSTGRES_14
     deletionProtection: false
     region: us-east1
     rootPasswordSecretRef:

@@ -5,7 +5,7 @@ metadata:
   name: my-db-azure
 spec:
   size: medium
-  version: "13.4"
+  version: ($version)
   crossplane:
     compositionRef:
       name: azure-postgresql
@@ -116,7 +116,7 @@ spec:
     sslEnforcementEnabled: false
     sslMinimalTlsVersionEnforced: TLSEnforcementDisabled
     storageMb: 5120
-    version: "13.4"
+    version: ($version)
   providerConfigRef:
     name: default
   writeConnectionSecretToRef:

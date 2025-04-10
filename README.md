@@ -7,7 +7,7 @@ devbox shell
 
 source .env
 
-./dot.nu test watch
+./dot.nu test watch --dir tests
 
 ./dot.nu destroy
 

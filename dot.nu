@@ -8,12 +8,15 @@ source scripts/ingress.nu
 source scripts/common.nu
 source scripts/cnpg.nu
 source scripts/ack.nu
+source scripts/aso.nu
+source scripts/cert-manager.nu
 
 def main [] {}
 
 def --env "main setup" [
     --preview = false
     --apply_irsa = false
+    --apply_azure_creds = false
 ] {
 
     rm --force .env
@@ -42,9 +45,11 @@ def --env "main setup" [
         kubectl apply --filename $"providers/($file)"
     }
 
-    print $"\nApplying (ansi yellow_bold)ACK Controllers(ansi reset)...\n"
+    main apply certmanager
 
     main apply ack --apply_irsa $apply_irsa
+
+    main apply aso --apply_creds $apply_azure_creds
 
     print $"\nApplying (ansi yellow_bold)Crossplane Composition(ansi reset)...\n"
 

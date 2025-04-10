@@ -5,7 +5,7 @@ metadata:
   name: my-db-aws-ack
 spec:
   size: medium
-  version: "13.4"
+  version: ($version)
   crossplane:
     compositionRef:
       name: aws-ack-postgresql
@@ -238,7 +238,7 @@ spec:
   storageEncrypted: true
   dbInstanceIdentifier: my-db-aws-ack
   dbInstanceClass: db.m5.2xlarge
-  engineVersion: "13.4"
+  engineVersion: ($version)
 ---
 apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object

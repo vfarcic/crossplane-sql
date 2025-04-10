@@ -11,6 +11,8 @@ spec:
       value: local
     - name: dbPort
       value: 5432
+    - name: version
+      value: "14"
   steps:
     - try:
         - apply:

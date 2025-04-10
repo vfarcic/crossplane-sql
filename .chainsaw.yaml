@@ -5,3 +5,4 @@ metadata:
 spec:
   timeouts:
     cleanup: 300s
+    assert: 20s

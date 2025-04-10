@@ -6,7 +6,7 @@ metadata:
   namespace: ($namespace)
 spec:
   size: medium
-  version: "13.4"
+  version: ($version)
   crossplane:
     compositionRef:
       name: (join('-', [$provider, 'postgresql']))

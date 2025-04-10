@@ -5,7 +5,7 @@ metadata:
   name: my-db-aws
 spec:
   size: medium
-  version: "13.4"
+  version: ($version)
   crossplane:
     compositionRef:
       name: aws-postgresql
@@ -445,7 +445,7 @@ spec:
     dbSubnetGroupNameSelector:
       matchControllerRef: true
     engine: postgres
-    engineVersion: "13.4"
+    engineVersion: ($version)
     instanceClass: db.m5.2xlarge
     passwordSecretRef:
       key: password
