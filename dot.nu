@@ -101,6 +101,8 @@ def --env "main test full" [] {
         "aws"
         "aws-ack"
         "azure"
+        "azure-aso"
+        "cnpg"
         "google"
         "upcloud"
     ]  
