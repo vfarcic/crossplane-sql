@@ -40,107 +40,98 @@ spec:
 
 ```mermaid
 graph TD
-    %% Composite Resource
-    A["SQL<br>my-db"]
-    
-    %% AWS Resources
-    B["InternetGateway<br>my-db"]
-    C["MainRouteTableAssociation<br>my-db"]
-    D["RouteTable<br>my-db"]
-    E["Route<br>my-db"]
-    F["SecurityGroupRule<br>my-db"]
-    G["SecurityGroup<br>my-db"]
-    H["VPC<br>my-db"]
-    I["SubnetGroup<br>my-db"]
-    J["Instance<br>my-db"]
-    
-    %% Subnets & Route Table Associations
-    K1["Subnet<br>my-db-a"]
-    K2["Subnet<br>my-db-b"]
-    K3["Subnet<br>my-db-c"]
-    L1["RouteTableAssociation<br>my-db-1a"]
-    L2["RouteTableAssociation<br>my-db-1b"]
-    L3["RouteTableAssociation<br>my-db-1c"]
-    
-    %% Other Resources
-    M["Object<br>my-db-secret"]
-    N["ProviderConfig<br>my-db-sql"]
-    O["ProviderConfig<br>my-db"]
-    P["Database<br>my-db-main"]
-    Q["ExternalSecret<br>my-db-password"]
-    R["PushSecret<br>my-db"]
-    S["AtlasSchema<br>my-db-main"]
 
-    %% Relationships - only showing parent-child relationships
-    A --> H
-    A --> N
-    A --> O
-    A --> Q
-    A --> R
-    
-    %% Resources with matchControllerRef
-    H --> B
-    H --> C
-    H --> D
-    H --> G
-    H --> K1
-    H --> K2
-    H --> K3
-    
-    G --> F
-    
-    D --> C
-    D --> E
-    D --> L1
-    D --> L2
-    D --> L3
-    
-    K1 --> I
-    K2 --> I
-    K3 --> I
-    
-    I --> J
-    G --> J
-    
-    %% Other specific relationships
-    B --> E
-    
-    K1 --> L1
-    K2 --> L2
-    K3 --> L3
-    
-    %% Functional relationships
-    O --> P
-    P --> S
-    Q --> R
-    J --> M
+%% Style definitions
+classDef blue fill:#1e88e5,color:white
+classDef orange fill:#ff9800,color:white
+classDef yellow fill:#ffc107,color:black
 
-    %% Styling
-    style A fill:#2374f7,stroke:#000,stroke-width:1px,color:white
-    
-    %% AWS resources (orange)
-    style B fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style C fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style D fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style E fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style F fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style G fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style H fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style I fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style J fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style K1 fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style K2 fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style K3 fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style L1 fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style L2 fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    style L3 fill:#ff7e33,stroke:#000,stroke-width:1px,color:white
-    
-    %% Other resources (yellow)
-    style M fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
-    style N fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
-    style O fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
-    style P fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
-    style Q fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
-    style R fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
-    style S fill:#ffcc00,stroke:#000,stroke-width:1px,color:black
+%% Composite Resource
+SQL["SQL<br>my-db"]
+class SQL blue
+
+%% AWS Resources - Main Infrastructure
+VPC["VPC<br>my-db"]
+IGW["InternetGateway<br>my-db"]
+RouteTable["RouteTable<br>my-db"]
+Route["Route<br>my-db"]
+SecurityGroup["SecurityGroup<br>my-db"]
+SecurityGroupRule["SecurityGroupRule<br>my-db"]
+MainRouteTableAssociation["MainRouteTableAssociation<br>my-db"]
+
+%% AWS Resources - Subnets
+SubnetA["Subnet<br>my-db-a"]
+SubnetB["Subnet<br>my-db-b"]
+SubnetC["Subnet<br>my-db-c"]
+
+%% AWS Resources - Route Associations
+RouteTableAssocA["RouteTableAssociation<br>my-db-1a"]
+RouteTableAssocB["RouteTableAssociation<br>my-db-1b"]
+RouteTableAssocC["RouteTableAssociation<br>my-db-1c"]
+
+%% AWS Resources - Database
+SubnetGroup["SubnetGroup<br>my-db"]
+RDSInstance["Instance<br>my-db"]
+
+%% Non-AWS Resources - Providers
+KubernetesProviderConfig["ProviderConfig<br>my-db-sql"]
+PostgreSQLProviderConfig["ProviderConfig<br>my-db"]
+
+%% Non-AWS Resources - Database and Schema
+PostgreSQLDatabase["Database<br>my-db-main"]
+AtlasSchema["AtlasSchema<br>my-db-main"]
+
+%% Non-AWS Resources - Secrets
+ExternalSecretPassword["ExternalSecret<br>my-db-password"]
+PushSecret["PushSecret<br>my-db"]
+K8sObject["Object<br>my-db-secret"]
+
+%% Main resource hierarchy
+SQL --> VPC
+SQL --> KubernetesProviderConfig
+SQL --> PostgreSQLProviderConfig
+SQL --> ExternalSecretPassword
+SQL --> PushSecret
+
+%% VPC and networking resources
+VPC --> IGW
+VPC --> RouteTable
+VPC --> SecurityGroup
+VPC --> MainRouteTableAssociation
+VPC --> SubnetA
+VPC --> SubnetB
+VPC --> SubnetC
+
+RouteTable --> Route
+RouteTable --> RouteTableAssocA
+RouteTable --> RouteTableAssocB
+RouteTable --> RouteTableAssocC
+
+IGW --> Route
+
+SubnetA --> RouteTableAssocA
+SubnetB --> RouteTableAssocB
+SubnetC --> RouteTableAssocC
+
+%% RDS and Subnet relationships
+SubnetA --> SubnetGroup
+SubnetB --> SubnetGroup
+SubnetC --> SubnetGroup
+
+SecurityGroup --> SecurityGroupRule
+SecurityGroup --> RDSInstance
+SubnetGroup --> RDSInstance
+
+%% Database objects relationships
+PostgreSQLProviderConfig --> PostgreSQLDatabase
+PostgreSQLProviderConfig --> AtlasSchema
+
+%% Secret management
+RDSInstance --> K8sObject
+ExternalSecretPassword --> K8sObject
+RDSInstance --> PushSecret
+
+%% Apply styles
+class VPC,IGW,RouteTable,MainRouteTableAssociation,Route,SecurityGroup,SecurityGroupRule,SubnetA,SubnetB,SubnetC,RouteTableAssocA,RouteTableAssocB,RouteTableAssocC,SubnetGroup,RDSInstance orange
+class KubernetesProviderConfig,PostgreSQLProviderConfig,PostgreSQLDatabase,ExternalSecretPassword,PushSecret,AtlasSchema,K8sObject yellow
 ```
