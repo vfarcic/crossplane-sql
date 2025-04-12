@@ -3,6 +3,7 @@
 def --env "main apply aso" [
     --namespace = "default"
     --apply_creds = true
+    --crd_pattern = "resources.azure.com/*;dbforpostgresql.azure.com/*"
 ] {
 
     (
@@ -44,7 +45,7 @@ def --env "main apply aso" [
                 AZURE_TENANT_ID: $azure_data.tenantId
                 AZURE_CLIENT_ID: $azure_data.clientId
                 AZURE_CLIENT_SECRET: $azure_data.clientSecret
-                AZURE_SYNC_PERIOD: "15m"
+                AZURE_SYNC_PERIOD: "1m"
             }
         } | to yaml | kubectl --namespace $namespace apply --filename -
 

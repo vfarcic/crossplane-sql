@@ -14,3 +14,4 @@ providers:
           azure-tenant: AZURE_TENANT
           upcloud-username: UPCLOUD_USERNAME
           upcloud-password: UPCLOUD_PASSWORD
+          anthropic-api-key: ANTHROPIC_API_KEY
