@@ -43,33 +43,33 @@ flowchart TD
     classDef awsResource fill:#D35400,color:white
     classDef otherResource fill:#8E44AD,color:white
 
-    SQL["SQL<br>my-db"]
-    
-    VPC["VPC<br>my-db"]
-    Gateway["InternetGateway<br>my-db"]
-    RouteTable["RouteTable<br>my-db"]
-    Route["Route<br>my-db"]
-    SecurityGroup["SecurityGroup<br>my-db"]
-    SecurityGroupRule["SecurityGroupRule<br>my-db"]
-    SubnetGroup["SubnetGroup<br>my-db"]
-    RDSInstance["Instance<br>my-db"]
-    
-    Subnet1["Subnet<br>my-db-a"]
-    Subnet2["Subnet<br>my-db-b"]
-    Subnet3["Subnet<br>my-db-c"]
-    
-    RTA1["RouteTableAssociation<br>my-db-1a"]
-    RTA2["RouteTableAssociation<br>my-db-1b"]
-    RTA3["RouteTableAssociation<br>my-db-1c"]
-    MainRTA["MainRouteTableAssociation<br>my-db"]
-    
-    Secret["Object<br>my-db-secret"]
-    ExternalSecret["ExternalSecret<br>my-db-password"]
-    PushSecret["PushSecret<br>my-db"]
-    AtlasSchema["AtlasSchema<br>my-db-main"]
-    Database["Database<br>my-db-main"]
-    ProviderConfig1["ProviderConfig<br>my-db-sql"]
-    ProviderConfig2["ProviderConfig<br>my-db"]
+    SQL["SQL<br>devopstoolkit.live/v1beta1<br>my-db"]
+
+    VPC["VPC<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
+    Gateway["InternetGateway<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
+    RouteTable["RouteTable<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
+    Route["Route<br>ec2.aws.m.upbound.io/v1beta2<br>my-db"]
+    SecurityGroup["SecurityGroup<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
+    SecurityGroupRule["SecurityGroupRule<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
+    SubnetGroup["SubnetGroup<br>rds.aws.m.upbound.io/v1beta1<br>my-db"]
+    RDSInstance["Instance<br>rds.aws.m.upbound.io/v1beta3<br>my-db"]
+
+    Subnet1["Subnet<br>ec2.aws.m.upbound.io/v1beta1<br>my-db-a"]
+    Subnet2["Subnet<br>ec2.aws.m.upbound.io/v1beta1<br>my-db-b"]
+    Subnet3["Subnet<br>ec2.aws.m.upbound.io/v1beta1<br>my-db-c"]
+
+    RTA1["RouteTableAssociation<br>ec2.aws.m.upbound.io/v1beta1<br>my-db-1a"]
+    RTA2["RouteTableAssociation<br>ec2.aws.m.upbound.io/v1beta1<br>my-db-1b"]
+    RTA3["RouteTableAssociation<br>ec2.aws.m.upbound.io/v1beta1<br>my-db-1c"]
+    MainRTA["MainRouteTableAssociation<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
+
+    KubeSecret["Object<br>kubernetes.crossplane.io/v1alpha2<br>my-db-secret"]
+    ExternalSecret["ExternalSecret<br>external-secrets.io/v1beta1<br>my-db-password"]
+    PushSecret["PushSecret<br>external-secrets.io/v1alpha1<br>my-db"]
+    AtlasSchema["AtlasSchema<br>db.atlasgo.io/v1alpha1<br>my-db-main"]
+    Database["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-main"]
+    ProviderConfig1["ProviderConfig<br>kubernetes.crossplane.io/v1alpha1<br>my-db-sql"]
+    ProviderConfig2["ProviderConfig<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db"]
 
     SQL --> VPC
     SQL --> Gateway
@@ -79,13 +79,20 @@ flowchart TD
     SQL --> SecurityGroupRule
     SQL --> SubnetGroup
     SQL --> RDSInstance
-    SQL --> Secret
+    SQL --> KubeSecret
     SQL --> ExternalSecret
     SQL --> PushSecret
     SQL --> AtlasSchema
     SQL --> Database
     SQL --> ProviderConfig1
     SQL --> ProviderConfig2
+    SQL --> Subnet1
+    SQL --> Subnet2
+    SQL --> Subnet3
+    SQL --> RTA1
+    SQL --> RTA2
+    SQL --> RTA3
+    SQL --> MainRTA
 
     Gateway --> VPC
     RouteTable --> VPC
@@ -112,6 +119,9 @@ flowchart TD
     MainRTA --> RouteTable
     MainRTA --> VPC
 
+    Database --> ProviderConfig2
+    AtlasSchema --> KubeSecret
+    
     SQL:::compositeResource
     VPC:::awsResource
     Gateway:::awsResource
@@ -128,7 +138,7 @@ flowchart TD
     RTA2:::awsResource
     RTA3:::awsResource
     MainRTA:::awsResource
-    Secret:::otherResource
+    KubeSecret:::otherResource
     ExternalSecret:::otherResource
     PushSecret:::otherResource
     AtlasSchema:::otherResource

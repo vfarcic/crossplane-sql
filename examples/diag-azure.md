@@ -25,35 +25,30 @@ flowchart TD
     classDef azureResource fill:#D35400,color:white
     classDef otherResource fill:#8E44AD,color:white
 
-    SQL["SQL<br>my-db"]:::compositeResource
+    SQL["SQL<br>devopstoolkit.live/v1beta1<br>my-db"]:::compositeResource
     
     %% Azure Resources
-    ResourceGroup["ResourceGroup<br>my-db"]:::azureResource
-    Server["Server<br>my-db"]:::azureResource
-    FirewallRule["FirewallRule<br>my-db"]:::azureResource
+    ResourceGroup["ResourceGroup<br>azure.upbound.io/v1beta1<br>my-db"]:::azureResource
+    Server["Server<br>dbforpostgresql.azure.upbound.io/v1beta1<br>my-db"]:::azureResource
+    FirewallRule["FirewallRule<br>dbforpostgresql.azure.upbound.io/v1beta1<br>my-db"]:::azureResource
     
     %% Other Resources
-    KProviderConfig["ProviderConfig<br>my-db-sql-kubernetes"]:::otherResource
-    HProviderConfig["ProviderConfig<br>my-db-sql-helm"]:::otherResource
-    SQLProviderConfig["ProviderConfig<br>my-db"]:::otherResource
-    Database1["Database<br>my-db-db-01"]:::otherResource
-    Database2["Database<br>my-db-db-02"]:::otherResource
-    PasswordSecret["Secret<br>my-db-password"]:::otherResource
-    ConnectionSecret["Object<br>my-db-secret"]:::otherResource
+    KubernetesProviderConfig["ProviderConfig<br>kubernetes.crossplane.io/v1alpha1<br>my-db-sql"]:::otherResource
+    SQLProviderConfig["ProviderConfig<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db"]:::otherResource
+    Database1["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-db-01"]:::otherResource
+    Database2["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-db-02"]:::otherResource
+    ConnectionSecret["Object<br>kubernetes.crossplane.io/v1alpha2<br>my-db-secret"]:::otherResource
     
     %% Resource Relationships
     SQL --> ResourceGroup
-    SQL --> KProviderConfig
-    SQL --> HProviderConfig
-    SQL --> SQLProviderConfig
-    
     ResourceGroup --> Server
     Server --> FirewallRule
+    
+    SQL --> KubernetesProviderConfig
+    SQL --> SQLProviderConfig
     
     SQLProviderConfig --> Database1
     SQLProviderConfig --> Database2
     
     Server --> ConnectionSecret
-    Server --> PasswordSecret
-    ConnectionSecret --> Database1
-    ConnectionSecret --> Database2
+```

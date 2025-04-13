@@ -1,6 +1,7 @@
 # dot-sql
 
 ```yaml
+---
 apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
@@ -25,72 +26,57 @@ flowchart TD
     classDef awsResource fill:#D35400,color:white
     classDef otherResource fill:#8E44AD,color:white
 
-    SQL["SQL<br>my-db"]
+    SQL["SQL<br>devopstoolkit.live/v1beta1<br>my-db"]:::compositeResource
 
-    %% AWS resources
-    VPC["VPC<br>my-db"]
-    SecurityGroup["SecurityGroup<br>my-db"]
-    SecurityGroupRule["SecurityGroupRule<br>my-db"]
-    DBSubnetGroup["DBSubnetGroup<br>my-db"]
-    DBInstance["DBInstance<br>my-db"]
-    
-    Subnet1["Subnet<br>my-db-a"]
-    Subnet2["Subnet<br>my-db-b"]
-    Subnet3["Subnet<br>my-db-c"]
-    
-    %% Other resources
-    Database1["Database<br>my-db-db-01"]
-    Database2["Database<br>my-db-db-02"]
-    Secret["Secret<br>my-db-secret"]
-    ProviderConfig1["ProviderConfig<br>my-db-sql-kubernetes"]
-    ProviderConfig2["ProviderConfig<br>my-db-sql-helm"]
-    SQLProviderConfig["ProviderConfig<br>my-db"]
+    %% AWS Resources
+    VPC["VPC<br>ec2.services.k8s.aws/v1alpha1<br>my-db"]:::awsResource
+    InternetGateway["InternetGateway<br>ec2.services.k8s.aws/v1alpha1<br>my-db"]:::awsResource
+    RouteTable["RouteTable<br>ec2.services.k8s.aws/v1alpha1<br>my-db"]:::awsResource
+    SecurityGroup["SecurityGroup<br>ec2.services.k8s.aws/v1alpha1<br>my-db"]:::awsResource
+    DBSubnetGroup["DBSubnetGroup<br>rds.services.k8s.aws/v1alpha1<br>my-db"]:::awsResource
+    DBInstance["DBInstance<br>rds.services.k8s.aws/v1alpha1<br>my-db"]:::awsResource
+    SubnetA["Subnet<br>ec2.services.k8s.aws/v1alpha1<br>my-db-a"]:::awsResource
+    SubnetB["Subnet<br>ec2.services.k8s.aws/v1alpha1<br>my-db-b"]:::awsResource
+    SubnetC["Subnet<br>ec2.services.k8s.aws/v1alpha1<br>my-db-c"]:::awsResource
 
-    %% Connections from SQL composite
+    %% Other Resources
+    Object["Object<br>kubernetes.v1alpha2<br>my-db-secret"]:::otherResource
+    PCKubernetes["ProviderConfig<br>kubernetes.crossplane.io/v1alpha1<br>my-db-sql"]:::otherResource
+    PCPostgres["ProviderConfig<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db"]:::otherResource
+    DBdb01["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-db-01"]:::otherResource
+    DBdb02["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-db-02"]:::otherResource
+
+    %% Resource Relationships
     SQL --> VPC
-    SQL --> SecurityGroup
-    SQL --> SecurityGroupRule
-    SQL --> Subnet1
-    SQL --> Subnet2
-    SQL --> Subnet3
-    SQL --> DBSubnetGroup
-    SQL --> DBInstance
-    SQL --> Database1
-    SQL --> Database2
-    SQL --> Secret
-    SQL --> ProviderConfig1
-    SQL --> ProviderConfig2
-    SQL --> SQLProviderConfig
-
-    %% Resource relationships
+    SQL --> PCKubernetes
+    SQL --> PCPostgres
+    SQL --> DBdb01
+    SQL --> DBdb02
+    
+    InternetGateway --> VPC
+    RouteTable --> VPC
+    RouteTable --> InternetGateway
+    
     SecurityGroup --> VPC
-    SecurityGroupRule --> SecurityGroup
-    Subnet1 --> VPC
-    Subnet2 --> VPC
-    Subnet3 --> VPC
-    DBSubnetGroup --> Subnet1
-    DBSubnetGroup --> Subnet2
-    DBSubnetGroup --> Subnet3
+    
+    SubnetA --> VPC
+    SubnetB --> VPC
+    SubnetC --> VPC
+    SubnetA --> RouteTable
+    SubnetB --> RouteTable
+    SubnetC --> RouteTable
+    
+    DBSubnetGroup --> SubnetA
+    DBSubnetGroup --> SubnetB
+    DBSubnetGroup --> SubnetC
+    
     DBInstance --> DBSubnetGroup
     DBInstance --> SecurityGroup
-    Database1 --> SQLProviderConfig
-    Database2 --> SQLProviderConfig
-    Secret --> DBInstance
-
-    %% Style classes
-    SQL:::compositeResource
-    VPC:::awsResource
-    SecurityGroup:::awsResource
-    SecurityGroupRule:::awsResource
-    DBSubnetGroup:::awsResource
-    DBInstance:::awsResource
-    Subnet1:::awsResource
-    Subnet2:::awsResource
-    Subnet3:::awsResource
-    Database1:::otherResource
-    Database2:::otherResource
-    Secret:::otherResource
-    ProviderConfig1:::otherResource
-    ProviderConfig2:::otherResource
-    SQLProviderConfig:::otherResource
+    
+    Object --> DBInstance
+    
+    PCPostgres --> Object
+    
+    DBdb01 --> PCPostgres
+    DBdb02 --> PCPostgres
 ```
