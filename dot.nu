@@ -169,6 +169,7 @@ def "main publish" [
 
 def "main generate diagram" [
     composite_resource: string
+    diagram_path: string
 ] {
 
     let prompt = (
@@ -177,7 +178,7 @@ def "main generate diagram" [
             $composite_resource
     )
 
-    claude $prompt
+    claude --print $prompt | save $diagram_path --force
 
 }
 
