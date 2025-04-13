@@ -1,6 +1,4 @@
-## Diagrams
-
-Composite resource is in `examples/upcloud.yaml`.
+Composite resource is in `REPLACE_COMPOSITE_RESOURCE`.
 
 Crossplane Compositions are stored in `package/compositions.yaml`.
 
@@ -32,4 +30,4 @@ Format the content of the output file as follows.
 2. Content of the Composite Resource.
 3. Mermaid diagram
 
-Test that it renders correctly.
+Test that it renders correctly. Feel free to use https://mermaid.live if that helps testing.

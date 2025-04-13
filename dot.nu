@@ -167,6 +167,23 @@ def "main publish" [
 
 }
 
+def "main generate diagram" [
+    composite_resource: string
+] {
+
+    rm --force $composite_resource
+
+    let prompt = (
+        open prompts/diagram.md
+            | str replace "REPLACE_COMPOSITE_RESOURCE"
+            $composite_resource
+    )
+
+    # claude $prompt
+    print $prompt
+
+}
+
 def "package generate" [] {
 
     kcl run kcl/compositions.k |

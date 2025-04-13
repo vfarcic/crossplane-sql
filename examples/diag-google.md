@@ -26,38 +26,32 @@ flowchart TD
     classDef googleResource fill:#D35400,color:white
     classDef otherResource fill:#8E44AD,color:white
 
-    SQL["SQL<br>my-db"]:::compositeResource
+    SQL["SQL<br>devopstoolkit.live/v1beta1<br>my-db"]:::compositeResource
     
     %% Google Cloud Resources
-    DatabaseInstance["DatabaseInstance<br>my-db"]:::googleResource
-    User["User<br>my-db"]:::googleResource
+    DatabaseInstance["DatabaseInstance<br>sql.gcp.upbound.io/v1beta1<br>my-db"]:::googleResource
+    User["User<br>sql.gcp.upbound.io/v1beta1<br>my-db"]:::googleResource
     
-    %% Provider Configs
-    KProviderConfig["ProviderConfig<br>my-db-sql-kubernetes"]:::otherResource
-    HProviderConfig["ProviderConfig<br>my-db-sql-helm"]:::otherResource
-    SQLProviderConfig["ProviderConfig<br>my-db"]:::otherResource
+    %% Kubernetes Resources
+    KProviderConfig["ProviderConfig<br>kubernetes.crossplane.io/v1alpha1<br>my-db-sql"]:::otherResource
+    SQLProviderConfig["ProviderConfig<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db"]:::otherResource
+    ConnectionSecret["Object<br>kubernetes.crossplane.io/v1alpha2<br>my-db-secret"]:::otherResource
     
-    %% Database Resources
-    Database1["Database<br>my-db-db-01"]:::otherResource
-    Database2["Database<br>my-db-db-02"]:::otherResource
-    
-    %% Secret Resources
-    ConnectionSecret["Object<br>my-db-secret"]:::otherResource
-    PasswordSecret["Secret<br>my-db-password"]:::otherResource
+    %% Database Resources for db-01 and db-02
+    Database1["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-db-01"]:::otherResource
+    Database2["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-db-02"]:::otherResource
     
     %% Resource Relationships
     SQL --> DatabaseInstance
-    SQL --> KProviderConfig
-    SQL --> HProviderConfig
-    SQL --> SQLProviderConfig
     
     DatabaseInstance --> User
     User --> ConnectionSecret
+    
+    ConnectionSecret --> KProviderConfig
+    
     DatabaseInstance --> ConnectionSecret
     
+    SQL --> SQLProviderConfig
     SQLProviderConfig --> Database1
     SQLProviderConfig --> Database2
-    
-    PasswordSecret --> DatabaseInstance
-    PasswordSecret --> User
 ```
