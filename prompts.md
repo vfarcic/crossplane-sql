@@ -6,7 +6,7 @@ Crossplane Compositions are stored in `package/compositions.yaml`.
 
 Assume that Composite Resource is applied and that Crossplane selects the correct Composition and composes resources.
 
-Generate Mermaid diagram of resources based on the Crossplane Compositions. I am interested only in the `Kind` and `name` of resources.
+Generate Mermaid diagram of resources based on the Crossplane Compositions. I am interested only in `kind`, `apiVersion`, and `name` of resources.
 
 Include all resources into the graph.
 
