@@ -28,13 +28,13 @@ Take a look at the initial root password.
 cat examples/google-secret.yaml
 ```
 
-Take a look at the example Claim.
+Take a look at the example Composite Resource.
 
 ```sh
 cat examples/google.yaml
 ```
 
-Apply the secret and the example Claim.
+Apply the secret and the example Composite Resource.
 
 ```sh
 kubectl --namespace infra apply --filename examples/google-secret.yaml
@@ -42,13 +42,13 @@ kubectl --namespace infra apply --filename examples/google-secret.yaml
 kubectl --namespace infra apply --filename examples/google.yaml
 ```
 
-Take a look at the status of the SQL Claim.
+Take a look at the status of the SQL Composite Resource.
 
 ```sh
-crossplane beta trace sqlclaim my-db --namespace infra
+crossplane beta trace sql my-db --namespace infra
 ```
 
-Delete the example Claim.
+Delete the example Composite Resource.
 
 ```sh
 kubectl --namespace infra delete --filename examples/google.yaml
@@ -64,25 +64,25 @@ echo "{\"password\": \"IWillNeverTell\" }" \
     create db-root-password --data-file=-
 ```
 
-Take a look at the example Claim.
+Take a look at the example Composite Resource.
 
 ```sh
 cat examples/google-eso.yaml
 ```
 
-Apply the secret and the example Claim.
+Apply the secret and the example Composite Resource.
 
 ```sh
 kubectl --namespace infra apply --filename examples/google-eso.yaml
 ```
 
-Take a look at the status of the SQL Claim.
+Take a look at the status of the SQL Composite Resource.
 
 ```sh
-crossplane beta trace sqlclaim my-db --namespace infra
+crossplane beta trace sql my-db --namespace infra
 ```
 
-Delete the example Claim.
+Delete the example Composite Resource.
 
 ```sh
 kubectl --namespace infra delete --filename examples/google-eso.yaml

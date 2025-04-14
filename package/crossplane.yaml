@@ -6,16 +6,20 @@ metadata:
     meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
     meta.crossplane.io/source: github.com/vfarcic/crossplane-sql
     meta.crossplane.io/license: MIT
-    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS, Google Cloud Platform, Azure, and UpCloud.
-    meta.crossplane.io/readme: A Configuration package that defines a SQL and SQLClaim types that can be used to create and provision fully operational databases in AWS (RDS PostgreSQL), Google Cloud Platform (PostgreSQL and MySQL), and Azure (PostgreSQL).
+    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS (Crossplane provider and ACK), Google Cloud Platform, Azure (Crossplane provider and ASO), UpCloud, and a local in-cluster CNPG.
+    meta.crossplane.io/readme: A Configuration package that defines a SQL type that can be used to create and provision fully operational PostgreSQL database servers, databases, and schemas in AWS (Crossplane provider and ACK), Google Cloud Platform, Azure (Crossplane provider and ASO), UpCloud, and a local in-cluster CNPG.
 spec:
   crossplane:
-    version: ">=v1.14.0"
+    version: ">=v2.0.0-preview.1"
   dependsOn:
-  - provider: xpkg.upbound.io/upbound/provider-aws-ec2
-    version: ">=v1.0.0"
-  - provider: xpkg.upbound.io/upbound/provider-aws-rds
-    version: ">=v1.0.0"
+  # - provider: xpkg.upbound.io/upbound/provider-aws-ec2
+  #   version: ">=v1.0.0"
+  - provider: xpkg.crossplane.io/crossplane-contrib/provider-aws-ec2
+    version: "v1.22.0-crossplane-v2-preview.0"
+  # - provider: xpkg.upbound.io/upbound/provider-aws-rds
+  #   version: ">=v1.0.0"
+  - provider: xpkg.crossplane.io/crossplane-contrib/provider-aws-rds
+    version: "v1.22.0-crossplane-v2-preview.0"
   - provider: xpkg.upbound.io/upbound/provider-azure-dbforpostgresql
     version: ">=v0.33.0"
   - provider: xpkg.upbound.io/upbound/provider-gcp-sql
@@ -32,5 +36,3 @@ spec:
     version: ">=v0.10.3"
   # - provider: xpkg.upbound.io/upbound/provider-kubernetes
   #   version: ">=v0.11.0"
-  # - provider: xpkg.upbound.io/upbound/provider-helm
-  #   version: ">=v0.17.0"

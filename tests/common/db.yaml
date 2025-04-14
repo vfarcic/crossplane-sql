@@ -1,10 +1,9 @@
-apiVersion: devopstoolkit.live/v1alpha1
-kind: SQLClaim
+apiVersion: devopstoolkit.live/v1beta1
+kind: SQL
 metadata:
-  name: my-db
+  name: (join('-', ['my-db', $provider]))
 spec:
-  parameters:
-    databases:
-      - db-01
-      - db-02
-      - db-03
+  databases:
+    - db-01
+    - db-02
+    - db-03

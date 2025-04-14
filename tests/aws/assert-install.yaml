@@ -1,94 +1,84 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
+apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  labels:
-    crossplane.io/claim-name: my-db
+  name: my-db-aws
 spec:
-  claimRef:
-    apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQLClaim
-    name: my-db
-  compositionRef:
-    name: aws-postgresql
-  compositionSelector:
-    matchLabels:
-      db: postgresql
-      provider: aws
-  compositionUpdatePolicy: Automatic
-  id: my-db-aws
-  parameters:
-    size: medium
-    version: "13.4"
-  resourceRefs:
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: InternetGateway
-    name: my-db-aws
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: MainRouteTableAssociation
-    name: my-db-aws
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: RouteTableAssociation
-    name: my-db-aws-1a
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: RouteTableAssociation
-    name: my-db-aws-1b
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: RouteTableAssociation
-    name: my-db-aws-1c
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: RouteTable
-    name: my-db-aws
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: Route
-    name: my-db-aws
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: SecurityGroupRule
-    name: my-db-aws
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: SecurityGroup
-    name: my-db-aws
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: Subnet
-    name: my-db-aws-a
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: Subnet
-    name: my-db-aws-b
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: Subnet
-    name: my-db-aws-c
-  - apiVersion: ec2.aws.upbound.io/v1beta1
-    kind: VPC
-    name: my-db-aws
-  - apiVersion: helm.crossplane.io/v1beta1
-    kind: ProviderConfig
-    name: my-db-aws-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-aws-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha2
-    kind: Object
-    name: my-db-aws-secret
-  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-aws
-  - apiVersion: rds.aws.upbound.io/v1beta1
-    kind: SubnetGroup
-    name: my-db-aws
-  - apiVersion: rds.aws.upbound.io/v1beta2
-    kind: Instance
-    name: my-db-aws
+  size: medium
+  version: ($version)
+  crossplane:
+    compositionRef:
+      name: aws-postgresql
+    compositionSelector:
+      matchLabels:
+        db: postgresql
+        provider: aws
+    compositionUpdatePolicy: Automatic
+    resourceRefs:
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: InternetGateway
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: MainRouteTableAssociation
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      name: my-db-aws-1a
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      name: my-db-aws-1b
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      name: my-db-aws-1c
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: RouteTable
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: SecurityGroup
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: Subnet
+      name: my-db-aws-a
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: Subnet
+      name: my-db-aws-b
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: Subnet
+      name: my-db-aws-c
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: VPC
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta2
+      kind: Route
+      name: my-db-aws
+    - apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-aws-sql
+    - apiVersion: kubernetes.crossplane.io/v1alpha2
+      kind: Object
+      name: my-db-aws-secret
+    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-aws
+    - apiVersion: rds.aws.m.upbound.io/v1beta1
+      kind: SubnetGroup
+      name: my-db-aws
+    - apiVersion: rds.aws.m.upbound.io/v1beta3
+      kind: Instance
+      name: my-db-aws
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: InternetGateway
 metadata:
   annotations:
     crossplane.io/composition-resource-name: gateway
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -101,16 +91,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: MainRouteTableAssociation
 metadata:
   annotations:
     crossplane.io/composition-resource-name: mainRouteTableAssociation
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -125,16 +114,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta2
 kind: Route
 metadata:
   annotations:
     crossplane.io/composition-resource-name: route
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -150,16 +138,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   annotations:
     crossplane.io/composition-resource-name: routeTableAssociation1a
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-1a
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -176,16 +163,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   annotations:
     crossplane.io/composition-resource-name: routeTableAssociation1b
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-1b
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -202,16 +188,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTableAssociation
 metadata:
   annotations:
     crossplane.io/composition-resource-name: routeTableAssociation1c
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-1c
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -228,16 +213,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: RouteTable
 metadata:
   annotations:
     crossplane.io/composition-resource-name: routeTable
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -250,16 +234,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: SecurityGroupRule
 metadata:
   annotations:
     crossplane.io/composition-resource-name: securityGroupRule
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -279,16 +262,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: SecurityGroup
 metadata:
   annotations:
     crossplane.io/composition-resource-name: securityGroup
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -302,16 +284,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   annotations:
     crossplane.io/composition-resource-name: subnet-a
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-a
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -326,16 +307,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   annotations:
     crossplane.io/composition-resource-name: subnet-b
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-b
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -350,16 +330,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
   annotations:
     crossplane.io/composition-resource-name: subnet-c
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-c
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -374,16 +353,15 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.upbound.io/v1beta1
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: VPC
 metadata:
   annotations:
     crossplane.io/composition-resource-name: vpc
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -403,11 +381,9 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-secret
     crossplane.io/external-name: my-db-aws-secret
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws-secret
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -449,16 +425,15 @@ spec:
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
-apiVersion: rds.aws.upbound.io/v1beta2
+apiVersion: rds.aws.m.upbound.io/v1beta3
 kind: Instance
 metadata:
   annotations:
     crossplane.io/composition-resource-name: rdsinstance
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -470,7 +445,7 @@ spec:
     dbSubnetGroupNameSelector:
       matchControllerRef: true
     engine: postgres
-    engineVersion: "13.4"
+    engineVersion: ($version)
     instanceClass: db.m5.2xlarge
     passwordSecretRef:
       key: password
@@ -484,17 +459,16 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: rds.aws.upbound.io/v1beta1
+apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: SubnetGroup
 metadata:
   annotations:
     crossplane.io/composition-resource-name: subnetgroup
     crossplane.io/external-name: my-db-aws
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-aws
+  namespace: ($namespace)
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL

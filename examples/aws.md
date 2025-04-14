@@ -1,4 +1,4 @@
-# AWS EKS Example
+# AWS RDS Example
 
 ## Setup
 
@@ -22,7 +22,7 @@ cat examples/aws.yaml
 
 kubectl --namespace infra apply --filename examples/aws.yaml
     
-crossplane beta trace --namespace infra sqlclaim my-db
+crossplane beta trace --namespace infra sql my-db
 ```
 
 > Wait until all the resources are `Available`

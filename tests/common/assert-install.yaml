@@ -1,48 +1,16 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
-kind: SQLClaim
+apiVersion: devopstoolkit.live/v1beta1
+kind: SQL
 metadata:
-  name: my-db
+  name: (join('-', ['my-db', $provider]))
   namespace: ($namespace)
 spec:
-  compositionRef:
-    name: (join('-', [$hyperscaler, 'postgresql']))
-  compositionSelector:
-    matchLabels:
-      db: postgresql
-      provider: ($hyperscaler)
-  id: (join('-', ['my-db', $hyperscaler]))
-  parameters:
-    size: medium
-    version: "13.4"
-  resourceRef:
-    apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQL
----
-apiVersion: kubernetes.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  labels:
-    crossplane.io/claim-name: my-db
-    crossplane.io/claim-namespace: ($namespace)
-  name: (join('-', ['my-db', $hyperscaler, 'sql']))
-  ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQL
-spec:
-  credentials:
-    source: InjectedIdentity
----
-apiVersion: helm.crossplane.io/v1beta1
-kind: ProviderConfig
-metadata:
-  labels:
-    crossplane.io/claim-name: my-db
-    crossplane.io/claim-namespace: ($namespace)
-  name: (join('-', ['my-db', $hyperscaler, 'sql']))
-  ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQL
-spec:
-  credentials:
-    source: InjectedIdentity
+  size: medium
+  version: ($version)
+  crossplane:
+    compositionRef:
+      name: (join('-', [$provider, 'postgresql']))
+    compositionSelector:
+      matchLabels:
+        db: postgresql
+        provider: ($provider)

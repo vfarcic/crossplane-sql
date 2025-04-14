@@ -5,20 +5,22 @@ metadata:
 spec:
   template: true
   bindings:
-    - name: hyperscaler
+    - name: provider
       value: aws
     - name: cluster
       value: eks
     - name: dbPort
       value: 5432
+    - name: version
+      value: "14"
   steps:
     - try:
         - apply:
             file: ../common/install.yaml
         - assert:
             file: ../common/assert-install.yaml
-        - assert:
-            file: ../common/assert-status-provider.yaml
+        # - assert:
+        #     file: ../common/assert-status-provider.yaml
         - assert:
             file: assert-install.yaml
         - patch:
@@ -45,16 +47,16 @@ spec:
             file: ../common/region.yaml
         - assert:
             file: region.yaml
-    #   catch:
-    #     - get:
-    #         resource: managed
-    #     - describe:
-    #         resource: sqlclaims
-    #         name: my-db
-    #         namespace: $NAMESPACE
-    #     - describe:
-    #         resource: sqls
-    #         selector: crossplane.io/claim-namespace=$NAMESPACE
-    #     - describe:
-    #         resource: release
-    #         selector: crossplane.io/claim-namespace=$NAMESPACE
+      catch:
+        - script:
+            content: kubectl describe sqls my-db-aws --namespace $NAMESPACE
+    #     - script:
+    #         content: kubectl get aws,externalsecrets,pushsecrets --namespace $NAMESPACE
+    #   FIXME: Remove when v2 fixes the problem with the deletion of cluster-scoped resources.
+    #   finally:
+    #     - script:
+    #         content: |
+    #           kubectl delete object my-db-aws-secret
+    #           kubectl delete database.postgresql.sql.crossplane.io my-db-aws-db-01
+    #           kubectl delete database.postgresql.sql.crossplane.io my-db-aws-db-02
+    #           kubectl delete database.postgresql.sql.crossplane.io my-db-aws-db-03

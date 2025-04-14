@@ -1,0 +1,99 @@
+---
+apiVersion: devopstoolkit.live/v1beta1
+kind: SQL
+metadata:
+  name: my-db-local
+  namespace: ($namespace)
+spec:
+  size: medium
+  crossplane:
+    compositionRef:
+      name: local-postgresql
+    compositionSelector:
+      matchLabels:
+        db: postgresql
+        provider: local
+    compositionUpdatePolicy: Automatic
+    resourceRefs:
+    - apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-local-sql
+    - apiVersion: kubernetes.crossplane.io/v1alpha2
+      kind: Object
+      name: my-db-local-secret
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: my-db-local
+    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-local
+---
+apiVersion: kubernetes.crossplane.io/v1alpha2
+kind: Object
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: sql-secret
+    crossplane.io/external-name: my-db-local-secret
+  name: my-db-local-secret
+  ownerReferences:
+  - apiVersion: devopstoolkit.live/v1beta1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    manifest:
+      apiVersion: v1
+      data:
+        port: NTQzMg==
+        username: YXBw
+      stringData:
+        endpoint: my-db-local-rw
+      kind: Secret
+      metadata:
+        name: my-db-local
+  managementPolicies:
+  - '*'
+  providerConfigRef:
+    name: my-db-local-sql
+  readiness:
+    policy: SuccessfulCreate
+  references:
+  - patchesFrom:
+      apiVersion: v1
+      fieldPath: data.password
+      kind: Secret
+      name: my-db-local-app
+      namespace: ($namespace)
+    toFieldPath: data.password
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: my-db-local
+  namespace: ($namespace)
+spec:
+  instances: 3
+  storage:
+    size: 3Gi
+---
+apiVersion: postgresql.sql.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: sql-config
+  name: my-db-local
+  ownerReferences:
+  - apiVersion: devopstoolkit.live/v1beta1
+    blockOwnerDeletion: true
+    controller: true
+    kind: SQL
+spec:
+  credentials:
+    connectionSecretRef:
+      name: my-db-local
+      namespace: ($namespace)
+    source: PostgreSQLConnectionSecret
+  defaultDatabase: postgres
+  sslMode: require

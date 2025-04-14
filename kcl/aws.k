@@ -1,30 +1,20 @@
-import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
-import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
-import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
+# import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
+# import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
+# import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
 import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
-
-# oxr = {
-#     spec = {
-#         id = "my-db"
-#         claimRef.namespace = "my-namespace"
-#         parameters = {
-#             size = "small"
-#             version = "11.10"
-#         }
-#     }
-# }
-# ocds = {}
 
 oxr = option("params").oxr
 ocds = option("params").ocds
 
+_name = oxr.metadata.name
+_namespace = oxr.metadata.namespace
 _region = "us-east-1"
-if oxr.spec?.parameters?.region:
-    _region = oxr.spec.parameters.region
+if oxr.spec?.region:
+    _region = oxr.spec.region
 
 _metadata = lambda resourceName: str -> any {
     {
-        name = oxr.spec.id
+        name = _name
         annotations = {
             "krm.kcl.dev/composition-resource-name" = resourceName
         }
@@ -32,29 +22,35 @@ _metadata = lambda resourceName: str -> any {
 }
 
 _items = [
-    ec2v1beta1.InternetGateway {
+    {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "InternetGateway"
         metadata = _metadata("gateway")
         spec.forProvider = {
             region = _region
             vpcIdSelector.matchControllerRef = True
         }
     },
-    ec2v1beta1.MainRouteTableAssociation {
+    {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "MainRouteTableAssociation"
         metadata = _metadata("mainRouteTableAssociation")
         spec.forProvider = {
             region = _region
             routeTableIdSelector.matchControllerRef = True
             vpcIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.RouteTable {
+    }, {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "RouteTable"
         metadata = _metadata("routeTable")
         spec.forProvider = {
             region = _region
             vpcIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.Route {
+    }, {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta2"
+        kind = "Route"
         metadata = _metadata("route")
         spec.forProvider = {
             region = _region
@@ -62,8 +58,9 @@ _items = [
             destinationCidrBlock = "0.0.0.0/0"
             gatewayIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.SecurityGroupRule {
+    }, {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "SecurityGroupRule"
         metadata = _metadata("securityGroupRule")
         spec.forProvider = {
             region = _region
@@ -75,16 +72,18 @@ _items = [
             cidrBlocks = ["0.0.0.0/0"]
             securityGroupIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.SecurityGroup {
+    }, {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "SecurityGroup"
         metadata = _metadata("securityGroup")
         spec.forProvider = {
             region = _region
             description = "I am too lazy to write descriptions"
             vpcIdSelector.matchControllerRef = True
         }
-    },
-    ec2v1beta1.VPC {
+    }, {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "VPC"
         metadata = _metadata("vpc")
         spec.forProvider = {
             region = _region
@@ -92,16 +91,18 @@ _items = [
             enableDnsSupport = True
             enableDnsHostnames = True
         }
-    },
-    rdsv1beta1.SubnetGroup {
-        metadata = _metadata("subnetgroup")    
+    }, {
+        apiVersion = "rds.aws.m.upbound.io/v1beta1"
+        kind = "SubnetGroup"
+        metadata = _metadata("subnetgroup")
         spec.forProvider = {
             region = _region
             description = "I'm too lazy to write a good description"
             subnetIdSelector.matchControllerRef = True
         }
-    },
-    rdsv1beta2.Instance {
+    }, {
+        apiVersion = "rds.aws.m.upbound.io/v1beta3"
+        kind = "Instance"
         metadata = _metadata("rdsinstance")
         spec.forProvider = {
             region = _region
@@ -113,24 +114,24 @@ _items = [
             publiclyAccessible = True
             allocatedStorage = 200
             passwordSecretRef = {
-                name = oxr.spec.id + "-password"
-                namespace = oxr.spec.claimRef.namespace
+                name = _name + "-password"
                 key = "password"
+                namespace = _namespace
             }
             storageEncrypted = True
-            identifier = oxr.spec.id
-            if oxr.spec.parameters.size == "small":
+            identifier = _name
+            if oxr.spec.size == "small":
                 instanceClass = "db.m5.large"
-            elif oxr.spec.parameters.size == "medium":
+            elif oxr.spec.size == "medium":
                 instanceClass = "db.m5.2xlarge"
             else:
                 instanceClass = "db.m5.8xlarge"
-            engineVersion = oxr.spec.parameters.version
+            engineVersion = oxr.spec.version
         }
     },
     k8sv1alpha2.Object {
         metadata = {
-            name = oxr.spec.id + "-secret"
+            name = _name + "-secret"
             annotations = {
                 "krm.kcl.dev/ready": "True"
                 "krm.kcl.dev/composition-resource-name" = "sql-secret"
@@ -141,7 +142,7 @@ _items = [
                 patchesFrom = {
                     apiVersion = "rds.aws.upbound.io/v1beta1"
                     kind = "Instance"
-                    name = oxr.spec.id
+                    name = _name
                     namespace = "crossplane-system"
                     fieldPath = "spec.forProvider.username"
                 }
@@ -150,8 +151,8 @@ _items = [
                 patchesFrom = {
                     apiVersion = "v1"
                     kind = "Secret"
-                    name = oxr.spec.id + "-password"
-                    namespace = oxr.spec.claimRef.namespace
+                    name = _name + "-password"
+                    namespace = _namespace
                     fieldPath = "data.password"
                 }
                 toFieldPath = "data.password"
@@ -159,7 +160,7 @@ _items = [
                 patchesFrom = {
                     apiVersion = "rds.aws.upbound.io/v1beta1"
                     kind = "Instance"
-                    name = oxr.spec.id
+                    name = _name
                     namespace = "crossplane-system"
                     fieldPath = "status.atProvider.address"
                 }
@@ -169,12 +170,12 @@ _items = [
                 apiVersion = "v1"
                 kind = "Secret"
                 metadata = {
-                    name = oxr.spec.id
-                    namespace = oxr.spec.claimRef.namespace
+                    name = _name
+                    namespace = _namespace
                 }
                 data.port = "NTQzMg=="
             }
-            providerConfigRef.name = oxr.spec.id + "-sql"
+            providerConfigRef.name = _name + "-sql"
         }
     }, {
         **oxr
@@ -190,9 +191,11 @@ _zoneList = [
 ]
 
 _routeTableAssociations = [
-    ec2v1beta1.RouteTableAssociation {
+    {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "RouteTableAssociation"
         metadata = {
-            name = oxr.spec.id + "-1" + _data.zone
+            name = _name + "-1" + _data.zone
             annotations = {
                 "krm.kcl.dev/composition-resource-name" = "routeTableAssociation1" + _data.zone
             }
@@ -209,9 +212,11 @@ _routeTableAssociations = [
 ]
 
 _subnets = [
-    ec2v1beta1.Subnet {
+    {
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
+        kind = "Subnet"
         metadata = {
-            name = oxr.spec.id + "-" + _data.zone
+            name = _name + "-" + _data.zone
             annotations = {
                 "krm.kcl.dev/composition-resource-name" = "subnet-" + _data.zone
             }

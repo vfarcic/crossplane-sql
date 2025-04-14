@@ -1,13 +1,15 @@
 oxr = option("params").oxr
 ocds = option("params").ocds
 
+_name = oxr.metadata.name
+_namespace = oxr.metadata.namespace
 _region = "eastus"
-if oxr.spec?.parameters?.region:
-    _region = oxr.spec.parameters.region
+if oxr.spec?.region:
+    _region = oxr.spec.region
 
 _metadata = lambda resourceName: str -> any {
     {
-        name = oxr.spec.id
+        name = _name
         annotations = {
             "krm.kcl.dev/composition-resource-name" = resourceName
         }
@@ -26,10 +28,10 @@ _items = [{
     spec = {
         forProvider = {
             location = _region
-            version = oxr.spec.parameters.version
-            if oxr.spec.parameters.size == "small":
+            version = oxr.spec.version
+            if oxr.spec.size == "small":
                 skuName = "B_Gen5_1"
-            elif oxr.spec.parameters.size == "medium":
+            elif oxr.spec.size == "medium":
                 skuName = "GP_Gen5_2"
             else:
                 skuName = "GP_Gen5_8"
@@ -40,15 +42,15 @@ _items = [{
             sslMinimalTlsVersionEnforced = "TLSEnforcementDisabled"
             administratorLogin = "postgres"
             administratorLoginPasswordSecretRef = {
-                name = oxr.spec.id + "-password"
+                name = _name + "-password"
                 key = "password"
-                namespace = oxr.spec.claimRef.namespace
+                namespace: _namespace
             }
             publicNetworkAccessEnabled = True
         }
         writeConnectionSecretToRef = {
-            name = oxr.spec.id
-            namespace = oxr.spec.claimRef.namespace
+            name = _name
+            namespace = _namespace
         }
     }
 }, {
@@ -65,7 +67,7 @@ _items = [{
 #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
 #     kind = "ProviderConfig"
 #     metadata = {
-#         name = oxr.spec.id
+#         name = _name
 #         annotations = {
 #             "krm.kcl.dev/ready": "True"
 #             "krm.kcl.dev/composition-resource-name" = "sql-config"
@@ -75,8 +77,7 @@ _items = [{
 #         credentials = {
 #             source = "PostgreSQLConnectionSecret"
 #             connectionSecretRef = {
-#                 name = oxr.spec.id
-#                 namespace = oxr.spec.claimRef.namespace
+#                 name = _name
 #             }
 #         }
 #         sslMode = "require"

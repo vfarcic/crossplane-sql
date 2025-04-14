@@ -7,11 +7,13 @@
 ```sh
 devbox shell
 
-task cluster-create
+./dot.nu setup --preview true
 
-task test-watch
+source .env
 
-task cluster-destroy
+./dot.nu test watch --dir tests
+
+./dot.nu destroy
 
 exit
 ```
@@ -28,10 +30,7 @@ export UP_ACCOUNT=[...]
 export UP_TOKEN=[...]
 
 # Replace `[...]` with the version of the package (e.g., `v0.5.0`)
-export VERSION=[...]
-
-task package-publish
+./dot.nu publish --version [...]
 
 exit
 ```
-

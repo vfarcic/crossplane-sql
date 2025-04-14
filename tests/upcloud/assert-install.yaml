@@ -1,46 +1,37 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
+apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  labels:
-    crossplane.io/claim-name: my-db
+  name: my-db-upcloud
 spec:
-  claimRef:
-    apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQLClaim
-    name: my-db
-  compositionRef:
-    name: upcloud-postgresql
-  compositionSelector:
-    matchLabels:
-      db: postgresql
-      provider: upcloud
-  compositionUpdatePolicy: Automatic
-  id: my-db-upcloud
-  parameters:
-    size: medium
-  resourceRefs:
-  - apiVersion: database.upcloud.com/v1alpha1
-    kind: ManagedDatabasePostgresql
-    name: my-db-upcloud
-  - apiVersion: helm.crossplane.io/v1beta1
-    kind: ProviderConfig
-    name: my-db-upcloud-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-upcloud-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha2
-    kind: Object
-    name: my-db-upcloud-secret
-  - apiVersion: network.upcloud.com/v1alpha1
-    kind: Network
-    name: my-db-upcloud
-  - apiVersion: network.upcloud.com/v1alpha1
-    kind: Router
-    name: my-db-upcloud
-  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-upcloud
+  size: medium
+  crossplane:
+    compositionRef:
+      name: upcloud-postgresql
+    compositionSelector:
+      matchLabels:
+        db: postgresql
+        provider: upcloud
+    compositionUpdatePolicy: Automatic
+    resourceRefs:
+    - apiVersion: database.upcloud.com/v1alpha1
+      kind: ManagedDatabasePostgresql
+      name: my-db-upcloud
+    - apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-upcloud-sql
+    - apiVersion: kubernetes.crossplane.io/v1alpha2
+      kind: Object
+      name: my-db-upcloud-secret
+    - apiVersion: network.upcloud.com/v1alpha1
+      kind: Network
+      name: my-db-upcloud
+    - apiVersion: network.upcloud.com/v1alpha1
+      kind: Router
+      name: my-db-upcloud
+    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-upcloud
 ---
 apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object
@@ -48,11 +39,9 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-secret
     crossplane.io/external-name: my-db-upcloud-secret
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-upcloud-secret
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -137,11 +126,9 @@ kind: ProviderConfig
 metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-config
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-upcloud
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL

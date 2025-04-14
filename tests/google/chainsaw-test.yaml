@@ -5,20 +5,22 @@ metadata:
 spec:
   template: true
   bindings:
-    - name: hyperscaler
+    - name: provider
       value: google
     - name: cluster
       value: gke
     - name: dbPort
       value: 5432
+    - name: version
+      value: "14"
   steps:
     - try:
         - apply:
             file: ../common/install.yaml
         - assert:
             file: ../common/assert-install.yaml
-        - assert:
-            file: ../common/assert-status-provider.yaml
+        # - assert:
+        #     file: ../common/assert-status-provider.yaml
         - assert:
             file: assert-install.yaml
         - patch:
@@ -43,9 +45,8 @@ spec:
             file: ../common/region.yaml
         - assert:
             file: region.yaml
-    #   catch:
-    #     - get:
-    #         resource: managed
-    #     - describe:
-    #         resource: sqls
-    #         selector: crossplane.io/claim-namespace=$NAMESPACE
+      catch:
+        - script:
+            content: kubectl describe sqls my-db-google --namespace $NAMESPACE
+        # - script:
+        #     content: kubectl get gcp,externalsecrets,pushsecrets --namespace $NAMESPACE

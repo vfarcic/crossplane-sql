@@ -1,8 +1,6 @@
 name: Build
 on:
   push:
-    branches:
-      - main
 jobs:
   build-package:
     runs-on: ubuntu-latest
@@ -11,16 +9,22 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.2.12
+      - name: Install Crossplane CLI
+        run: |
+          curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh" | XP_CHANNEL=preview sh
+          sudo mv crossplane /usr/local/bin
+          crossplane --help
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.12.0
         with:
           enable-cache: 'true'
       - name: Test
         run: |
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           devbox run test
       - name: Build the package
+        if: github.ref == 'refs/heads/main'
         run: |
           GOBIN=$PWD go install github.com/maykonlsf/semver-cli/cmd/semver@latest
           export UP_TOKEN=${{ secrets.UP_TOKEN }}
@@ -28,12 +32,14 @@ jobs:
           export VERSION=$(./semver up release)
           devbox run package-publish
       - name: Commit changes
+        if: github.ref == 'refs/heads/main'
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .
           git commit -m "Config update [skip ci]"
       - name: Push changes
+        if: github.ref == 'refs/heads/main'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.CROSSPLANE_TOKEN }}

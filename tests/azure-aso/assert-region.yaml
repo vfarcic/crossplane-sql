@@ -1,0 +1,13 @@
+apiVersion: resources.azure.com/v1api20200601
+kind: ResourceGroup
+metadata:
+  name: my-db-azure-aso
+spec:
+  location: other-region
+---
+apiVersion: dbforpostgresql.azure.com/v1api20221201
+kind: FlexibleServer
+metadata:
+  name: my-db-azure-aso
+spec:
+  location: other-region

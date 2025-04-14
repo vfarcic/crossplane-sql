@@ -22,7 +22,7 @@ schema composition:
     }
     spec = {
         compositeTypeRef = {
-            apiVersion = "devopstoolkit.live/v1alpha1"
+            apiVersion = "devopstoolkit.live/v1beta1"
             kind = "SQL"
         }
         mode = "Pipeline"
@@ -49,15 +49,18 @@ schema composition:
                         source = file.read("kcl/common.k")
                     }
                 }
-            }, {
-                step = "statuses"
-                functionRef.name = "crossplane-contrib-function-status-transformer"
-                input = {
-                    apiVersion = "function-status-transformer.fn.crossplane.io/v1beta1"
-                    kind = "StatusTransformation"
-                    statusConditionHooks = _statusConditionHooks
-                }
-            }, {
+            },
+            if _statusConditionHooks != {}:
+                {
+                    step = "statuses"
+                    functionRef.name = "crossplane-contrib-function-status-transformer"
+                    input = {
+                        apiVersion = "function-status-transformer.fn.crossplane.io/v1beta1"
+                        kind = "StatusTransformation"
+                        statusConditionHooks = _statusConditionHooks
+                    }
+                },
+            {
                 step = "automatically-detect-ready-composed-resources"
                 functionRef.name = "crossplane-contrib-function-auto-ready"
             }
@@ -66,15 +69,6 @@ schema composition:
     }
         
 [
-    composition {
-        _provider = "google"
-        _source = file.read("kcl/google.k")
-        _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "databaseinstance", googlestatuses.googleDataList
-        )
-        _serverApiVersion = "sql.gcp.upbound.io/v1beta1"
-        _serverKind = "DatabaseInstance"
-    }
 
     composition {
         _provider = "aws"
@@ -82,8 +76,16 @@ schema composition:
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "vpc", awsstatuses.awsDataList
         )
-        _serverApiVersion = "rds.aws.upbound.io/v1beta1"
+        _serverApiVersion = "rds.aws.m.upbound.io/v1beta1"
         _serverKind = "SubnetGroup"
+    }
+
+    composition {
+        _provider = "aws-ack"
+        _source = file.read("kcl/aws-ack.k")
+        _statusConditionHooks = {}
+        _serverApiVersion = ""
+        _serverKind = ""
     }
 
     composition {
@@ -97,13 +99,41 @@ schema composition:
     }
 
     composition {
-        _provider = "upcloud"
-        _source = file.read("kcl/upcloud.k")
+        _provider = "azure-aso"
+        _source = file.read("kcl/azure-aso.k")
+        _statusConditionHooks = {}
+        _serverApiVersion = ""
+        _serverKind = ""
+    }
+
+    composition {
+        _provider = "google"
+        _source = file.read("kcl/google.k")
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "databaseinstance", googlestatuses.googleDataList
+        )
+        _serverApiVersion = "sql.gcp.upbound.io/v1beta1"
+        _serverKind = "DatabaseInstance"
+    }
+
+    composition {
+        _provider = "local"
+        _source = file.read("kcl/cnpg.k")
         _serverApiVersion = "database.upcloud.com/v1alpha1"
         _statusConditionHooks = commonstatuses.statusConditionHooks(
             "network", upcloudstatuses.upcloudDataList
         )
         _serverKind = "ManagedDatabasePostgresql"
+    }
+
+    composition {
+        _provider = "upcloud"
+        _source = file.read("kcl/upcloud.k")
+        _serverApiVersion = "postgresql.cnpg.io/v1"
+        _statusConditionHooks = commonstatuses.statusConditionHooks(
+            "cluster", upcloudstatuses.upcloudDataList
+        )
+        _serverKind = "Cluster"
     }
 
 ]

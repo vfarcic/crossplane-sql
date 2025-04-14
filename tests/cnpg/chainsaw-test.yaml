@@ -1,0 +1,36 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: cnpg
+spec:
+  template: true
+  bindings:
+    - name: provider
+      value: local
+    - name: cluster
+      value: local
+    - name: dbPort
+      value: 5432
+    - name: version
+      value: "14"
+  steps:
+    - try:
+        - apply:
+            file: ../common/install.yaml
+        - assert:
+            file: ../common/assert-install.yaml
+        - assert:
+            file: assert-install.yaml
+        - patch:
+            file: ../common/db.yaml
+        - assert:
+            file: ../common/assert-db.yaml
+        - patch:
+            file: ../common/schemas.yaml
+        - assert:
+            file: ../common/assert-schemas.yaml
+      catch:
+        - script:
+            content: kubectl describe sqls my-db-local --namespace $NAMESPACE
+        # - script:
+        #     content: kubectl get managed,externalsecrets,pushsecrets --namespace $NAMESPACE

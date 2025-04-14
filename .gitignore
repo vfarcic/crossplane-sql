@@ -5,3 +5,6 @@
 /aws-creds.conf
 /azure-creds.json
 /.env
+/*.xpkg
+/tmp
+/crossplane

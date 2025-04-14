@@ -1,10 +1,12 @@
 #!/usr/bin/env nu
 
 def "main apply external_secrets" [
-    provider: string               # Supported values: `google`, `azure`
+    --provider: string               # Supported values: `google`, `azure`
     --google_project_id: string    # Used only if `provider` is `google`
     --azure_key_vault_name: string # Used only if `provider` is `azure`
 ] {
+
+    print $"\nInstalling (ansi yellow_bold)External Secrets Operator \(ESO\)(ansi reset)...\n"
 
     (
         helm repo add external-secrets
@@ -25,27 +27,16 @@ def "main apply external_secrets" [
         {
             apiVersion: "external-secrets.io/v1beta1"
             kind: "ClusterSecretStore"
-            metadata: {
-                name: "google"
-            }
-            spec: {
-                provider: {
-                    gcpsm: {
-                        auth: {
-                            secretRef: {
-                                secretAccessKeySecretRef: {
-                                    name: "gcp-creds"
-                                    key: "creds"
-                                    namespace: "crossplane-system"
-                                }
-                            }
-                        }
-                        projectID: $google_project_id
-                    }
-                }
-            }
-        } | to yaml |
-            kubectl apply --filename -
+            metadata: { name: "google" }
+            spec: { provider: { gcpsm: {
+                auth: { secretRef: { secretAccessKeySecretRef: {
+                    name: "gcp-creds"
+                    key: "creds"
+                    namespace: "crossplane-system"
+                } } }
+                projectID: $google_project_id
+            } } }
+        } | to yaml | kubectl apply --filename -
 
         start $"https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=($google_project_id)"
             
@@ -76,19 +67,38 @@ Press the (ansi yellow_bold)enter key(ansi reset) to continue.
         {
             apiVersion: "external-secrets.io/v1beta1"
             kind: "ClusterSecretStore"
-            metadata: {
-                name: "azure"
-            }
+            metadata: { name: "azure" }
+            spec: { provider: { azurekv: {
+                authType: "ManagedIdentity"
+                vaultUrl: $"https://($azure_key_vault_name).vault.azure.net"
+            } } }
+        } | to yaml | kubectl apply --filename -
+
+    } else if $provider == "aws" {
+
+        {
+            apiVersion: "external-secrets.io/v1beta1"
+            kind: "ClusterSecretStore"
+            metadata: { name: "aws" }
             spec: {
-                provider: {
-                    azurekv: {
-                        authType: "ManagedIdentity"
-                        vaultUrl: $"https://($azure_key_vault_name).vault.azure.net"
-                    }
-                }
+                provider: { aws: {
+                    service: "SecretsManager"
+                    region: "us-east-1"
+                    auth: { secretRef: {
+                        accessKeyIDSecretRef: {
+                            name: "aws-creds"
+                            key: "accessKeyID"
+                            namespace: "crossplane-system"
+                        }
+                        secretAccessKeySecretRef: {
+                            name: "aws-creds"
+                            key: "secretAccessKey"
+                            namespace: "crossplane-system"
+                        }
+                    } }
+                } }
             }
-        } | to yaml |
-            kubectl apply --filename -
+        } | to yaml | kubectl apply --filename -
 
     }
 

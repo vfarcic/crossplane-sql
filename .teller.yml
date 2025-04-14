@@ -9,8 +9,9 @@ providers:
           upbound-token: UP_TOKEN
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          aws-account-id: AWS_ACCOUNT_ID
+          # aws-account-id: AWS_ACCOUNT_ID
           github-user: GITHUB_USER
           azure-tenant: AZURE_TENANT
           upcloud-username: UPCLOUD_USERNAME
           upcloud-password: UPCLOUD_PASSWORD
+          anthropic-api-key: ANTHROPIC_API_KEY

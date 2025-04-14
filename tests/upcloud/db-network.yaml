@@ -1,8 +1,7 @@
-apiVersion: devopstoolkit.live/v1alpha1
-kind: SQLClaim
+apiVersion: devopstoolkit.live/v1beta1
+kind: SQL
 metadata:
-  name: my-db
+  name: my-db-upcloud
 spec:
-  parameters:
-    upcloud: 
-      networkAddress: "1.2.3.4/24"
+  upcloud: 
+    networkAddress: "1.2.3.4/24"

@@ -1,44 +1,35 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
+apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  labels:
-    crossplane.io/claim-name: my-db
+  name: my-db-google
 spec:
-  claimRef:
-    apiVersion: devopstoolkit.live/v1alpha1
-    kind: SQLClaim
-    name: my-db
-  compositionRef:
-    name: google-postgresql
-  compositionSelector:
-    matchLabels:
-      db: postgresql
-      provider: google
-  compositionUpdatePolicy: Automatic
-  id: my-db-google
-  parameters:
-    size: medium
-    version: "13.4"
-  resourceRefs:
-  - apiVersion: helm.crossplane.io/v1beta1
-    kind: ProviderConfig
-    name: my-db-google-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-google-sql
-  - apiVersion: kubernetes.crossplane.io/v1alpha2
-    kind: Object
-    name: my-db-google-secret
-  - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    kind: ProviderConfig
-    name: my-db-google
-  - apiVersion: sql.gcp.upbound.io/v1beta1
-    kind: DatabaseInstance
-    name: my-db-google
-  - apiVersion: sql.gcp.upbound.io/v1beta1
-    kind: User
-    name: my-db-google
+  size: medium
+  version: ($version)
+  crossplane:
+    compositionRef:
+      name: google-postgresql
+    compositionSelector:
+      matchLabels:
+        db: postgresql
+        provider: google
+    compositionUpdatePolicy: Automatic
+    resourceRefs:
+    - apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-google-sql
+    - apiVersion: kubernetes.crossplane.io/v1alpha2
+      kind: Object
+      name: my-db-google-secret
+    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-google
+    - apiVersion: sql.gcp.upbound.io/v1beta1
+      kind: DatabaseInstance
+      name: my-db-google
+    - apiVersion: sql.gcp.upbound.io/v1beta1
+      kind: User
+      name: my-db-google
 ---
 apiVersion: kubernetes.crossplane.io/v1alpha2
 kind: Object
@@ -46,11 +37,9 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-secret
     crossplane.io/external-name: my-db-google-secret
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-google-secret
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -98,18 +87,16 @@ metadata:
   annotations:
     crossplane.io/composition-resource-name: databaseinstance
     crossplane.io/external-name: my-db-google
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-google
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
 spec:
   deletionPolicy: Delete
   forProvider:
-    databaseVersion: POSTGRES_13.4
+    databaseVersion: POSTGRES_14
     deletionProtection: false
     region: us-east1
     rootPasswordSecretRef:
@@ -134,11 +121,9 @@ kind: User
 metadata:
   annotations:
     crossplane.io/composition-resource-name: user
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-google
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL
@@ -159,11 +144,9 @@ kind: ProviderConfig
 metadata:
   annotations:
     crossplane.io/composition-resource-name: sql-config
-  labels:
-    crossplane.io/claim-name: my-db
   name: my-db-google
   ownerReferences:
-  - apiVersion: devopstoolkit.live/v1alpha1
+  - apiVersion: devopstoolkit.live/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: SQL

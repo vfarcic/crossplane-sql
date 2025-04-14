@@ -1,18 +1,17 @@
 ---
-apiVersion: devopstoolkit.live/v1alpha1
-kind: SQLClaim
+apiVersion: devopstoolkit.live/v1beta1
+kind: SQL
 metadata:
   name: my-db
 spec:
-  id: my-db
-  compositionSelector:
-    matchLabels:
-      provider: google
-      db: postgresql
-  parameters:
-    version: "13"
-    size: small
-    region: us-east1
-    databases:
-      - db-01
-      - db-02
+  version: "13"
+  size: small
+  region: us-east1
+  databases:
+    - db-01
+    - db-02
+  crossplane:
+    compositionSelector:
+      matchLabels:
+        provider: google
+        db: postgresql
