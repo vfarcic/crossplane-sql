@@ -8,7 +8,6 @@ source scripts/ingress.nu
 source scripts/common.nu
 source scripts/cnpg.nu
 source scripts/ack.nu
-source scripts/aso.nu
 source scripts/cert-manager.nu
 
 def main [] {}
@@ -48,8 +47,6 @@ def --env "main setup" [
     main apply certmanager
 
     main apply ack --apply_irsa $apply_irsa
-
-    main apply aso --apply_creds $apply_azure_creds
 
     print $"\nApplying (ansi yellow_bold)Crossplane Composition(ansi reset)...\n"
 
@@ -102,7 +99,6 @@ def --env "main test full" [] {
         "aws"
         "aws-ack"
         "azure"
-        "azure-aso"
         "google"
         "upcloud"
     ]  
