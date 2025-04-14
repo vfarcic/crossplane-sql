@@ -9,13 +9,11 @@
     "azure-cli@2.70.0",
     "nushell@0.102.0",
     "kyverno-chainsaw@0.2.12",
-    "crossplane-cli@1.19.0",
     "kcl@0.11.1",
     "watchexec@2.3.0",
     "git@2.48.1",
     "upcloud-cli@3.15.0",
     "kubectl-tree@0.4.3",
-    "upbound@0.38.1",
     "awscli2@2.24.24",
     "ripgrep@14.1.1"
   ],
