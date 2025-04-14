@@ -1,3 +1,7 @@
+# Demo Manifests and Code Used in DevOps Toolkit Videos
+
+[![Crossplane v2: Simplified Compositions, Namespace-Scoped Resources, and More!](https://img.youtube.com/vi/jw8mMslpqOI/0.jpg)](https://youtu.be/jw8mMslpqOI)
+
 ## Run tests
 
 ```sh
