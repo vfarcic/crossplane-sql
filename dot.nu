@@ -147,15 +147,15 @@ def "main publish" [
 
     package generate
 
-    ./crossplane xpkg login --token $env.UP_TOKEN
+    crossplane xpkg login --token $env.UP_TOKEN
 
     (
-        ./crossplane xpkg build --package-root package
+        crossplane xpkg build --package-root package
             --package-file sql.xpkg
     )
 
     (
-        ./crossplane xpkg push --package-files sql.xpkg 
+        crossplane xpkg push --package-files sql.xpkg 
             $"xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
     )
 
