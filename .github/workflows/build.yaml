@@ -11,13 +11,6 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Install Pkl
-        run: |
-          curl -L -o pkl-binary https://github.com/apple/pkl/releases/download/0.25.2/pkl-linux-amd64
-          chmod +x pkl-binary
-          mv pkl-binary /usr/local/bin/pkl
-      - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.2.10
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.11.0
         with:

@@ -16,9 +16,9 @@
     "teller@2.0.7",
     "azure-cli@2.64.0",
     "nushell@0.98.0",
-    "kyverno-chainsaw@0.2.8",
     "crossplane-cli@1.16.1",
-    "git@2.48.1"
+    "git@2.48.1",
+    "kyverno-chainsaw@0.2.12"
   ],
   "shell": {
     "init_hook": [],
