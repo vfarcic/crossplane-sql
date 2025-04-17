@@ -11,6 +11,7 @@ blocks:
         - name: 'Job #1'
           commands:
             - checkout
+            - ls
   - name: 'Block #2'
     task:
       jobs:
