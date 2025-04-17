@@ -19,61 +19,59 @@ def --env "main setup" [
     --apply_azure_creds = false
 ] {
 
+    let date_start = (date now)
+
     rm --force .env
 
     main create kubernetes kind
 
-    main apply ingress nginx --provider kind
-
-    main apply crossplane --preview $preview
-
-    print $"\nApplying (ansi yellow_bold)Crossplane Providers(ansi reset)...\n"
-
-    let provider_files = [
-        "aws.yaml"
-        "azure.yaml"
-        "cluster-role.yaml"
-        "function-auto-ready.yaml"
-        "function-kcl.yaml"
-        "function-status-transformer.yaml"
-        "google.yaml"
-        "provider-kubernetes-incluster.yaml"
-        "sql.yaml"
-        "upcloud.yaml"
-    ]  
-    for file in $provider_files {
-        kubectl apply --filename $"providers/($file)"
-    }
-
     main apply certmanager
 
-    main apply ack --apply_irsa $apply_irsa
+    let ingress = { main apply ingress nginx --provider kind }
 
-    main apply aso --apply_creds $apply_azure_creds
+    let crossplane = {
+        main apply crossplane --preview $preview
+        let provider_files = [
+            "aws.yaml"
+            "azure.yaml"
+            "cluster-role.yaml"
+            "function-auto-ready.yaml"
+            "function-kcl.yaml"
+            "function-status-transformer.yaml"
+            "google.yaml"
+            "provider-kubernetes-incluster.yaml"
+            "sql.yaml"
+            "upcloud.yaml"
+        ]  
+        for file in $provider_files {
+            kubectl apply --filename $"providers/($file)"
+        }
+        kubectl apply --filename package/definition.yaml
+        sleep 1sec
+        kubectl apply --filename "package/compositions.yaml"
+        (
+            kubectl wait
+                --for=condition=healthy provider.pkg.crossplane.io
+                --all --timeout 300s
+        )    
+    }
 
-    print $"\nApplying (ansi yellow_bold)Crossplane Composition(ansi reset)...\n"
+    let ack = { main apply ack --apply_irsa $apply_irsa }
 
-    kubectl apply --filename package/definition.yaml
+    let aso = { main apply aso --apply_creds $apply_azure_creds }
 
-    sleep 1sec
+    let eso = { main apply external_secrets }
 
-    kubectl apply --filename "package/compositions.yaml"
+    let atlas = { main apply atlas }
 
-    main apply external_secrets
+    let cnpg = { main apply cnpg }
 
-    main apply atlas
-
-    main apply cnpg
-
-    print $"\nWaiting for (ansi yellow_bold)Crossplane providers(ansi reset) to be healthy...\n"
-
-    (
-        kubectl wait
-            --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 300s
-    )
+    [ $ingress, $crossplane, $ack, $aso, $eso, $atlas, $cnpg ]
+        | par-each { |command| do $command }
 
     kubectl create namespace a-team
+
+    print $"Finished in ((date now) - $date_start)"
 
     main print source
     
@@ -169,7 +167,6 @@ def "main publish" [
 
 def "main generate diagram" [
     composite_resource: string
-    diagram_path: string
 ] {
 
     let prompt = (
@@ -178,7 +175,7 @@ def "main generate diagram" [
             $composite_resource
     )
 
-    claude --print $prompt | save $diagram_path --force
+    claude $prompt
 
 }
 

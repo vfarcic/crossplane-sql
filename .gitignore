@@ -8,3 +8,5 @@
 /*.xpkg
 /tmp
 /crossplane
+
+**/CLAUDE.local.md

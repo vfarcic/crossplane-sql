@@ -15,7 +15,7 @@ kubectl --namespace infra apply \
     --filename examples/aws-secret.yaml
 ```
 
-## Create an PostgreSQL RDS Server
+## Create a PostgreSQL RDS Server
 
 ```bash
 cat examples/aws.yaml
