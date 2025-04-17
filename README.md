@@ -1,19 +1,15 @@
-# Demo Manifests and Code Used in DevOps Toolkit Videos
-
-[![Crossplane v2: Simplified Compositions, Namespace-Scoped Resources, and More!](https://img.youtube.com/vi/jw8mMslpqOI/0.jpg)](https://youtu.be/jw8mMslpqOI)
-
 ## Run tests
 
 ```sh
 devbox shell
 
-./dot.nu setup --preview true
+zellij --session crossplane-sql --layout test-layout.kdl
+```
 
-source .env
+> Quit Zellij by pressing `ctrl+q`
 
-./dot.nu test watch --dir tests
-
-./dot.nu destroy
+```sh
+zellij delete-session crossplane-sql
 
 exit
 ```
@@ -30,7 +26,10 @@ export UP_ACCOUNT=[...]
 export UP_TOKEN=[...]
 
 # Replace `[...]` with the version of the package (e.g., `v0.5.0`)
-./dot.nu publish --version [...]
+export VERSION=[...]
+
+task package-publish
 
 exit
 ```
+
