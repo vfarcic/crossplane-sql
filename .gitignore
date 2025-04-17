@@ -6,3 +6,6 @@
 /aws-creds.conf
 /azure-creds.json
 /.env
+/crossplane
+/kubeconfig-dot.yaml
+/sql.xpkg

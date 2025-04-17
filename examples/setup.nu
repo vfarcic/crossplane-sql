@@ -34,11 +34,20 @@ def set-cluster [] {
 
 def set-crossplane [] {
 
+    helm repo add crossplane https://charts.crossplane.io/stable
+
     (
-        helm upgrade --install crossplane crossplane
-            --repo https://charts.crossplane.io/stable
+        helm repo add crossplane-preview
+            https://charts.crossplane.io/preview
+    )
+
+    helm repo update
+
+    (
+        helm upgrade --install crossplane "crossplane/crossplane"
+            --namespace crossplane-system --create-namespace
             --set args='{"--enable-usages"}'
-            --namespace crossplane-system --create-namespace --wait
+            --wait
     )
 
     kubectl apply --filename config.yaml
