@@ -8,12 +8,16 @@ blocks:
   - name: 'Block #1'
     task:
       jobs:
-        - name: 'Job #1'
+        - name: Checkout
           commands:
             - checkout
-        - name: 'Job #2'
+        - name: Install DevBox
           commands:
-            - ls
+            - 'curl -fsSL https://get.jetify.com/devbox | bash'
+        - name: Setup
+          commands:
+            - ./dot.nu setup --preview true
+            - ./dot.nu package apply
   - name: 'Block #2'
     task:
       jobs:
