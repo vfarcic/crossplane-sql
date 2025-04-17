@@ -13,7 +13,7 @@ blocks:
             - checkout
         - name: Install DevBox
           commands:
-            - 'sudo curl -fsSL https://get.jetify.com/devbox | bash'
+            - 'curl -fsSL https://get.jetify.com/devbox | sudo bash'
         - name: Setup
           commands:
             - ./dot.nu setup --preview true
