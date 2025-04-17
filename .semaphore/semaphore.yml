@@ -7,11 +7,10 @@ agent:
 blocks:
   - name: 'Block #1'
     task:
-      jobs:
-        - name: 'Job #1'
-          commands:
-            - checkout
-            - ls
+      jobs: []
+      prologue:
+        commands:
+          - checkout
   - name: 'Block #2'
     task:
       jobs:
