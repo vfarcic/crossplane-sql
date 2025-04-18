@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Claude Code Settings
 
-- Default timeout: 30m (use longer timeout for operations that may take time)
+- Default timeout: 10m
 
 ## Build and Test Commands
 
@@ -22,7 +22,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Always execte `source .env` followed by a command when executing `devbox run`.
 - Do not use `scripts` from `devbox.json`.
 - When asked to get or fetch a command, assume that the user is in the DevBox Shell so there is no need to use `devbox run` and use `pbcopy` to copy the command to memory.
-- When asked to show or get a file, open it in VS Code using `code`. Always open files individually instead of directories.
+- When asked you to show or get files, I want you to open them in VS Code using
+   `code` command.
 
 ## Code Style Guidelines
 
