@@ -3,7 +3,6 @@
 def --env "main apply aso" [
     --namespace = "default"
     --apply_creds = true
-    --crd_pattern = "resources.azure.com/*;dbforpostgresql.azure.com/*"
 ] {
 
     (
@@ -11,11 +10,11 @@ def --env "main apply aso" [
             --repo https://raw.githubusercontent.com/Azure/azure-service-operator/main/v2/charts
             --namespace=azureserviceoperator-system
             --create-namespace
-            --set $"crdPattern='($crd_pattern)'"
+            --set crdPattern='resources.azure.com/*;dbforpostgresql.azure.com/*'
             --wait
     )
 
-    if $apply_creds { main apply aso_creds }
+    if $apply_creds { main apply aso_creds --namespace a-team }
 
 }
 
