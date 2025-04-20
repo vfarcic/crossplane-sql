@@ -1,4 +1,4 @@
-# AWS ACK RDS Example
+# Azure ASO PostgreSQL Example
 
 ## Setup
 
@@ -7,22 +7,22 @@ devbox shell
 
 chmod +x dot.nu
 
-./dot.nu setup --apply_irsa true --provider ack --preview true
+./dot.nu setup --apply_azure_creds true --preview true
 
 source .env
 
-kubectl --namespace infra apply \
-    --filename examples/aws-secret.yaml
+kubectl --namespace a-team apply \
+    --filename examples/azure-aso-secret.yaml
 ```
 
 ## Create an PostgreSQL RDS Server
 
 ```bash
-cat examples/aws-ack.yaml
+cat examples/azure-aso.yaml
 
-kubectl --namespace infra apply --filename examples/aws-ack.yaml
+kubectl --namespace a-team apply --filename examples/azure-aso.yaml
     
-kubectl tree --namespace a-team sqls my-db
+kubectl tree --namespace a-team sqls $DB_NAME
 ```
 
 > Wait until all the resources are `Available`

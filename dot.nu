@@ -17,13 +17,20 @@ def --env "main setup" [
     --preview = false
     --apply_irsa = false
     --apply_azure_creds = false
+    --provider: string = ""
 ] {
 
     let date_start = (date now)
 
     rm --force .env
 
-    main create kubernetes kind
+    mut cluster = "kind"
+
+    if $provider == "ack" {
+        $cluster = "aws"
+    }
+
+    main create kubernetes $cluster
 
     main apply certmanager
 
@@ -53,12 +60,23 @@ def --env "main setup" [
             kubectl wait
                 --for=condition=healthy provider.pkg.crossplane.io
                 --all --timeout 300s
-        )    
+        )
+        if $provider == "aws" {
+            setup aws
+        } else if $provider == "azure" {
+            setup azure
+        } else if $provider == "google" {
+            setup google
+        } else if $provider == "upcloud" {
+            setup upcloud
+        }
+        if $provider != "" {
+            apply providerconfig $provider 
+        }
+
     }
 
     let ack = { main apply ack --apply_irsa $apply_irsa }
-
-    let aso = { main apply aso --apply_creds $apply_azure_creds }
 
     let eso = { main apply external_secrets }
 
@@ -66,10 +84,27 @@ def --env "main setup" [
 
     let cnpg = { main apply cnpg }
 
-    [ $ingress, $crossplane, $ack, $aso, $eso, $atlas, $cnpg ]
+    [ $ingress, $crossplane, $ack, $eso, $atlas, $cnpg ]
         | par-each { |command| do $command }
 
+    # There is user input so we're running it outside of par-each
+    (
+        main apply aso --apply_creds $apply_azure_creds
+            --namespace a-team
+    )
+
     kubectl create namespace a-team
+
+    let name = $"my-db-(date now | format date "%Y%m%d%H%M%S")"
+    $"export DB_NAME=($name)\n" | save --append .env
+
+    open examples/azure-aso-secret.yaml
+        | upsert metadata.name $"($name)-password"
+        | save examples/azure-aso-secret.yaml --force
+
+    open examples/azure-aso.yaml
+        | upsert metadata.name $name
+        | save examples/azure-aso.yaml --force
 
     print $"Finished in ((date now) - $date_start)"
 
@@ -128,9 +163,17 @@ def --env "main test watch" [
 
 }
 
-def --env "main destroy" [] {
+def --env "main destroy" [
+    --provider = "kind"
+] {
 
-    main destroy kubernetes kind
+    mut cluster = "kind"
+    if $provider == "ack" {
+        $cluster = "aws"
+        do --ignore-errors { main delete ack }
+    }
+
+    main destroy kubernetes $cluster
 
 }
 
@@ -165,12 +208,12 @@ def "main publish" [
 
 }
 
-def "main generate diagram" [
+def "main create diagram" [
     composite_resource: string
 ] {
 
     let prompt = (
-        open prompts/diagram.md
+        open prompts/create-diagram.md
             | str replace "REPLACE_COMPOSITE_RESOURCE"
             $composite_resource
     )
@@ -179,6 +222,21 @@ def "main generate diagram" [
 
 }
 
+def "main apply service" [] {
+
+    let prompt = ( open prompts/create-service.md )
+
+    claude $prompt
+
+}
+
+def "main observe service" [] {
+
+    let prompt = ( open prompts/observe-service.md )
+
+    claude $prompt
+
+}
 def "package generate" [] {
 
     kcl run kcl/compositions.k |

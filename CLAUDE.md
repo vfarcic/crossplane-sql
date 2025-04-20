@@ -30,3 +30,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## File Operations
 - When asked to show or get files, open them in VS Code using `code` command
 - When asked to get or fetch a command use `pbcopy` to copy the command to memory
+- When asked to add a DevBox package, always use a specific latest version. Use `devbox search` and `devbox info` commands to find out which version to use.
