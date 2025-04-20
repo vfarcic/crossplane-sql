@@ -1,0 +1,22 @@
+- Discover all the Custom Resources a user can create in that Kubernetes cluster.
+- Limit it to CRDs with the API `devopstoolkit.live`.
+- Those CRDs were created by Crossplane Compositions.
+- Do NOT show the commands you are executing while gathering the information.
+- Do NOT show the output of the commands you are executing while gathering the information.
+- Show on the screen only information related to user input (the questions and the options).
+- Output numbered list of Composite Resources a user can create and ask them to select one of them.
+- Based on the selected Composite Resource, ask the user for information you might need to generate YAML manifest that can be used to create that resource.
+- Ensure that the user can select any of the Compositions within the selected Configuration.
+- Think hard about all the available options you will present to the user.
+- Ask the user one question at a time.
+- Ask only questions based on the CRD schema and limit them to `metadata.name`, `metadata.namespace`, and `spec`.
+- Take into the account previous choices when presenting questions.
+- Include any additional information you think the user might find useful (e.g., the available regions of the provider, PostgreSQL versions available in the selected provider, etc.). Use your internal knowledge base for that (do not try to discover it from the cluster).
+- If the input is not mandatory, instruct the user to type `skip` if it is text input or, if they are presented with options, to select the `skip` option.
+- When you ask for the Namespace, give the user the option to select one of the existing Namespaces. Include only Namespaces that contain the word `team`.
+- After you gather all the information you might need, generate the manifest and ask the user for the path where to save it.
+- Always use `spec.crossplane.compositionSelector.matchLabels` to select the Composition in the manifest you are generating.
+- Do not include parts of the manifest that are optional and the user did not choose any value.
+- If the user selected to work with `SQL`, after creating the manifest, ask the user for the password they would like to assign to that database.
+- If the user selected to work with `SQL`, create the Kubernetes secret with that password in the same Namespace. The name of the secret should be the same as the name of the Composite resource with the addition of `-password` suffix.
+- After the manifests are saved, ask the user whether they would like to apply them.

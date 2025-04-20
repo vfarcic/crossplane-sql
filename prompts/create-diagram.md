@@ -8,7 +8,7 @@ Think hard how you will generate Mermaid diagram.
 
 Generate Mermaid diagram of resources based on the Crossplane Compositions. I am interested only in `kind`, `apiVersion`, and `name` of resources.
 
-Include all resources into the graph.
+Include all resources into the diagram.
 
 Use references like `matchControllerRef` and `providerConfigRef` to establish relations between resources. When you see those, it means that it is a dependency.
 

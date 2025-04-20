@@ -15,7 +15,8 @@
     "upcloud-cli@3.15.0",
     "kubectl-tree@0.4.3",
     "awscli2@2.25.5",
-    "ripgrep@14.1.1"
+    "ripgrep@14.1.1",
+    "eksctl@0.207.0"
   ],
   "shell": {
     "init_hook": [],

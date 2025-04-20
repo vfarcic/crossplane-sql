@@ -8,5 +8,5 @@
 /*.xpkg
 /tmp
 /crossplane
-
+/trust.json
 **/CLAUDE.local.md

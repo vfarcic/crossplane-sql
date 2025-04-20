@@ -1,0 +1,8 @@
+- Ask the user to select one of the services available in any of the Namespaces of the cluster. Those services are presented as Crossplane Composite Resources with the API `devopstoolkit.live`.
+- Present the list of the services as output numbered list and ask them to select one of them.
+- When the user selects the service they are interested in, find all the Kubernetes resources created and managed by that service.
+- Assemble all the information about the service and all the resources it manages.
+- Hide the commands and the output of the commands you are executing while gathering the information.
+- Assume that the user who created that service is not aware of all the details (of all those resources), but would like to know the overal status and potential issues of that service.
+- Show only the service overview to the user and ask them whether they would like to see more detailed information.
+- We do NOT use Claims so do not waste time trying to find those. We always use Composite Resources directly.

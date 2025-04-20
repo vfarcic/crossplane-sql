@@ -7,11 +7,11 @@ devbox shell
 
 chmod +x dot.nu
 
-./dot.nu setup aws
+./dot.nu setup --provider aws --preview true
 
 source .env
 
-kubectl --namespace infra apply \
+kubectl --namespace a-team apply \
     --filename examples/aws-secret.yaml
 ```
 
@@ -20,9 +20,9 @@ kubectl --namespace infra apply \
 ```bash
 cat examples/aws.yaml
 
-kubectl --namespace infra apply --filename examples/aws.yaml
-    
-crossplane beta trace --namespace infra sql my-db
+kubectl --namespace a-team apply --filename examples/aws.yaml
+
+kubectl tree --namespace a-team sqls my-db
 ```
 
 > Wait until all the resources are `Available`

@@ -1,5 +1,9 @@
 #!/usr/bin/env nu
 
+# Installs and configures AWS Controllers for Kubernetes (ACK)
+#
+# Examples:
+# > main apply ack --cluster_name my-cluster --region us-west-2
 def --env "main apply ack" [
     --cluster_name = "dot"
     --region = "us-east-1"
@@ -30,30 +34,25 @@ def --env "main apply ack" [
     )
 
     mut aws_account_id = ""
+    if AWS_ACCOUNT_ID in $env {
+        $aws_account_id = $env.AWS_ACCOUNT_ID
+    } else {
+        $aws_account_id = (
+            aws sts get-caller-identity --query "Account"
+                --output text
+        )
+    }
+
     mut oidc_provider = ""
-
-    if $apply_irsa {
-
-        if AWS_ACCOUNT_ID in $env {
-            $aws_account_id = $env.AWS_ACCOUNT_ID
-        } else {
-            $aws_account_id = (
-                aws sts get-caller-identity --query "Account"
-                    --output text
-            )
-        }
-
-        if OIDC_PROVIDER in $env {
-            $oidc_provider = $env.OIDC_PROVIDER
-        } else {
-            $oidc_provider = (
-                aws eks describe-cluster --name $cluster_name
-                    --region $region
-                    --query "cluster.identity.oidc.issuer"
-                    --output text | str replace "https://" ""
-            )
-        }
-
+    if OIDC_PROVIDER in $env {
+        $oidc_provider = $env.OIDC_PROVIDER
+    } else {
+        $oidc_provider = (
+            aws eks describe-cluster --name $cluster_name
+                --region $region
+                --query "cluster.identity.oidc.issuer"
+                --output text | str replace "https://" ""
+        )
     }
 
     let controllers = [
@@ -138,6 +137,7 @@ def --env "main apply ack" [
 
 }
 
+# Removes AWS Controllers for Kubernetes (ACK) and deletes associated IAM roles
 def --env "main delete ack" [] {
 
     let controllers = [
