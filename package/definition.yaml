@@ -35,6 +35,10 @@ spec:
                 description: "Supported sizes: small, medium, large"
                 type: string
                 default: small
+                enum:
+                  - small
+                  - medium
+                  - large
               databases:
                 description: The list of databases to create inside the DB server.
                 type: array
