@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Information
+- Use context7 MCP server to search for information
+
 ## Build/Development Commands
 - Setup: `./dot.nu setup --preview true`
 - Package generate: `./dot.nu package generate` (generates YAML from KCL)
