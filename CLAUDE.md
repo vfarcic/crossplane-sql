@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Build/Development Commands
-- Setup: ``./dot.nu setup --preview true`
+- Setup: `./dot.nu setup --preview true`
 - Package generate: `./dot.nu package generate` (generates YAML from KCL)
 - Test: `./dot.nu test full` (run all tests)
 - Test specific provider: `./dot.nu test watch --dir tests/aws` (watch mode)
