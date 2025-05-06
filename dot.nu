@@ -59,7 +59,7 @@ def --env "main setup" [
         (
             kubectl wait
                 --for=condition=healthy provider.pkg.crossplane.io
-                --all --timeout 300s
+                --all --timeout 600s
         )
         if $provider == "aws" {
             setup aws
