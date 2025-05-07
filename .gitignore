@@ -10,3 +10,5 @@
 /crossplane
 /trust.json
 **/CLAUDE.local.md
+
+**/.claude/settings.local.json
