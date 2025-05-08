@@ -740,51 +740,51 @@
         }
       }
     },
-    "nushell@0.103.0": {
-      "last_modified": "2025-03-23T05:31:05Z",
-      "resolved": "github:NixOS/nixpkgs/dd613136ee91f67e5dba3f3f41ac99ae89c5406b#nushell",
+    "nushell@0.104.0": {
+      "last_modified": "2025-05-06T08:06:31Z",
+      "resolved": "github:NixOS/nixpkgs/1cb1c02a6b1b7cf67e3d7731cbbf327a53da9679#nushell",
       "source": "devbox-search",
-      "version": "0.103.0",
+      "version": "0.104.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/7dcvklmwwvfjzqgak8ziv104lsff0cfv-nushell-0.103.0",
+              "path": "/nix/store/07m132l9qj6mnl8f5hdjqbc5ywhvfv3f-nushell-0.104.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/7dcvklmwwvfjzqgak8ziv104lsff0cfv-nushell-0.103.0"
+          "store_path": "/nix/store/07m132l9qj6mnl8f5hdjqbc5ywhvfv3f-nushell-0.104.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/5apwqfpy0nkblh6bqvnyg40yhhvvx1y1-nushell-0.103.0",
+              "path": "/nix/store/ysm18d7xk7w466h3vz0mvyrlwbamkir6-nushell-0.104.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/5apwqfpy0nkblh6bqvnyg40yhhvvx1y1-nushell-0.103.0"
+          "store_path": "/nix/store/ysm18d7xk7w466h3vz0mvyrlwbamkir6-nushell-0.104.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/i4w79bzcxqcjv8qjb91s24sa7xwvalq8-nushell-0.103.0",
+              "path": "/nix/store/391ra8g300hbqclr8rvpdyy12xff62jc-nushell-0.104.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/i4w79bzcxqcjv8qjb91s24sa7xwvalq8-nushell-0.103.0"
+          "store_path": "/nix/store/391ra8g300hbqclr8rvpdyy12xff62jc-nushell-0.104.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/wp7rmayh32cy2ypr6ya21b7g2dqpcqw2-nushell-0.103.0",
+              "path": "/nix/store/wn3ramvks8ixi6lbzjyiidh6bw21n1ip-nushell-0.104.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/wp7rmayh32cy2ypr6ya21b7g2dqpcqw2-nushell-0.103.0"
+          "store_path": "/nix/store/wn3ramvks8ixi6lbzjyiidh6bw21n1ip-nushell-0.104.0"
         }
       }
     },
