@@ -1,7 +1,7 @@
 apiVersion: devopstoolkit.live/v1beta1
 kind: SQL
 metadata:
-  name: my-db-20250508160559
+  name: my-db-20250508162108
 spec:
   version: '14'
   size: small
