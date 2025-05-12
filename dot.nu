@@ -243,3 +243,19 @@ def "package generate" [] {
         save package/compositions.yaml --force
 
 }
+
+def --env "main setup kubectl_ai" [] {
+
+    main setup --preview true
+
+    krew install ai
+
+    if GEMINI_API_KEY not-in $env {
+        $env.GEMINI_API_KEY = input $"(ansi yellow_bold)Enter Gemini API Key (https://aistudio.google.com): (ansi reset)"
+    }
+    $"export GEMINI_API_KEY=($env.GEMINI_API_KEY)\n"
+        | save --append .env
+
+    main print source
+    
+}

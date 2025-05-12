@@ -512,6 +512,54 @@
         }
       }
     },
+    "krew@0.4.5": {
+      "last_modified": "2025-04-17T05:47:26Z",
+      "resolved": "github:NixOS/nixpkgs/ebe4301cbd8f81c4f8d3244b3632338bbeb6d49c#krew",
+      "source": "devbox-search",
+      "version": "0.4.5",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/9s7nk49k4h089kdwwj61s29qdgy8v4vm-krew-0.4.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/9s7nk49k4h089kdwwj61s29qdgy8v4vm-krew-0.4.5"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/g712zdifxfcx7vs6iwdqc6nbvqmf30m2-krew-0.4.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/g712zdifxfcx7vs6iwdqc6nbvqmf30m2-krew-0.4.5"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/yl68ph0l36ca1caysy7dn6d7qgh2z37r-krew-0.4.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/yl68ph0l36ca1caysy7dn6d7qgh2z37r-krew-0.4.5"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/iz8gw69g64gikqqk1nv6by0a71zabjyz-krew-0.4.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/iz8gw69g64gikqqk1nv6by0a71zabjyz-krew-0.4.5"
+        }
+      }
+    },
     "kubectl-tree@0.4.3": {
       "last_modified": "2025-02-23T09:42:26Z",
       "resolved": "github:NixOS/nixpkgs/2d068ae5c6516b2d04562de50a58c682540de9bf#kubectl-tree",

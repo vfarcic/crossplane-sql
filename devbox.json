@@ -18,10 +18,13 @@
     "ripgrep@14.1.1",
     "eksctl@0.207.0",
     "jq@1.7.1",
-    "yq-go@4.45.1"
+    "yq-go@4.45.1",
+    "krew@0.4.5"
   ],
   "shell": {
-    "init_hook": [],
+    "init_hook": [
+      "export PATH=$HOME/.krew/bin:$PATH"
+    ],
     "scripts": {
       "cluster-create":  ["./dot.nu setup --preview true"],
       "cluster-destroy": ["./dot.nu destroy"],
