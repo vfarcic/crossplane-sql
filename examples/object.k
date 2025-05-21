@@ -135,7 +135,7 @@ if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pus
         spec = {
             providerConfigRef.name = oxr.spec.id + "-sql"
             forProvider.manifest = {
-                apiVersion = "external-secrets.io/v1"
+                apiVersion = "external-secrets.io/v1alpha1"
                 kind = "PushSecret"
                 metadata = {
                     name = oxr.spec.id

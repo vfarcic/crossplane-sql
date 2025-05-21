@@ -112,7 +112,7 @@ if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
 }
 """
     _items += [{
-        apiVersion = "external-secrets.io/v1"
+        apiVersion = "external-secrets.io/v1alpha1"
         kind = "PushSecret"
         metadata = {
             name = _name
