@@ -80,7 +80,7 @@ if oxr.spec.parameters?.secrets?.storeName and oxr.spec.parameters?.secrets?.pul
         spec = {
             providerConfigRef.name = oxr.spec.id + "-sql"
             forProvider.manifest = {
-                apiVersion = "external-secrets.io/v1beta1"
+                apiVersion = "external-secrets.io/v1"
                 kind = "ExternalSecret"
                 metadata = {
                     name = oxr.spec.id + "-password"
@@ -258,7 +258,7 @@ if oxr.spec.parameters?.secrets?.daprComponents and oxr.spec.parameters?.secrets
         spec = {
             providerConfigRef.name = oxr.spec.parameters.secrets.pullToCluster
             forProvider.manifest = {
-                apiVersion = "external-secrets.io/v1beta1"
+                apiVersion = "external-secrets.io/v1"
                 kind = "ExternalSecret"
                 metadata = {
                     name = oxr.spec.id

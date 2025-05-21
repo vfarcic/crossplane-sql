@@ -25,7 +25,7 @@ def "main apply external_secrets" [
     if $provider == "google" {
 
         {
-            apiVersion: "external-secrets.io/v1beta1"
+            apiVersion: "external-secrets.io/v1"
             kind: "ClusterSecretStore"
             metadata: { name: "google" }
             spec: { provider: { gcpsm: {
@@ -65,7 +65,7 @@ Press the (ansi yellow_bold)enter key(ansi reset) to continue.
         #     --scope "/subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.KeyVault/vaults/$RESOURCE_GROUP"
 
         {
-            apiVersion: "external-secrets.io/v1beta1"
+            apiVersion: "external-secrets.io/v1"
             kind: "ClusterSecretStore"
             metadata: { name: "azure" }
             spec: { provider: { azurekv: {
@@ -77,7 +77,7 @@ Press the (ansi yellow_bold)enter key(ansi reset) to continue.
     } else if $provider == "aws" {
 
         {
-            apiVersion: "external-secrets.io/v1beta1"
+            apiVersion: "external-secrets.io/v1"
             kind: "ClusterSecretStore"
             metadata: { name: "aws" }
             spec: {

@@ -1,0 +1,6 @@
+{"type":"entity","name":"package/compositions.yaml","entityType":"file","observations":["is auto-generated and should not be edited directly"]}
+{"type":"entity","name":"end_of_session_procedure","observations":["When the user says 'we are done' or any similar statement, it means that I should create a new branch if we are in the `main` branch, then create a pull request with all the changes (both by me or by the user), merge the PR, and delete the branch both locally and remotely."],"entityType":"workflow"}
+{"type":"entity","observations":["should be used for operations related to GitHub"],"entityType":"tool","name":"github MCP"}
+{"type":"entity","entityType":"tool","observations":["is a fallback if github MCP does not work or something cannot be accomplished with it"],"name":"gh CLI"}
+{"type":"entity","entityType":"tool","observations":["can be used for Git operations"],"name":"git CLI"}
+{"type":"entity","name":"git_commit_procedure","entityType":"guideline","observations":["Always suggest to add all files (git add .) before committing, not just the files explicitly edited during the session."]}

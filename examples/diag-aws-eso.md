@@ -64,7 +64,7 @@ flowchart TD
     MainRTA["MainRouteTableAssociation<br>ec2.aws.m.upbound.io/v1beta1<br>my-db"]
 
     KubeSecret["Object<br>kubernetes.crossplane.io/v1alpha2<br>my-db-secret"]
-    ExternalSecret["ExternalSecret<br>external-secrets.io/v1beta1<br>my-db-password"]
+    ExternalSecret["ExternalSecret<br>external-secrets.io/v1<br>my-db-password"]
     PushSecret["PushSecret<br>external-secrets.io/v1alpha1<br>my-db"]
     AtlasSchema["AtlasSchema<br>db.atlasgo.io/v1alpha1<br>my-db-main"]
     Database["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-main"]

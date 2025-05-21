@@ -67,7 +67,7 @@ if oxr.spec?.databases:
 
 if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
     _items += [{
-        apiVersion = "external-secrets.io/v1beta1"
+        apiVersion = "external-secrets.io/v1"
         kind = "ExternalSecret"
         metadata = {
             name = _name + "-password"
@@ -112,7 +112,7 @@ if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pushToStore:
 }
 """
     _items += [{
-        apiVersion = "external-secrets.io/v1alpha1"
+        apiVersion = "external-secrets.io/v1"
         kind = "PushSecret"
         metadata = {
             name = _name
@@ -178,7 +178,7 @@ if oxr.spec.schemas:
 
 if oxr.spec.secrets?.pullToCluster:
     _items += [{
-        apiVersion = "external-secrets.io/v1beta1"
+        apiVersion = "external-secrets.io/v1"
         kind = "ExternalSecret"
         metadata = {
             name = _name
