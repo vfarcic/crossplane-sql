@@ -55,7 +55,7 @@ flowchart TD
     PostgreSQLProviderConfig["ProviderConfig<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db"]:::otherResource
     Database["Database<br>postgresql.sql.crossplane.io/v1alpha1<br>my-db-main"]:::otherResource
     ConnectionSecret["Object<br>kubernetes.crossplane.io/v1alpha2<br>my-db-secret"]:::otherResource
-    PasswordSecret["ExternalSecret<br>external-secrets.io/v1beta1<br>my-db-password"]:::otherResource
+    PasswordSecret["ExternalSecret<br>external-secrets.io/v1<br>my-db-password"]:::otherResource
     PushSecret["PushSecret<br>external-secrets.io/v1alpha1<br>my-db"]:::otherResource
     AtlasSchema["AtlasSchema<br>db.atlasgo.io/v1alpha1<br>my-db-main"]:::otherResource
     
