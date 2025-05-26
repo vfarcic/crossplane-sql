@@ -416,51 +416,51 @@
         }
       }
     },
-    "kcl@0.11.1": {
-      "last_modified": "2025-03-13T11:38:39Z",
-      "resolved": "github:NixOS/nixpkgs/573c650e8a14b2faa0041645ab18aed7e60f0c9a#kcl",
+    "kcl@0.11.2": {
+      "last_modified": "2025-05-22T13:30:28Z",
+      "resolved": "github:NixOS/nixpkgs/e314d5c6d3b3a0f40ec5bcbc007b0cbe412f48ae#kcl",
       "source": "devbox-search",
-      "version": "0.11.1",
+      "version": "0.11.2",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/q4ckkxzfbsma31k465zw73kkk843yn4q-kcl-0.11.1",
+              "path": "/nix/store/4zmmzpy7ysvrvgjsx8isfzzqjysyj19i-kcl-0.11.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/q4ckkxzfbsma31k465zw73kkk843yn4q-kcl-0.11.1"
+          "store_path": "/nix/store/4zmmzpy7ysvrvgjsx8isfzzqjysyj19i-kcl-0.11.2"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/k0nn9nplyxw59i51kxj12rjqrwhiv1i3-kcl-0.11.1",
+              "path": "/nix/store/kjca2bmxq48scqna362c24w6d6sb1pyd-kcl-0.11.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/k0nn9nplyxw59i51kxj12rjqrwhiv1i3-kcl-0.11.1"
+          "store_path": "/nix/store/kjca2bmxq48scqna362c24w6d6sb1pyd-kcl-0.11.2"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/91fjw0rg46d9xdh050cbhk7lx9ky7fbh-kcl-0.11.1",
+              "path": "/nix/store/gziv16r2clcy3pfqscrbbhl3mc33vw8n-kcl-0.11.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/91fjw0rg46d9xdh050cbhk7lx9ky7fbh-kcl-0.11.1"
+          "store_path": "/nix/store/gziv16r2clcy3pfqscrbbhl3mc33vw8n-kcl-0.11.2"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/xvnwpz439gjxdjl8gpdc26zqybca20jc-kcl-0.11.1",
+              "path": "/nix/store/ccllmlbsk0ak5br2vs1i9sf36lql7ac4-kcl-0.11.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/xvnwpz439gjxdjl8gpdc26zqybca20jc-kcl-0.11.1"
+          "store_path": "/nix/store/ccllmlbsk0ak5br2vs1i9sf36lql7ac4-kcl-0.11.2"
         }
       }
     },
