@@ -4,11 +4,11 @@ kind: Provider
 metadata:
   name: provider-aws-rds
 spec:
-  package: xpkg.crossplane.io/crossplane-contrib/provider-aws-rds:v1.22.0-crossplane-v2-preview.0
+  package: xpkg.crossplane.io/crossplane-contrib/provider-aws-rds:v1.23.0-crossplane-v2-preview.0
 ---
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-aws-ec2
 spec:
-  package: xpkg.crossplane.io/crossplane-contrib/provider-aws-ec2:v1.22.0-crossplane-v2-preview.0
+  package: xpkg.crossplane.io/crossplane-contrib/provider-aws-ec2:v1.23.0-crossplane-v2-preview.0
