@@ -2,7 +2,7 @@
   "packages": [
     "kind@0.27.0",
     "kubectl@1.33.1",
-    "kubernetes-helm@3.17.3",
+    "kubernetes-helm@3.18.2",
     "viddy@1.3.0",
     "teller@2.0.7",
     "azure-cli@2.73.0",
