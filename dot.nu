@@ -18,6 +18,7 @@ def --env "main setup" [
     --apply_irsa = false
     --apply_azure_creds = false
     --provider: string = ""
+    --skip_ingress = false
 ] {
 
     let date_start = (date now)
@@ -84,8 +85,12 @@ def --env "main setup" [
 
     let cnpg = { main apply cnpg }
 
-    [ $ingress, $crossplane, $ack, $eso, $atlas, $cnpg ]
-        | par-each { |command| do $command }
+    mut commands = [ $crossplane, $ack, $eso, $atlas, $cnpg ]
+    if not $skip_ingress {
+        $commands = [ $ingress ] ++ $commands
+    }
+
+    $commands | par-each { |command| do $command }
 
     # There is user input so we're running it outside of par-each
     (
@@ -126,7 +131,7 @@ def --env "main package apply" [] {
 
 def --env "main test full" [] {
 
-    main setup --preview true
+    main setup --preview true --skip_ingress true
 
     main package apply
 
