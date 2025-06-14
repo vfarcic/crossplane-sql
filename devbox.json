@@ -9,7 +9,7 @@
     "nushell@0.104.0",
     "kyverno-chainsaw@0.2.12",
     "kcl@0.11.2",
-    "watchexec@2.3.1",
+    "watchexec@2.3.2",
     "git@2.49.0",
     "upcloud-cli@3.15.0",
     "kubectl-tree@0.4.3",
