@@ -4,4 +4,4 @@ kind: Function
 metadata:
   name: crossplane-contrib-function-status-transformer
 spec:
-  package: xpkg.upbound.io/crossplane-contrib/function-status-transformer:v0.4.0
+  package: xpkg.upbound.io/crossplane-contrib/function-status-transformer:v0.4.1
