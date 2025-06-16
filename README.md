@@ -8,6 +8,7 @@ A Crossplane Configuration package that defines a SQL custom resource type (`SQL
 - UpCloud
 - Local in-cluster CNPG (CloudNativePG)
 
+[![Kubernetes AI: The Good, The Bad, and The Disappointing (kubectl-ai)](https://img.youtube.com/vi/gNpCDKH0BTA/0.jpg)](https://youtu.be/gNpCDKH0BTA)
 [![Claude Code: AI Agent for DevOps, SRE, and Platform Engineering](https://img.youtube.com/vi/h-6LP133o6w/0.jpg)](https://youtu.be/h-6LP133o6w)
 [![Crossplane v2: Simplified Compositions, Namespace-Scoped Resources, and More!](https://img.youtube.com/vi/jw8mMslpqOI/0.jpg)](https://youtu.be/jw8mMslpqOI)
 
