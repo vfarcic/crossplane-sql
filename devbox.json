@@ -15,7 +15,7 @@
     "kubectl-tree@0.4.3",
     "awscli2@2.27.2",
     "ripgrep@14.1.1",
-    "eksctl@0.209.0",
+    "eksctl@0.210.0",
     "jq@1.7.1",
     "yq-go@4.45.4"
   ],
