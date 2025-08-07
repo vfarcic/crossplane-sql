@@ -13,7 +13,7 @@
     "git@2.50.0",
     "upcloud-cli@3.20.2",
     "kubectl-tree@0.4.3",
-    "awscli2@2.27.50",
+    "awscli2@2.28.1",
     "ripgrep@14.1.1",
     "eksctl@0.211.0",
     "jq@1.8.1",
