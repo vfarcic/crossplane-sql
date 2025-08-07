@@ -8,7 +8,7 @@
     "azure-cli@2.75.0",
     "nushell@0.105.1",
     "kyverno-chainsaw@0.2.12",
-    "kcl@0.11.2",
+    "kcl@0.11.3",
     "watchexec@2.3.2",
     "git@2.50.0",
     "upcloud-cli@3.20.2",
