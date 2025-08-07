@@ -2,6 +2,20 @@ apiVersion: apiextensions.crossplane.io/v2alpha1
 kind: CompositeResourceDefinition
 metadata:
   name: sqls.devopstoolkit.live
+  annotations:
+    database.type: postgresql
+    database.engines: PostgreSQL
+    providers.supported: AWS, GCP, Google Cloud, Azure, UpCloud
+    crossplane.io/description: "Multi-cloud managed PostgreSQL database service"
+    description: Multi-cloud managed PostgreSQL database service
+    capabilities: Managed Database, Multi Region
+    use-case: Production-grade SQL databases with automated management
+  labels:
+    category: database
+    database.postgresql: "true"
+    database.mysql: "true"
+    provider.multicloud: "true"
+    complexity: medium
 spec:
   defaultCompositionRef:
     name: google-postgres
@@ -9,6 +23,11 @@ spec:
   names:
     kind: SQL
     plural: sqls
+  categories:
+    - composite
+    - database
+    - postgresql
+    - sql
   # claimNames:
   #   kind: SQLClaim
   #   plural: sqlclaims
@@ -24,6 +43,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
+        description: Multi-cloud PostgreSQL database service with cross-cloud portability in AWS, Azure, GCP, Google Cloud, and UpCloud
         properties:
           spec:
             type: object
