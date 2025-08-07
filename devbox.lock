@@ -836,51 +836,51 @@
         }
       }
     },
-    "upcloud-cli@3.20.2": {
-      "last_modified": "2025-07-15T16:15:05Z",
-      "resolved": "github:NixOS/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708#upcloud-cli",
+    "upcloud-cli@3.21.0": {
+      "last_modified": "2025-08-04T03:33:26Z",
+      "resolved": "github:NixOS/nixpkgs/6a489c9482ca676ce23c0bcd7f2e1795383325fa#upcloud-cli",
       "source": "devbox-search",
-      "version": "3.20.2",
+      "version": "3.21.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/yq2k18jf12vc3iqajd8vh4jyjxc1w6i0-upcloud-cli-3.20.2",
+              "path": "/nix/store/lf95r4bw0zkwjfvn78grrx2djkrk3kd1-upcloud-cli-3.21.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/yq2k18jf12vc3iqajd8vh4jyjxc1w6i0-upcloud-cli-3.20.2"
+          "store_path": "/nix/store/lf95r4bw0zkwjfvn78grrx2djkrk3kd1-upcloud-cli-3.21.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/m1hllmk483lgmpiiq7iy8s5x7c7scz1a-upcloud-cli-3.20.2",
+              "path": "/nix/store/a5ghd8hi02i7dp3dw1bbxrw1ag8npqwm-upcloud-cli-3.21.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/m1hllmk483lgmpiiq7iy8s5x7c7scz1a-upcloud-cli-3.20.2"
+          "store_path": "/nix/store/a5ghd8hi02i7dp3dw1bbxrw1ag8npqwm-upcloud-cli-3.21.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/cdjiy61bdm1pl9kz7qqmmpzzrjy5r5si-upcloud-cli-3.20.2",
+              "path": "/nix/store/n9gysrmgrzbbmzcgpy1lsdja1zdbnv05-upcloud-cli-3.21.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/cdjiy61bdm1pl9kz7qqmmpzzrjy5r5si-upcloud-cli-3.20.2"
+          "store_path": "/nix/store/n9gysrmgrzbbmzcgpy1lsdja1zdbnv05-upcloud-cli-3.21.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/21w356ddxbywf9lds1kcyjns93x28630-upcloud-cli-3.20.2",
+              "path": "/nix/store/q2npw7hmnsbvghzhgvm8apm56zyki4l8-upcloud-cli-3.21.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/21w356ddxbywf9lds1kcyjns93x28630-upcloud-cli-3.20.2"
+          "store_path": "/nix/store/q2npw7hmnsbvghzhgvm8apm56zyki4l8-upcloud-cli-3.21.0"
         }
       }
     },
