@@ -23,11 +23,11 @@ spec:
   names:
     kind: SQL
     plural: sqls
-  categories:
-    - composite
-    - database
-    - postgresql
-    - sql
+    categories:
+      - composite
+      - database
+      - postgresql
+      - sql
   # claimNames:
   #   kind: SQLClaim
   #   plural: sqlclaims
