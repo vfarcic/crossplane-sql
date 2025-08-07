@@ -6,9 +6,9 @@ metadata:
     meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
     meta.crossplane.io/source: github.com/vfarcic/crossplane-sql
     meta.crossplane.io/license: MIT
-    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS (Crossplane provider and ACK), Google Cloud Platform, Azure (Crossplane provider and ASO), UpCloud, and a local in-cluster CNPG.
-    meta.crossplane.io/readme: A Configuration package that defines a SQL type that can be used to create and provision fully operational PostgreSQL database servers, databases, and schemas in AWS (Crossplane provider and ACK), Google Cloud Platform, Azure (Crossplane provider and ASO), UpCloud, and a local in-cluster CNPG.
-    description: Production-ready PostgreSQL database service across AWS, GCP, Google Cloud, Azure, and UpCloud
+    meta.crossplane.io/description: Fully operational PostgreSQL database servers, databases, and schemas in AWS (Crossplane provider and ACK), Google Cloud Platform, Azure (Crossplane provider and ASO), UpCloud, and a local in-cluster CNPG and with schema management.
+    meta.crossplane.io/readme: A Configuration package that defines a SQL type that can be used to create and provision fully operational PostgreSQL database servers, databases, and schemas in AWS (Crossplane provider and ACK), Google Cloud Platform, Azure (Crossplane provider and ASO), UpCloud, and a local in-cluster CNPG, all with schema management.
+    description: Production-ready PostgreSQL database service across AWS, GCP, Google Cloud, Azure, and UpCloud and with schema management.
     database.engines: PostgreSQL
     providers: AWS RDS, Google Cloud SQL, Azure Database, UpCloud Managed Database
     keywords: postgresql,mysql,database,multi-cloud,managed-service

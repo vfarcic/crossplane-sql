@@ -7,14 +7,14 @@ metadata:
     database.engines: PostgreSQL
     providers.supported: AWS, GCP, Google Cloud, Azure, UpCloud
     crossplane.io/description: Multi-cloud managed PostgreSQL database service
-    description: Multi-cloud managed PostgreSQL database service
-    capabilities: Managed Database, Multi Region
-    use-case: Production-grade SQL databases with automated management
+    description: Multi-cloud managed PostgreSQL database service with schema management.
+    capabilities: Managed Database, Multi Region, Schema Management
+    use-case: Production-grade SQL databases with schema management.
   labels:
     category: database
     database.postgresql: "true"
-    database.mysql: "true"
     provider.multicloud: "true"
+    schema.management: "true"
     complexity: medium
 spec:
   defaultCompositionRef:
@@ -28,6 +28,7 @@ spec:
     - database
     - postgresql
     - sql
+    - schema
   # claimNames:
   #   kind: SQLClaim
   #   plural: sqlclaims
