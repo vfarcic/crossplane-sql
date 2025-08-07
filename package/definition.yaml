@@ -6,7 +6,7 @@ metadata:
     database.type: postgresql
     database.engines: PostgreSQL
     providers.supported: AWS, GCP, Google Cloud, Azure, UpCloud
-    crossplane.io/description: "Multi-cloud managed PostgreSQL database service"
+    crossplane.io/description: Multi-cloud managed PostgreSQL database service
     description: Multi-cloud managed PostgreSQL database service
     capabilities: Managed Database, Multi Region
     use-case: Production-grade SQL databases with automated management
@@ -24,10 +24,10 @@ spec:
     kind: SQL
     plural: sqls
     categories:
-      - composite
-      - database
-      - postgresql
-      - sql
+    - composite
+    - database
+    - postgresql
+    - sql
   # claimNames:
   #   kind: SQLClaim
   #   plural: sqlclaims
