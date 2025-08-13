@@ -29,7 +29,7 @@ _items = [{
             storage.size = "6Gi"
     }
 }, {
-    apiVersion = "kubernetes.crossplane.io/v1alpha2"
+    apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
     kind = "Object"
     metadata = {
         name = _name + "-secret"
@@ -62,7 +62,10 @@ _items = [{
             }
             stringData.endpoint = "{}-rw".format(_name)
         }
-        providerConfigRef.name = _name + "-sql"
+        providerConfigRef = {
+            name = _name + "-sql"
+            kind = "ProviderConfig"
+        }
     }
 # }, {
 #     **oxr

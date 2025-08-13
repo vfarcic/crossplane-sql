@@ -15,24 +15,20 @@ spec:
         provider: azure
     compositionUpdatePolicy: Automatic
     resourceRefs:
-    - apiVersion: azure.upbound.io/v1beta1
+    - apiVersion: azure.m.upbound.io/v1beta1
       kind: ResourceGroup
       name: my-db-azure
-    - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+    - apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
       kind: FirewallRule
       name: my-db-azure
-    - apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+    - apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
       kind: Server
       name: my-db-azure
-    - apiVersion: kubernetes.crossplane.io/v1alpha1
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-azure-sql
-    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-      kind: ProviderConfig
-      name: my-db-azure
-
 ---
-apiVersion: azure.upbound.io/v1beta1
+apiVersion: azure.m.upbound.io/v1beta1
 kind: ResourceGroup
 metadata:
   annotations:
@@ -45,7 +41,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     location: eastus
   initProvider: {}
@@ -54,7 +49,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
 kind: FirewallRule
 metadata:
   annotations:
@@ -67,17 +62,10 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     endIpAddress: 255.255.255.255
-    resourceGroupName: my-db-azure
-    resourceGroupNameRef:
-      name: my-db-azure
     resourceGroupNameSelector:
       matchControllerRef: true
-    serverName: my-db-azure
-    serverNameRef:
-      name: my-db-azure
     serverNameSelector:
       matchControllerRef: true
     startIpAddress: 0.0.0.0
@@ -85,7 +73,7 @@ spec:
     name: default
 
 ---
-apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
 kind: Server
 metadata:
   annotations:
@@ -98,7 +86,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     administratorLogin: postgres
     administratorLoginPasswordSecretRef:
@@ -121,22 +108,3 @@ spec:
     name: default
   writeConnectionSecretToRef:
     name: my-db-azure
----
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  annotations:
-    crossplane.io/composition-resource-name: sql-config
-  name: my-db-azure
-  ownerReferences:
-  - apiVersion: devopstoolkit.live/v1beta1
-    blockOwnerDeletion: true
-    controller: true
-    kind: SQL
-spec:
-  credentials:
-    connectionSecretRef:
-      name: my-db-azure
-    source: PostgreSQLConnectionSecret
-  defaultDatabase: postgres
-  sslMode: require

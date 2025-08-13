@@ -1,8 +1,3 @@
-# import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
-# import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
-# import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
-import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
-
 oxr = option("params").oxr
 ocds = option("params").ocds
 
@@ -49,7 +44,7 @@ _items = [
             vpcIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "ec2.aws.m.upbound.io/v1beta2"
+        apiVersion = "ec2.aws.m.upbound.io/v1beta1"
         kind = "Route"
         metadata = _metadata("route")
         spec.forProvider = {
@@ -101,7 +96,7 @@ _items = [
             subnetIdSelector.matchControllerRef = True
         }
     }, {
-        apiVersion = "rds.aws.m.upbound.io/v1beta3"
+        apiVersion = "rds.aws.m.upbound.io/v1beta1"
         kind = "Instance"
         metadata = _metadata("rdsinstance")
         spec.forProvider = {
@@ -116,7 +111,6 @@ _items = [
             passwordSecretRef = {
                 name = _name + "-password"
                 key = "password"
-                namespace = _namespace
             }
             storageEncrypted = True
             identifier = _name
@@ -128,8 +122,9 @@ _items = [
                 instanceClass = "db.m5.8xlarge"
             engineVersion = oxr.spec.version
         }
-    },
-    k8sv1alpha2.Object {
+    }, {
+        apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
+        kind = "Object"
         metadata = {
             name = _name + "-secret"
             annotations = {
@@ -175,7 +170,10 @@ _items = [
                 }
                 data.port = "NTQzMg=="
             }
-            providerConfigRef.name = _name + "-sql"
+            providerConfigRef = {
+                name = _name + "-sql"
+                kind = "ProviderConfig"
+            }
         }
     }, {
         **oxr

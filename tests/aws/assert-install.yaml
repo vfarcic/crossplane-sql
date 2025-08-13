@@ -34,6 +34,9 @@ spec:
       kind: RouteTable
       name: my-db-aws
     - apiVersion: ec2.aws.m.upbound.io/v1beta1
+      kind: Route
+      name: my-db-aws
+    - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: SecurityGroupRule
       name: my-db-aws
     - apiVersion: ec2.aws.m.upbound.io/v1beta1
@@ -51,23 +54,21 @@ spec:
     - apiVersion: ec2.aws.m.upbound.io/v1beta1
       kind: VPC
       name: my-db-aws
-    - apiVersion: ec2.aws.m.upbound.io/v1beta2
-      kind: Route
-      name: my-db-aws
-    - apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: ProviderConfig
-      name: my-db-aws-sql
-    - apiVersion: kubernetes.crossplane.io/v1alpha2
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: Object
       name: my-db-aws-secret
-    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
+      name: my-db-aws-sql
+    # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2
+    # - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    #   kind: ProviderConfig
+    #   name: my-db-aws
+    - apiVersion: rds.aws.m.upbound.io/v1beta1
+      kind: Instance
       name: my-db-aws
     - apiVersion: rds.aws.m.upbound.io/v1beta1
       kind: SubnetGroup
-      name: my-db-aws
-    - apiVersion: rds.aws.m.upbound.io/v1beta3
-      kind: Instance
       name: my-db-aws
 ---
 apiVersion: ec2.aws.m.upbound.io/v1beta1
@@ -83,7 +84,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     region: us-east-1
     vpcIdSelector:
@@ -104,7 +104,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     region: us-east-1
     routeTableIdSelector:
@@ -114,7 +113,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: ec2.aws.m.upbound.io/v1beta2
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Route
 metadata:
   annotations:
@@ -127,7 +126,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     destinationCidrBlock: 0.0.0.0/0
     gatewayIdSelector:
@@ -151,7 +149,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     region: us-east-1
     routeTableIdSelector:
@@ -176,7 +173,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     region: us-east-1
     routeTableIdSelector:
@@ -201,7 +197,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     region: us-east-1
     routeTableIdSelector:
@@ -226,7 +221,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     region: us-east-1
     vpcIdSelector:
@@ -247,7 +241,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     cidrBlocks:
     - 0.0.0.0/0
@@ -275,7 +268,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     description: I am too lazy to write descriptions
     region: us-east-1
@@ -297,7 +289,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     availabilityZone: us-east-1a
     cidrBlock: 11.0.0.0/24
@@ -320,7 +311,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     availabilityZone: us-east-1b
     cidrBlock: 11.0.1.0/24
@@ -343,7 +333,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     availabilityZone: us-east-1c
     cidrBlock: 11.0.2.0/24
@@ -366,7 +355,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     cidrBlock: 11.0.0.0/16
     enableDnsHostnames: true
@@ -375,7 +363,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: kubernetes.crossplane.io/v1alpha2
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
   annotations:
@@ -388,7 +376,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     manifest:
       apiVersion: v1
@@ -425,7 +412,7 @@ spec:
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
-apiVersion: rds.aws.m.upbound.io/v1beta3
+apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: Instance
 metadata:
   annotations:
@@ -438,7 +425,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     identifier: my-db-aws
     allocatedStorage: 200
@@ -473,7 +459,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     description: I'm too lazy to write a good description
     region: us-east-1

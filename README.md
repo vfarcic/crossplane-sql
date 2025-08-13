@@ -43,7 +43,7 @@ The SQL custom resource includes features like:
 ```sh
 devbox shell
 
-./dot.nu setup --preview true
+./dot.nu setup
 
 source .env
 ```
@@ -82,7 +82,7 @@ You can also see architecture diagrams in the `examples/diag-*.md` files showing
 ```sh
 devbox shell
 
-./dot.nu setup --preview true
+./dot.nu setup
 
 source .env
 

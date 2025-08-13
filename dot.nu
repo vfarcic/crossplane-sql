@@ -14,7 +14,6 @@ source scripts/cert-manager.nu
 def main [] {}
 
 def --env "main setup" [
-    --preview = false
     --apply_irsa = false
     --apply_azure_creds = false
     --provider: string = ""
@@ -35,64 +34,55 @@ def --env "main setup" [
 
     main apply certmanager
 
-    let ingress = { main apply ingress nginx --provider kind }
-
-    let crossplane = {
-        main apply crossplane --preview $preview
-        let provider_files = [
-            "aws.yaml"
-            "azure.yaml"
-            "cluster-role.yaml"
-            "function-auto-ready.yaml"
-            "function-kcl.yaml"
-            "function-status-transformer.yaml"
-            "google.yaml"
-            "provider-kubernetes-incluster.yaml"
-            "sql.yaml"
-            "upcloud.yaml"
-        ]  
-        for file in $provider_files {
-            kubectl apply --filename $"providers/($file)"
-        }
-        kubectl apply --filename package/definition.yaml
-        sleep 1sec
-        kubectl apply --filename "package/compositions.yaml"
-        (
-            kubectl wait
-                --for=condition=healthy provider.pkg.crossplane.io
-                --all --timeout 600s
-        )
-        if $provider == "aws" {
-            setup aws
-        } else if $provider == "azure" {
-            setup azure
-        } else if $provider == "google" {
-            setup google
-        } else if $provider == "upcloud" {
-            setup upcloud
-        }
-        if $provider != "" {
-            apply providerconfig $provider 
-        }
-
-    }
-
-    let ack = { main apply ack --apply_irsa $apply_irsa }
-
-    let eso = { main apply external_secrets }
-
-    let atlas = { main apply atlas }
-
-    let cnpg = { main apply cnpg }
-
-    mut commands = [ $crossplane, $ack, $eso, $atlas, $cnpg ]
     if not $skip_ingress {
-        $commands = [ $ingress ] ++ $commands
+        main apply ingress nginx --provider kind
     }
 
-    $commands | par-each { |command| do $command }
+    main apply crossplane
+    let provider_files = [
+        "aws.yaml"
+        "azure.yaml"
+        "cluster-role.yaml"
+        "function-auto-ready.yaml"
+        "function-kcl.yaml"
+        "function-status-transformer.yaml"
+        "google.yaml"
+        "provider-kubernetes-incluster.yaml"
+        "sql.yaml"
+        "upcloud.yaml"
+    ]  
+    for file in $provider_files {
+        kubectl apply --filename $"providers/($file)"
+    }
+    kubectl apply --filename package/definition.yaml
+    sleep 1sec
+    kubectl apply --filename "package/compositions.yaml"
+    (
+        kubectl wait
+            --for=condition=healthy provider.pkg.crossplane.io
+            --all --timeout 600s
+    )
+    if $provider == "aws" {
+        setup aws
+    } else if $provider == "azure" {
+        setup azure
+    } else if $provider == "google" {
+        setup google
+    } else if $provider == "upcloud" {
+        setup upcloud
+    }
+    if $provider != "" {
+        apply providerconfig $provider 
+    }
 
-    # There is user input so we're running it outside of par-each
+    main apply ack --apply_irsa $apply_irsa
+
+    main apply external_secrets
+
+    main apply atlas
+
+    main apply cnpg
+
     (
         main apply aso --apply_creds $apply_azure_creds
             --namespace a-team
@@ -119,7 +109,7 @@ def --env "main setup" [
 
 def --env "main package apply" [] {
 
-    package generate
+    crossplane compositions generate
 
     kubectl apply --filename package/definition.yaml
     
@@ -131,7 +121,7 @@ def --env "main package apply" [] {
 
 def --env "main test full" [] {
 
-    main setup --preview true --skip_ingress true
+    main setup --skip_ingress true
 
     main package apply
 
@@ -242,7 +232,7 @@ def "main observe service" [] {
     claude $prompt
 
 }
-def "package generate" [] {
+def "crossplane compositions generate" [] {
 
     kcl run kcl/compositions.k |
         save package/compositions.yaml --force

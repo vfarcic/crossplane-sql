@@ -20,11 +20,6 @@ spec:
       spec:
         dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
         source: |
-          # import models.io.upbound.aws.ec2.v1beta1 as ec2v1beta1
-          # import models.io.upbound.aws.rds.v1beta1 as rdsv1beta1
-          # import models.io.upbound.aws.rds.v1beta2 as rdsv1beta2
-          import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
-
           oxr = option("params").oxr
           ocds = option("params").ocds
 
@@ -71,7 +66,7 @@ spec:
                       vpcIdSelector.matchControllerRef = True
                   }
               }, {
-                  apiVersion = "ec2.aws.m.upbound.io/v1beta2"
+                  apiVersion = "ec2.aws.m.upbound.io/v1beta1"
                   kind = "Route"
                   metadata = _metadata("route")
                   spec.forProvider = {
@@ -123,7 +118,7 @@ spec:
                       subnetIdSelector.matchControllerRef = True
                   }
               }, {
-                  apiVersion = "rds.aws.m.upbound.io/v1beta3"
+                  apiVersion = "rds.aws.m.upbound.io/v1beta1"
                   kind = "Instance"
                   metadata = _metadata("rdsinstance")
                   spec.forProvider = {
@@ -138,7 +133,6 @@ spec:
                       passwordSecretRef = {
                           name = _name + "-password"
                           key = "password"
-                          namespace = _namespace
                       }
                       storageEncrypted = True
                       identifier = _name
@@ -150,8 +144,9 @@ spec:
                           instanceClass = "db.m5.8xlarge"
                       engineVersion = oxr.spec.version
                   }
-              },
-              k8sv1alpha2.Object {
+              }, {
+                  apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
+                  kind = "Object"
                   metadata = {
                       name = _name + "-secret"
                       annotations = {
@@ -197,7 +192,10 @@ spec:
                           }
                           data.port = "NTQzMg=="
                       }
-                      providerConfigRef.name = _name + "-sql"
+                      providerConfigRef = {
+                          name = _name + "-sql"
+                          kind = "ProviderConfig"
+                      }
                   }
               }, {
                   **oxr
@@ -287,50 +285,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{
@@ -556,8 +554,6 @@ spec:
       spec:
         dependencies: models = { git = "https://github.com/vfarcic/crossplane-sql", commit = "8bc4027057a9a9f47bb80132121c8b9130feb809" }
         source: |
-          import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
-
           oxr = option("params").oxr
           ocds = option("params").ocds
 
@@ -677,8 +673,9 @@ spec:
                           dbInstanceClass = "db.m5.8xlarge"
                       engineVersion = oxr.spec.version
                   }
-              },
-              k8sv1alpha2.Object {
+              }, {
+                  apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
+                  kind = "Object"
                   metadata = {
                       name = "{}-secret".format(_name)
                       annotations = {
@@ -724,7 +721,10 @@ spec:
                           }
                           data.port = "NTQzMg=="
                       }
-                      providerConfigRef.name = _name + "-sql"
+                      providerConfigRef = {
+                          name = _name + "-sql"
+                          kind = "ProviderConfig"
+                      }
                   }
               }
           ]
@@ -778,50 +778,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{
@@ -1000,7 +1000,6 @@ spec:
           ocds = option("params").ocds
 
           _name = oxr.metadata.name
-          _namespace = oxr.metadata.namespace
           _region = "eastus"
           if oxr.spec?.region:
               _region = oxr.spec.region
@@ -1015,12 +1014,12 @@ spec:
           }
 
           _items = [{
-              apiVersion = "azure.upbound.io/v1beta1"
+              apiVersion = "azure.m.upbound.io/v1beta1"
               kind = "ResourceGroup"
               metadata = _metadata("resourcegroup")
               spec.forProvider.location = _region
           }, {
-              apiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+              apiVersion = "dbforpostgresql.azure.m.upbound.io/v1beta1"
               kind = "Server"
               metadata = _metadata("server")
               spec = {
@@ -1042,17 +1041,15 @@ spec:
                       administratorLoginPasswordSecretRef = {
                           name = _name + "-password"
                           key = "password"
-                          namespace: _namespace
                       }
                       publicNetworkAccessEnabled = True
                   }
                   writeConnectionSecretToRef = {
                       name = _name
-                      namespace = _namespace
                   }
               }
           }, {
-              apiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+              apiVersion = "dbforpostgresql.azure.m.upbound.io/v1beta1"
               kind = "FirewallRule"
               metadata = _metadata("firewall-rule")
               spec.forProvider = {
@@ -1086,6 +1083,27 @@ spec:
                   status.address = ocds["server"].Resource.status.atProvider.fqdn
           }]
 
+          if oxr.spec?.databases:
+              _items += [{
+                  apiVersion = "dbforpostgresql.azure.m.upbound.io/v1beta1"
+                  kind = "Database"
+                  metadata = {
+                      name = _name + "-" + _database
+                      annotations = {
+                          "crossplane.io/external-name" = _database
+                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+                      }
+                  }
+                  spec = {
+                      forProvider = {
+                          resourceGroupNameSelector.matchControllerRef = True
+                          serverNameSelector.matchControllerRef = True
+                          collation = "en_US.utf8"
+                          charset = "UTF8"
+                      }
+                  }
+              } for _database in oxr.spec.databases ]
+
           items = _items
   - step: common
     functionRef:
@@ -1118,50 +1136,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{
@@ -1459,7 +1477,7 @@ spec:
                   azureName = _name
               }
           }, {
-              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
               kind = "Object"
               metadata = {
                   name = _name + "-secret"
@@ -1506,7 +1524,10 @@ spec:
                       }
                       data.port = "NTQzMg=="
                   }
-                  providerConfigRef.name = _name + "-sql"
+                  providerConfigRef = {
+                      name = _name + "-sql"
+                      kind = "ProviderConfig"
+                  }
               }
           }, {
               **oxr
@@ -1546,50 +1567,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{
@@ -1783,7 +1804,7 @@ spec:
           }
 
           _items = [{
-              apiVersion = "sql.gcp.upbound.io/v1beta1"
+              apiVersion = "sql.gcp.m.upbound.io/v1beta1"
               kind = "DatabaseInstance"
               metadata = _metadata("databaseinstance")
               spec = {
@@ -1793,9 +1814,8 @@ spec:
                       rootPasswordSecretRef = {
                           name = _name + "-password"
                           key = "password"
-                          namespace = _namespace
                       }
-                      settings = [{
+                      settings = {
                           if oxr.spec.size == "small":
                               tier = "db-custom-1-3840"
                           elif oxr.spec.size == "medium":
@@ -1803,38 +1823,37 @@ spec:
                           else:
                               tier = "db-custom-64-245760"
                           availabilityType = "REGIONAL"
-                          backupConfiguration = [{
+                          backupConfiguration = {
                               enabled = True
                               binaryLogEnabled = False
-                          }]
-                          ipConfiguration = [{
+                          }
+                          ipConfiguration = {
                               ipv4Enabled = True
                               authorizedNetworks = [{
                                   name = "all"
                                   value = "0.0.0.0/0"
                               }]
-                          }]
-                      }]
+                          }
+                      }
                       deletionProtection = False
                   }
               }
           }, {
-              apiVersion = "sql.gcp.upbound.io/v1beta1"
+              apiVersion = "sql.gcp.m.upbound.io/v1beta1"
               kind = "User"
               metadata = _metadata("user")
               spec = {
-                  deletionPolicy = "Orphan"
                   forProvider = {
+                      deletionPolicy = "Orphan"
                       passwordSecretRef = {
                           key = "password"
                           name = _name + "-password"
-                          namespace = _namespace
                       }
                       instanceSelector.matchControllerRef = True
                   }
               }
           }, {
-              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
               kind = "Object"
               metadata = {
                   name = _name + "-secret"
@@ -1846,7 +1865,7 @@ spec:
               spec = {
                   references = [{
                       patchesFrom = {
-                          apiVersion = "sql.gcp.upbound.io/v1beta1"
+                          apiVersion = "sql.gcp.m.upbound.io/v1beta1"
                           kind = "User"
                           name = _name
                           namespace = "crossplane-system"
@@ -1864,7 +1883,7 @@ spec:
                       toFieldPath = "data.password"
                   }, {
                       patchesFrom = {
-                          apiVersion = "sql.gcp.upbound.io/v1beta1"
+                          apiVersion = "sql.gcp.m.upbound.io/v1beta1"
                           kind = "DatabaseInstance"
                           name = _name
                           namespace = "crossplane-system"
@@ -1881,13 +1900,35 @@ spec:
                       }
                       data.port = "NTQzMg=="
                   }
-                  providerConfigRef.name = _name + "-sql"
+                  providerConfigRef = {
+                      name = _name + "-sql"
+                      kind = "ProviderConfig"
+                  }
               }
           }, {
               **oxr
               if "databaseinstance" in ocds:
                   status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
           }]
+
+          if oxr.spec?.databases:
+              _items += [{
+                  apiVersion = "sql.gcp.m.upbound.io/v1beta1"
+                  kind = "Database"
+                  metadata = {
+                      name = _name + "-" + _database
+                      annotations = {
+                          "crossplane.io/external-name" = _database
+                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+                      }
+                  }
+                  spec = {
+                      forProvider = {
+                          deletionPolicy = "Orphan"
+                          instanceSelector.matchControllerRef = True
+                      }
+                  }
+              } for _database in oxr.spec.databases ]
 
           items = _items
   - step: common
@@ -1921,50 +1962,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{
@@ -2221,7 +2262,7 @@ spec:
                       storage.size = "6Gi"
               }
           }, {
-              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
               kind = "Object"
               metadata = {
                   name = _name + "-secret"
@@ -2254,7 +2295,10 @@ spec:
                       }
                       stringData.endpoint = "{}-rw".format(_name)
                   }
-                  providerConfigRef.name = _name + "-sql"
+                  providerConfigRef = {
+                      name = _name + "-sql"
+                      kind = "ProviderConfig"
+                  }
               }
           # }, {
           #     **oxr
@@ -2294,50 +2338,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{
@@ -2653,7 +2697,7 @@ spec:
           #         }
           #     }
           }, {
-              apiVersion = "kubernetes.crossplane.io/v1alpha2"
+              apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
               kind = "Object"
               metadata = {
                   name = _name + "-secret"
@@ -2687,7 +2731,10 @@ spec:
                       if "manageddatabasepostgresql" in ocds and ocds["manageddatabasepostgresql"]?.Resource?.status?.atProvider?.serviceHost:
                           stringData.endpoint = "public-" + ocds["manageddatabasepostgresql"].Resource.status.atProvider.serviceHost
                   }
-                  providerConfigRef.name = _name + "-sql"
+                  providerConfigRef = {
+                      name = _name + "-sql"
+                      kind = "ProviderConfig"
+                  }
               }
           }, {
               **oxr
@@ -2727,50 +2774,50 @@ spec:
 
           _items = [
               providerConfig {
-                  _apiVersion = "kubernetes.crossplane.io/v1alpha1"
+                  _apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
                   _suffix = "kubernetes"
-          }, {
-              apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-              kind = "ProviderConfig"
-              metadata = {
-                  name = _name
-                  annotations = {
-                      "krm.kcl.dev/ready": "True"
-                      "krm.kcl.dev/composition-resource-name" = "sql-config"
-                      "crossplane.io/external-name" = "default"
-                  }
-              }
-              spec = {
-                  credentials = {
-                    source = "PostgreSQLConnectionSecret"
-                    connectionSecretRef = {
-                      name = _name
-                      namespace = _namespace
-                    }
-                  }
-                  if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                      defaultDatabase = "defaultdb"
-                  sslMode = "require"
-              }
+          # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 # }, {
+          #     apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #     kind = "ProviderConfig"
+          #     metadata = {
+          #         name = _name
+          #         annotations = {
+          #             "krm.kcl.dev/ready": "True"
+          #             "krm.kcl.dev/composition-resource-name" = "sql-config"
+          #             "crossplane.io/external-name" = "default"
+          #         }
+          #     }
+          #     spec = {
+          #         credentials = {
+          #           source = "PostgreSQLConnectionSecret"
+          #           connectionSecretRef = {
+          #             name = _name
+          #             namespace = _namespace
+          #           }
+          #         }
+          #         if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
+          #             defaultDatabase = "defaultdb"
+          #         sslMode = "require"
+          #     }
           }]
 
-          if oxr.spec?.databases:
-              _items += [{
-                  apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
-                  kind = "Database"
-                  metadata = {
-                      name = _name + "-" + _database
-                      annotations = {
-                          "crossplane.io/external-name" = _database
-                          "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-                      }
-                  }
-                  spec = {
-                      providerConfigRef.name = _name
-                      forProvider = {}
-                      deletionPolicy = "Orphan"
-                  }
-              } for _database in oxr.spec.databases ]
+          # if oxr.spec?.databases:
+          #     _items += [{
+          #         apiVersion = "postgresql.sql.crossplane.io/v1alpha1"
+          #         kind = "Database"
+          #         metadata = {
+          #             name = _name + "-" + _database
+          #             annotations = {
+          #                 "crossplane.io/external-name" = _database
+          #                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+          #             }
+          #         }
+          #         spec = {
+          #             providerConfigRef.name = _name
+          #             forProvider = {}
+          #             deletionPolicy = "Orphan"
+          #         }
+          #     } for _database in oxr.spec.databases ]
 
           if oxr.spec.secrets?.storeName and oxr.spec.secrets?.pullRootPasswordKey:
               _items += [{

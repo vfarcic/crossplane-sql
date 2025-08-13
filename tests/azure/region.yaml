@@ -6,7 +6,7 @@ metadata:
 spec:
   region: other-region
 ---
-apiVersion: azure.upbound.io/v1beta1
+apiVersion: azure.m.upbound.io/v1beta1
 kind: ResourceGroup
 metadata:
   name: my-db-azure
@@ -14,7 +14,7 @@ spec:
   forProvider:
     location: other-region
 ---
-apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
+apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
 kind: Server
 metadata:
   name: my-db-azure

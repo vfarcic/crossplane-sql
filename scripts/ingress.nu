@@ -6,8 +6,8 @@
 # > main apply ingress contour --provider aws
 def --env "main apply ingress" [
     class = "contour"   # The class of Ingress controller to apply. Available options: traefik, contour, nginx
-    --provider = "none"
-    --env_prefix = ""
+    --provider = "none" # The cloud provider. Available options: aws, azure, google, upcloud, kind
+    --env_prefix = ""   # Prefix to add to environment variables
 ] {
 
     if $class == "traefik" {
@@ -45,18 +45,6 @@ def --env "main apply ingress" [
 
             sleep 5sec
 
-            (
-                kubectl --namespace ingress-nginx wait
-                    --for=condition=Complete
-                    job ingress-nginx-admission-create
-            )
-
-            (
-                kubectl --namespace ingress-nginx wait
-                    --for=condition=Complete
-                    job ingress-nginx-admission-patch
-            )
-
         }
 
     } else {
@@ -70,10 +58,15 @@ def --env "main apply ingress" [
 
 }
 
+# Gets the IP and hostname for an Ingress controller
+#
+# Examples:
+# > main get ingress contour --provider aws
+# > main get ingress nginx --provider kind --env_prefix TEST_
 def "main get ingress" [
     class = "traefik" # The class of Ingress controller to apply. Available options: traefik, contour, nginx
-    --provider: string
-    --env_prefix = ""
+    --provider: string # The cloud provider. Available options: aws, azure, google, upcloud, kind
+    --env_prefix = ""  # Prefix to add to environment variables
 ] {
 
     mut service_name = $class
@@ -132,6 +125,11 @@ def "main get ingress" [
 
 }
 
+# Deletes an Ingress controller
+#
+# Examples:
+# > main delete ingress contour
+# > main delete ingress traefik
 def --env "main delete ingress" [
     class = "contour"   # The class of Ingress controller to apply. Available options: traefik, contour, nginx
 ] {

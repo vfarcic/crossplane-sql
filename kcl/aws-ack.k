@@ -1,5 +1,3 @@
-import models.io.crossplane.kubernetes.v1alpha2 as k8sv1alpha2
-
 oxr = option("params").oxr
 ocds = option("params").ocds
 
@@ -119,8 +117,9 @@ _items = [
                 dbInstanceClass = "db.m5.8xlarge"
             engineVersion = oxr.spec.version
         }
-    },
-    k8sv1alpha2.Object {
+    }, {
+        apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
+        kind = "Object"
         metadata = {
             name = "{}-secret".format(_name)
             annotations = {
@@ -166,7 +165,10 @@ _items = [
                 }
                 data.port = "NTQzMg=="
             }
-            providerConfigRef.name = _name + "-sql"
+            providerConfigRef = {
+                name = _name + "-sql"
+                kind = "ProviderConfig"
+            }
         }
     }
 ]

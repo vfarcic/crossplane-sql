@@ -19,8 +19,6 @@ spec:
             file: ../common/install.yaml
         - assert:
             file: ../common/assert-install.yaml
-        # - assert:
-        #     file: ../common/assert-status-provider.yaml
         - assert:
             file: assert-install.yaml
         - patch:
@@ -28,7 +26,7 @@ spec:
         - patch:
             file: ../common/schemas.yaml
         - assert:
-            file: ../common/assert-db.yaml
+            file: assert-db.yaml
         - patch:
             file: ../common/secret-pull.yaml
         - assert:

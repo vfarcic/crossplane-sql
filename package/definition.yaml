@@ -1,4 +1,4 @@
-apiVersion: apiextensions.crossplane.io/v2alpha1
+apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:
   name: sqls.devopstoolkit.live
@@ -29,14 +29,6 @@ spec:
     - postgresql
     - sql
     - schema
-  # claimNames:
-  #   kind: SQLClaim
-  #   plural: sqlclaims
-  connectionSecretKeys:
-  - username
-  - password
-  - endpoint
-  - port
   versions:
   - name: v1beta1
     served: true

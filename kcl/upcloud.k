@@ -88,7 +88,7 @@ _items = [{
 #         }
 #     }
 }, {
-    apiVersion = "kubernetes.crossplane.io/v1alpha2"
+    apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
     kind = "Object"
     metadata = {
         name = _name + "-secret"
@@ -122,7 +122,10 @@ _items = [{
             if "manageddatabasepostgresql" in ocds and ocds["manageddatabasepostgresql"]?.Resource?.status?.atProvider?.serviceHost:
                 stringData.endpoint = "public-" + ocds["manageddatabasepostgresql"].Resource.status.atProvider.serviceHost
         }
-        providerConfigRef.name = _name + "-sql"
+        providerConfigRef = {
+            name = _name + "-sql"
+            kind = "ProviderConfig"
+        }
     }
 }, {
     **oxr

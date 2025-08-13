@@ -2,7 +2,6 @@ oxr = option("params").oxr
 ocds = option("params").ocds
 
 _name = oxr.metadata.name
-_namespace = oxr.metadata.namespace
 _region = "eastus"
 if oxr.spec?.region:
     _region = oxr.spec.region
@@ -17,12 +16,12 @@ _metadata = lambda resourceName: str -> any {
 }
 
 _items = [{
-    apiVersion = "azure.upbound.io/v1beta1"
+    apiVersion = "azure.m.upbound.io/v1beta1"
     kind = "ResourceGroup"
     metadata = _metadata("resourcegroup")
     spec.forProvider.location = _region
 }, {
-    apiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+    apiVersion = "dbforpostgresql.azure.m.upbound.io/v1beta1"
     kind = "Server"
     metadata = _metadata("server")
     spec = {
@@ -44,17 +43,15 @@ _items = [{
             administratorLoginPasswordSecretRef = {
                 name = _name + "-password"
                 key = "password"
-                namespace: _namespace
             }
             publicNetworkAccessEnabled = True
         }
         writeConnectionSecretToRef = {
             name = _name
-            namespace = _namespace
         }
     }
 }, {
-    apiVersion = "dbforpostgresql.azure.upbound.io/v1beta1"
+    apiVersion = "dbforpostgresql.azure.m.upbound.io/v1beta1"
     kind = "FirewallRule"
     metadata = _metadata("firewall-rule")
     spec.forProvider = {
@@ -87,5 +84,26 @@ _items = [{
     if "server" in ocds:
         status.address = ocds["server"].Resource.status.atProvider.fqdn
 }]
+
+if oxr.spec?.databases:
+    _items += [{
+        apiVersion = "dbforpostgresql.azure.m.upbound.io/v1beta1"
+        kind = "Database"
+        metadata = {
+            name = _name + "-" + _database
+            annotations = {
+                "crossplane.io/external-name" = _database
+                "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+            }
+        }
+        spec = {
+            forProvider = {
+                resourceGroupNameSelector.matchControllerRef = True
+                serverNameSelector.matchControllerRef = True
+                collation = "en_US.utf8"
+                charset = "UTF8"
+            }
+        }
+    } for _database in oxr.spec.databases ]
 
 items = _items

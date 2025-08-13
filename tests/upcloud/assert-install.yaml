@@ -17,10 +17,10 @@ spec:
     - apiVersion: database.upcloud.com/v1alpha1
       kind: ManagedDatabasePostgresql
       name: my-db-upcloud
-    - apiVersion: kubernetes.crossplane.io/v1alpha1
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-upcloud-sql
-    - apiVersion: kubernetes.crossplane.io/v1alpha2
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: Object
       name: my-db-upcloud-secret
     - apiVersion: network.upcloud.com/v1alpha1
@@ -33,7 +33,7 @@ spec:
       kind: ProviderConfig
       name: my-db-upcloud
 ---
-apiVersion: kubernetes.crossplane.io/v1alpha2
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
   annotations:
@@ -46,7 +46,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     manifest:
       apiVersion: v1

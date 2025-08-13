@@ -15,23 +15,26 @@ spec:
         provider: google
     compositionUpdatePolicy: Automatic
     resourceRefs:
-    - apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: ProviderConfig
-      name: my-db-google-sql
-    - apiVersion: kubernetes.crossplane.io/v1alpha2
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: Object
       name: my-db-google-secret
-    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
-      name: my-db-google
-    - apiVersion: sql.gcp.upbound.io/v1beta1
+      name: my-db-google-sql
+    # - API Version: sql.gcp.m.upbound.io/v1beta1
+    #   Kind: DatabaseInstance
+    #   Name: my-db
+    # - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    #   kind: ProviderConfig
+    #   name: my-db-google
+    - apiVersion: sql.gcp.m.upbound.io/v1beta1
       kind: DatabaseInstance
       name: my-db-google
-    - apiVersion: sql.gcp.upbound.io/v1beta1
+    - apiVersion: sql.gcp.m.upbound.io/v1beta1
       kind: User
       name: my-db-google
 ---
-apiVersion: kubernetes.crossplane.io/v1alpha2
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
   annotations:
@@ -44,7 +47,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     manifest:
       apiVersion: v1
@@ -61,7 +63,7 @@ spec:
     policy: SuccessfulCreate
   references:
   - patchesFrom:
-      apiVersion: sql.gcp.upbound.io/v1beta1
+      apiVersion: sql.gcp.m.upbound.io/v1beta1
       fieldPath: metadata.name
       kind: User
       name: my-db-google
@@ -74,14 +76,14 @@ spec:
       name: my-db-google-password
     toFieldPath: data.password
   - patchesFrom:
-      apiVersion: sql.gcp.upbound.io/v1beta1
+      apiVersion: sql.gcp.m.upbound.io/v1beta1
       fieldPath: status.atProvider.publicIpAddress
       kind: DatabaseInstance
       name: my-db-google
       namespace: crossplane-system
     toFieldPath: stringData.endpoint
 ---
-apiVersion: sql.gcp.upbound.io/v1beta1
+apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: DatabaseInstance
 metadata:
   annotations:
@@ -94,7 +96,6 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Delete
   forProvider:
     databaseVersion: POSTGRES_14
     deletionProtection: false
@@ -103,12 +104,12 @@ spec:
       key: password
       name: my-db-google-password
     settings:
-    - availabilityType: REGIONAL
+      availabilityType: REGIONAL
       backupConfiguration:
-      - binaryLogEnabled: false
+        binaryLogEnabled: false
         enabled: true
       ipConfiguration:
-      - authorizedNetworks:
+        authorizedNetworks:
         - name: all
           value: 0.0.0.0/0
         ipv4Enabled: true
@@ -116,7 +117,7 @@ spec:
   providerConfigRef:
     name: default
 ---
-apiVersion: sql.gcp.upbound.io/v1beta1
+apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
   annotations:
@@ -128,8 +129,8 @@ metadata:
     controller: true
     kind: SQL
 spec:
-  deletionPolicy: Orphan
   forProvider:
+    deletionPolicy: Orphan
     instance: my-db-google
     instanceRef:
       name: my-db-google
@@ -138,22 +139,3 @@ spec:
     passwordSecretRef:
       key: password
       name: my-db-google-password
----
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  annotations:
-    crossplane.io/composition-resource-name: sql-config
-  name: my-db-google
-  ownerReferences:
-  - apiVersion: devopstoolkit.live/v1beta1
-    blockOwnerDeletion: true
-    controller: true
-    kind: SQL
-spec:
-  credentials:
-    connectionSecretRef:
-      name: my-db-google
-    source: PostgreSQLConnectionSecret
-  defaultDatabase: postgres
-  sslMode: require

@@ -6,7 +6,7 @@ metadata:
 spec:
   region: other-region
 ---
-apiVersion: sql.gcp.upbound.io/v1beta1
+apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: DatabaseInstance
 metadata:
   name: my-db-google

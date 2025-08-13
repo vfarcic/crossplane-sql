@@ -23,8 +23,9 @@ spec:
             file: assert-install.yaml
         - patch:
             file: ../common/db.yaml
-        - assert:
-            file: ../common/assert-db.yaml
+        # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2 
+        # - assert:
+        #     file: ../common/assert-db.yaml
         - patch:
             file: ../common/schemas.yaml
         - assert:

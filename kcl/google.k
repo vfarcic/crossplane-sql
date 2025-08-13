@@ -17,7 +17,7 @@ _metadata = lambda resourceName: str -> any {
 }
 
 _items = [{
-    apiVersion = "sql.gcp.upbound.io/v1beta1"
+    apiVersion = "sql.gcp.m.upbound.io/v1beta1"
     kind = "DatabaseInstance"
     metadata = _metadata("databaseinstance")
     spec = {
@@ -27,9 +27,8 @@ _items = [{
             rootPasswordSecretRef = {
                 name = _name + "-password"
                 key = "password"
-                namespace = _namespace
             }
-            settings = [{
+            settings = {
                 if oxr.spec.size == "small":
                     tier = "db-custom-1-3840"
                 elif oxr.spec.size == "medium":
@@ -37,38 +36,37 @@ _items = [{
                 else:
                     tier = "db-custom-64-245760"
                 availabilityType = "REGIONAL"
-                backupConfiguration = [{
+                backupConfiguration = {
                     enabled = True
                     binaryLogEnabled = False
-                }]
-                ipConfiguration = [{
+                }
+                ipConfiguration = {
                     ipv4Enabled = True
                     authorizedNetworks = [{
                         name = "all"
                         value = "0.0.0.0/0"
                     }]
-                }]
-            }]
+                }
+            }
             deletionProtection = False
         }
     }
 }, {
-    apiVersion = "sql.gcp.upbound.io/v1beta1"
+    apiVersion = "sql.gcp.m.upbound.io/v1beta1"
     kind = "User"
     metadata = _metadata("user")
     spec = {
-        deletionPolicy = "Orphan"
         forProvider = {
+            deletionPolicy = "Orphan"
             passwordSecretRef = {
                 key = "password"
                 name = _name + "-password"
-                namespace = _namespace
             }
             instanceSelector.matchControllerRef = True
         }
     }
 }, {
-    apiVersion = "kubernetes.crossplane.io/v1alpha2"
+    apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
     kind = "Object"
     metadata = {
         name = _name + "-secret"
@@ -80,7 +78,7 @@ _items = [{
     spec = {
         references = [{
             patchesFrom = {
-                apiVersion = "sql.gcp.upbound.io/v1beta1"
+                apiVersion = "sql.gcp.m.upbound.io/v1beta1"
                 kind = "User"
                 name = _name
                 namespace = "crossplane-system"
@@ -98,7 +96,7 @@ _items = [{
             toFieldPath = "data.password"
         }, {
             patchesFrom = {
-                apiVersion = "sql.gcp.upbound.io/v1beta1"
+                apiVersion = "sql.gcp.m.upbound.io/v1beta1"
                 kind = "DatabaseInstance"
                 name = _name
                 namespace = "crossplane-system"
@@ -115,12 +113,34 @@ _items = [{
             }
             data.port = "NTQzMg=="
         }
-        providerConfigRef.name = _name + "-sql"
+        providerConfigRef = {
+            name = _name + "-sql"
+            kind = "ProviderConfig"
+        }
     }
 }, {
     **oxr
     if "databaseinstance" in ocds:
         status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
 }]
+
+if oxr.spec?.databases:
+    _items += [{
+        apiVersion = "sql.gcp.m.upbound.io/v1beta1"
+        kind = "Database"
+        metadata = {
+            name = _name + "-" + _database
+            annotations = {
+                "crossplane.io/external-name" = _database
+                "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+            }
+        }
+        spec = {
+            forProvider = {
+                deletionPolicy = "Orphan"
+                instanceSelector.matchControllerRef = True
+            }
+        }
+    } for _database in oxr.spec.databases ]
 
 items = _items

@@ -24,7 +24,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: ec2.aws.m.upbound.io/v1beta2
+apiVersion: ec2.aws.m.upbound.io/v1beta1
 kind: Route
 metadata:
   name: my-db-aws
@@ -136,7 +136,7 @@ spec:
   forProvider:
     region: other-region
 ---
-apiVersion: rds.aws.m.upbound.io/v1beta3
+apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: Instance
 metadata:
   name: my-db-aws
