@@ -24,7 +24,7 @@
     "scripts": {
       "cluster-create":  ["./dot.nu setup --preview true"],
       "cluster-destroy": ["./dot.nu destroy"],
-      "package-publish": ["./dot.nu publish"],
+      "package-publish": ["./dot.nu publish crossplane sql"],
       "test":            ["./dot.nu test full"],
       "test-watch":      ["./dot.nu test watch"]
     }

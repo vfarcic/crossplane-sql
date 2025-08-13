@@ -11,10 +11,10 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Install Crossplane CLI
+      - name: Install Upbound CLI
         run: |
-          curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh" | XP_CHANNEL=preview sh
-          sudo mv crossplane /usr/local/bin
+          curl -sL "https://cli.upbound.io" | sh
+          sudo mv up /usr/local/bin/
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.13.0
         with:

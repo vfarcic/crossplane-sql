@@ -172,37 +172,6 @@ def --env "main destroy" [
 
 }
 
-def "main publish" [
-    --version = ""
-] {
-
-    mut version = $version
-    if $version == "" {
-        $version = $env.VERSION
-    }
-
-    package generate
-
-    crossplane xpkg login --token $env.UP_TOKEN
-
-    (
-        crossplane xpkg build --package-root package
-            --package-file sql.xpkg
-    )
-
-    (
-        crossplane xpkg push --package-files sql.xpkg 
-            $"xpkg.upbound.io/($env.UP_ACCOUNT)/dot-sql:($version)"
-    )
-
-    rm --force package/sql.xpkg
-
-    open config.yaml
-        | upsert spec.package $"xpkg.upbound.io/devops-toolkit/dot-sql:($version)"
-        | save config.yaml --force
-
-}
-
 def "main create diagram" [
     composite_resource: string
 ] {
