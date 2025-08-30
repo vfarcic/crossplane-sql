@@ -18,7 +18,7 @@ metadata:
     complexity: medium
 spec:
   defaultCompositionRef:
-    name: google-postgres
+    name: google-postgresql
   group: devopstoolkit.live
   names:
     kind: SQL
