@@ -129,51 +129,51 @@
         }
       }
     },
-    "eksctl@0.212.0": {
-      "last_modified": "2025-07-31T04:07:16Z",
-      "resolved": "github:NixOS/nixpkgs/8679b16e11becd487b45d568358ddf9d5640d860#eksctl",
+    "eksctl@0.214.0": {
+      "last_modified": "2025-09-18T16:33:27Z",
+      "resolved": "github:NixOS/nixpkgs/f4b140d5b253f5e2a1ff4e5506edbf8267724bde#eksctl",
       "source": "devbox-search",
-      "version": "0.212.0",
+      "version": "0.214.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/9ar92dq3rxdv77xydm0x2vwzrp2qkmgb-eksctl-0.212.0",
+              "path": "/nix/store/3dd28ach53wgprcq51mb4sgf3khqr9gq-eksctl-0.214.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/9ar92dq3rxdv77xydm0x2vwzrp2qkmgb-eksctl-0.212.0"
+          "store_path": "/nix/store/3dd28ach53wgprcq51mb4sgf3khqr9gq-eksctl-0.214.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/45b3pg47yy74jzs6p3wk7kwhvq2lpznh-eksctl-0.212.0",
+              "path": "/nix/store/dabhkzdbnlfa5nz4s9pgn9748y970gcl-eksctl-0.214.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/45b3pg47yy74jzs6p3wk7kwhvq2lpznh-eksctl-0.212.0"
+          "store_path": "/nix/store/dabhkzdbnlfa5nz4s9pgn9748y970gcl-eksctl-0.214.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/b3j5wqw7xclpkwbpy1kdrnjgnycdha6k-eksctl-0.212.0",
+              "path": "/nix/store/gx3x4f3ahjkhwvq0a93spxg691v4rn0g-eksctl-0.214.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/b3j5wqw7xclpkwbpy1kdrnjgnycdha6k-eksctl-0.212.0"
+          "store_path": "/nix/store/gx3x4f3ahjkhwvq0a93spxg691v4rn0g-eksctl-0.214.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/v26l12y88dw6dqd3hbipi87as1c8a6kc-eksctl-0.212.0",
+              "path": "/nix/store/z733f4ibkaxdmbwyfn7h7g5c5cdf91nn-eksctl-0.214.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/v26l12y88dw6dqd3hbipi87as1c8a6kc-eksctl-0.212.0"
+          "store_path": "/nix/store/z733f4ibkaxdmbwyfn7h7g5c5cdf91nn-eksctl-0.214.0"
         }
       }
     },
