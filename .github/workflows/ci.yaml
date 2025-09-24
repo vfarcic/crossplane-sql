@@ -16,7 +16,7 @@ jobs:
           curl -sL "https://cli.upbound.io" | sh
           sudo mv up /usr/local/bin/
       - name: Install Devbox
-        uses: jetpack-io/devbox-install-action@v0.13.0
+        uses: jetpack-io/devbox-install-action@v0.14.0
         with:
           enable-cache: 'true'
       - name: Test
