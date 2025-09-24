@@ -1,6 +1,6 @@
 {
   "packages": [
-    "kind@0.29.0",
+    "kind@0.30.0",
     "kubectl@1.33.4",
     "kubernetes-helm@3.18.4",
     "viddy@1.3.0",
