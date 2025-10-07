@@ -7,7 +7,6 @@ source scripts/atlas.nu
 source scripts/ingress.nu
 source scripts/common.nu
 source scripts/cnpg.nu
-source scripts/ack.nu
 source scripts/aso.nu
 source scripts/cert-manager.nu
 
@@ -122,7 +121,6 @@ def --env "main test full" [] {
     # FIXME: "cnpg"
     let dirs = [
         "aws"
-        "aws-ack"
         "azure"
         "azure-aso"
         "google"
@@ -157,10 +155,6 @@ def --env "main destroy" [
 ] {
 
     mut cluster = "kind"
-    if $provider == "ack" {
-        $cluster = "aws"
-        do --ignore-errors { main delete ack }
-    }
 
     main destroy kubernetes $cluster
 
