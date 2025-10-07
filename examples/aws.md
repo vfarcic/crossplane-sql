@@ -7,7 +7,7 @@ devbox shell
 
 chmod +x dot.nu
 
-./dot.nu setup --provider aws --preview true
+./dot.nu setup --provider aws
 
 source .env
 
@@ -22,12 +22,22 @@ cat examples/aws.yaml
 
 kubectl --namespace a-team apply --filename examples/aws.yaml
 
-kubectl tree --namespace a-team sqls my-db
+kubectl --namespace a-team get sqls
+
+kubectl --namespace a-team get managed
 ```
 
 > Wait until all the resources are `Available`
 
 ## Destroy 
+
+```sh
+kubectl --namespace a-team delete --filename examples/aws.yaml
+
+kubectl --namespace a-team get managed
+```
+
+> Wait until all the resources are `Available`
 
 ```sh
 ./dot.nu destroy

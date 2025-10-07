@@ -135,10 +135,10 @@ _items = [
         spec = {
             references = [{
                 patchesFrom = {
-                    apiVersion = "rds.aws.upbound.io/v1beta1"
+                    apiVersion = "rds.aws.m.upbound.io/v1beta1"
                     kind = "Instance"
                     name = _name
-                    namespace = "crossplane-system"
+                    namespace = _namespace
                     fieldPath = "spec.forProvider.username"
                 }
                 toFieldPath = "stringData.username"
@@ -153,10 +153,10 @@ _items = [
                 toFieldPath = "data.password"
             }, {
                 patchesFrom = {
-                    apiVersion = "rds.aws.upbound.io/v1beta1"
+                    apiVersion = "rds.aws.m.upbound.io/v1beta1"
                     kind = "Instance"
                     name = _name
-                    namespace = "crossplane-system"
+                    namespace = _namespace
                     fieldPath = "status.atProvider.address"
                 }
                 toFieldPath = "stringData.endpoint"

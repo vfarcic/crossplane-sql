@@ -26,10 +26,6 @@ def --env "main setup" [
 
     mut cluster = "kind"
 
-    if $provider == "ack" {
-        $cluster = "aws"
-    }
-
     main create kubernetes $cluster
 
     main apply certmanager
@@ -74,8 +70,6 @@ def --env "main setup" [
     if $provider != "" {
         apply providerconfig $provider 
     }
-
-    main apply ack --apply_irsa $apply_irsa
 
     main apply external_secrets
 

@@ -81,14 +81,6 @@ schema composition:
     }
 
     composition {
-        _provider = "aws-ack"
-        _source = file.read("kcl/aws-ack.k")
-        _statusConditionHooks = {}
-        _serverApiVersion = ""
-        _serverKind = ""
-    }
-
-    composition {
         _provider = "azure"
         _source = file.read("kcl/azure.k")
         _statusConditionHooks = commonstatuses.statusConditionHooks(

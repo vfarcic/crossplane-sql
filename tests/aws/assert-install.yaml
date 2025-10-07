@@ -392,24 +392,25 @@ spec:
     policy: SuccessfulCreate
   references:
   - patchesFrom:
-      apiVersion: rds.aws.upbound.io/v1beta1
+      apiVersion: rds.aws.m.upbound.io/v1beta1
       fieldPath: spec.forProvider.username
       kind: Instance
       name: my-db-aws
-      namespace: crossplane-system
+      namespace: ($namespace)
     toFieldPath: stringData.username
   - patchesFrom:
       apiVersion: v1
       fieldPath: data.password
       kind: Secret
       name: my-db-aws-password
+      namespace: ($namespace)
     toFieldPath: data.password
   - patchesFrom:
-      apiVersion: rds.aws.upbound.io/v1beta1
+      apiVersion: rds.aws.m.upbound.io/v1beta1
       fieldPath: status.atProvider.address
       kind: Instance
       name: my-db-aws
-      namespace: crossplane-system
+      namespace: ($namespace)
     toFieldPath: stringData.endpoint
 ---
 apiVersion: rds.aws.m.upbound.io/v1beta1
