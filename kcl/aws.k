@@ -121,6 +121,9 @@ _items = [
             else:
                 instanceClass = "db.m5.8xlarge"
             engineVersion = oxr.spec.version
+            # TODO: Remove when `postgresql.sql.crossplane.io` is adapted to v2
+            if oxr.spec?.databases:
+                dbName = oxr.spec.databases[0]
         }
     }, {
         apiVersion = "kubernetes.m.crossplane.io/v1alpha1"
