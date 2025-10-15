@@ -7,7 +7,7 @@
     "teller@2.0.7",
     "azure-cli@2.77.0",
     "nushell@0.106.1",
-    "kyverno-chainsaw@0.2.12",
+    "kyverno-chainsaw@0.2.13",
     "kcl@0.11.3",
     "watchexec@2.3.2",
     "git@2.51.0",
