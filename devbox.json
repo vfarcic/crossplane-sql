@@ -12,7 +12,7 @@
     "watchexec@2.3.2",
     "git@2.51.0",
     "upcloud-cli@3.23.0",
-    "awscli2@2.28.1",
+    "awscli2@2.31.11",
     "ripgrep@14.1.1",
     "eksctl@0.215.0",
     "jq@1.8.1",
