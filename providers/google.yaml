@@ -4,5 +4,5 @@ kind: Provider
 metadata:
   name: provider-gcp-sql
 spec:
-  package: xpkg.crossplane.io/crossplane-contrib/provider-gcp-sql:v2.1.0
+  package: xpkg.crossplane.io/crossplane-contrib/provider-gcp-sql:v2.2.0
 ---
