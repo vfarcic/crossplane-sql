@@ -2,7 +2,6 @@
 
 source scripts/kubernetes.nu
 source scripts/crossplane.nu
-source scripts/external-secrets.nu
 source scripts/atlas.nu
 source scripts/ingress.nu
 source scripts/common.nu
@@ -75,10 +74,8 @@ def --env "main setup" [
         setup upcloud
     }
     if $provider != "" {
-        apply providerconfig $provider 
+        apply providerconfig $provider
     }
-
-    main apply external_secrets
 
     main apply atlas
 

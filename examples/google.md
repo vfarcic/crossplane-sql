@@ -54,40 +54,6 @@ Delete the example Composite Resource.
 kubectl --namespace infra delete --filename examples/google.yaml
 ```
 
-## Create a PostgreSQL Instance with Credentials Pulled From and Pushed to Secrets Store and Atlas Schema
-
-Create a secret with the root password.
-
-```sh
-echo "{\"password\": \"IWillNeverTell\" }" \
-    | gcloud secrets --project $PROJECT_ID \
-    create db-root-password --data-file=-
-```
-
-Take a look at the example Composite Resource.
-
-```sh
-cat examples/google-eso.yaml
-```
-
-Apply the secret and the example Composite Resource.
-
-```sh
-kubectl --namespace infra apply --filename examples/google-eso.yaml
-```
-
-Take a look at the status of the SQL Composite Resource.
-
-```sh
-crossplane beta trace sql my-db --namespace infra
-```
-
-Delete the example Composite Resource.
-
-```sh
-kubectl --namespace infra delete --filename examples/google-eso.yaml
-```
-
 ## Destroy
 
 Confirm that all the managed resources are removed.
