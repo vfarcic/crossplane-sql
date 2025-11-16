@@ -27,7 +27,7 @@ def --env "main apply crossplane" [
     (
         helm upgrade --install crossplane "crossplane/crossplane"
             --namespace crossplane-system --create-namespace
-            --set args='{"--enable-usages"}'
+            --set provider.defaultActivations={"*.m.upbound.io", "*.m.crossplane.io"}
             --wait
     )
 
@@ -46,7 +46,7 @@ def --env "main apply crossplane" [
 
         print $"\n(ansi green_bold)Applying `dot-application` Configuration...(ansi reset)\n"
 
-        let version = "v2.0.2"
+        let version = "v3.0.31"
         {
             apiVersion: "pkg.crossplane.io/v1"
             kind: "Configuration"
@@ -109,7 +109,7 @@ def --env "main apply crossplane" [
 
         print $"\n(ansi green_bold)Applying `dot-sql` Configuration...(ansi reset)\n"
 
-        let version = "v2.1.59"
+        let version = "v2.1.83"
         {
             apiVersion: "pkg.crossplane.io/v1"
             kind: "Configuration"
@@ -200,7 +200,7 @@ def --env "main apply crossplane" [
             kind: "Provider"
             metadata: { name: "crossplane-provider-helm" }
             spec: {
-                package: "xpkg.upbound.io/crossplane-contrib/provider-helm:v0.19.0"
+                package: "xpkg.upbound.io/crossplane-contrib/provider-helm:v1.0.0"
                 runtimeConfigRef: { name: "crossplane-provider-helm" }
             }
         } | to yaml | kubectl apply --filename -
@@ -248,7 +248,7 @@ def --env "main apply crossplane" [
             kind: "Provider"
             metadata: { name: "crossplane-provider-kubernetes" }
             spec: {
-                package: "xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.15.0"
+                package: "xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v1.0.0"
                 runtimeConfigRef: { name: "crossplane-provider-kubernetes" }
             }
         } | to yaml | kubectl apply --filename -
@@ -403,7 +403,7 @@ def "apply providerconfig" [
 
         {
             apiVersion: "gcp.m.upbound.io/v1beta1"
-            kind: "ProviderConfig"
+            kind: "ClusterProviderConfig"
             metadata: { name: "default" }
             spec: {
                 projectID: $google_project_id
@@ -458,7 +458,7 @@ def "apply providerconfig" [
 
         {
             apiVersion: "provider.upcloud.com/v1beta1"
-            kind: "ClusterProviderConfig"
+            kind: "ProviderConfig"
             metadata: { name: default }
             spec: {
                 credentials: {

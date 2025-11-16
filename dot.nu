@@ -52,11 +52,13 @@ def --env "main setup" [
     kubectl apply --filename package/definition.yaml
     sleep 1sec
     kubectl apply --filename "package/compositions.yaml"
-    let wait_result = do {
-        kubectl wait
-            --for=condition=healthy provider.pkg.crossplane.io
-            --all --timeout 900s
-    } | complete
+    let wait_result = (do {
+        (
+            kubectl wait
+                --for=condition=healthy provider.pkg.crossplane.io
+                --all --timeout 900s
+        )
+    } | complete)
     if $wait_result.exit_code != 0 {
         print "Providers failed to become healthy. Checking package revisions..."
         kubectl get pkgrev
