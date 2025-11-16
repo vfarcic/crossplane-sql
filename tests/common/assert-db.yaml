@@ -10,14 +10,14 @@ spec:
     - db-03
   crossplane:
     (resourceRefs[?kind == 'Database']):
-    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
       name: (join('-', ['my-db', $provider, 'db-01']))
-    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
       name: (join('-', ['my-db', $provider, 'db-02']))
-    - apiVersion: postgresql.sql.crossplane.io/v1alpha1
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
       name: (join('-', ['my-db', $provider, 'db-03']))
 ---
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
+apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
 kind: Database
 metadata:
   annotations:
@@ -34,7 +34,7 @@ spec:
   providerConfigRef:
     name: (join('-', ['my-db', $provider]))
 ---
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
+apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
 kind: Database
 metadata:
   annotations:
@@ -51,7 +51,7 @@ spec:
   providerConfigRef:
     name: (join('-', ['my-db', $provider]))
 ---
-apiVersion: postgresql.sql.crossplane.io/v1alpha1
+apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
 kind: Database
 metadata:
   annotations:

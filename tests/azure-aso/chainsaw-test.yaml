@@ -23,25 +23,25 @@ spec:
             file: assert-install.yaml
         - patch:
             file: ../common/db.yaml
-        # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2
-        # - assert:
-        #     file: ../common/assert-db.yaml
+        - assert:
+            file: ../common/assert-db.yaml
         - patch:
             file: ../common/schemas.yaml
         - assert:
             file: ../common/assert-schemas.yaml
-        - patch:
-            file: ../common/secret-pull.yaml
-        - assert:
-            file: ../common/assert-secret-pull.yaml
-        - patch:
-            file: ../common/secret-push.yaml
-        - assert:
-            file: ../common/assert-secret-push.yaml
-        - patch:
-            file: ../common/secret-pull-cluster.yaml
-        - assert:
-            file: ../common/assert-secret-pull-cluster.yaml
+        # TODO: Remove
+        # - patch:
+        #     file: ../common/secret-pull.yaml
+        # - assert:
+        #     file: ../common/assert-secret-pull.yaml
+        # - patch:
+        #     file: ../common/secret-push.yaml
+        # - assert:
+        #     file: ../common/assert-secret-push.yaml
+        # - patch:
+        #     file: ../common/secret-pull-cluster.yaml
+        # - assert:
+        #     file: ../common/assert-secret-pull-cluster.yaml
         - patch:
             file: ../common/region.yaml
         - assert:

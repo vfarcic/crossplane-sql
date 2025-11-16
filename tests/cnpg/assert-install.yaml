@@ -24,10 +24,9 @@ spec:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
       name: my-db-local
-    # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2
-    # - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    #   kind: ProviderConfig
-    #   name: my-db-local
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-local
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object

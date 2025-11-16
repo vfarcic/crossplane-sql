@@ -21,12 +21,9 @@ spec:
     - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-google-sql
-    # - API Version: sql.gcp.m.upbound.io/v1beta1
-    #   Kind: DatabaseInstance
-    #   Name: my-db
-    # - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    #   kind: ProviderConfig
-    #   name: my-db-google
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-google
     - apiVersion: sql.gcp.m.upbound.io/v1beta1
       kind: DatabaseInstance
       name: my-db-google

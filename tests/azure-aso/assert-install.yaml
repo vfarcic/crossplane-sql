@@ -27,10 +27,9 @@ spec:
     - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-azure-aso-sql
-    # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2
-    # - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    #   kind: ProviderConfig
-    #   name: my-db-azure-aso
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-azure-aso
     - apiVersion: resources.azure.com/v1api20200601
       kind: ResourceGroup
       name: my-db-azure-aso

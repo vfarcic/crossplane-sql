@@ -60,10 +60,9 @@ spec:
     - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-aws-sql
-    # TODO: Uncomment when `postgresql.sql.crossplane.io` is adapted to v2
-    # - apiVersion: postgresql.sql.crossplane.io/v1alpha1
-    #   kind: ProviderConfig
-    #   name: my-db-aws
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-aws
     - apiVersion: rds.aws.m.upbound.io/v1beta1
       kind: Instance
       name: my-db-aws

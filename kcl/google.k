@@ -124,23 +124,24 @@ _items = [{
         status.address = ocds["databaseinstance"].Resource.status.atProvider.publicIpAddress
 }]
 
-if oxr.spec?.databases:
-    _items += [{
-        apiVersion = "sql.gcp.m.upbound.io/v1beta1"
-        kind = "Database"
-        metadata = {
-            name = _name + "-" + _database
-            annotations = {
-                "crossplane.io/external-name" = _database
-                "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
-            }
-        }
-        spec = {
-            forProvider = {
-                deletionPolicy = "Orphan"
-                instanceSelector.matchControllerRef = True
-            }
-        }
-    } for _database in oxr.spec.databases ]
+# TODO: Remove (switched to postgresql.sql.m.crossplane.io)
+# if oxr.spec?.databases:
+#     _items += [{
+#         apiVersion = "sql.gcp.m.upbound.io/v1beta1"
+#         kind = "Database"
+#         metadata = {
+#             name = _name + "-" + _database
+#             annotations = {
+#                 "crossplane.io/external-name" = _database
+#                 "krm.kcl.dev/composition-resource-name" = _name + "-" + _database
+#             }
+#         }
+#         spec = {
+#             forProvider = {
+#                 deletionPolicy = "Orphan"
+#                 instanceSelector.matchControllerRef = True
+#             }
+#         }
+#     } for _database in oxr.spec.databases ]
 
 items = _items

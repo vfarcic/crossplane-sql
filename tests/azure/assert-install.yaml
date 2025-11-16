@@ -27,6 +27,9 @@ spec:
     - apiVersion: kubernetes.m.crossplane.io/v1alpha1
       kind: ProviderConfig
       name: my-db-azure-sql
+    - apiVersion: postgresql.sql.m.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      name: my-db-azure
 ---
 apiVersion: azure.m.upbound.io/v1beta1
 kind: ResourceGroup
