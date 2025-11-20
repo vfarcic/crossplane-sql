@@ -4,4 +4,4 @@ kind: Provider
 metadata:
   name: provider-upcloud
 spec:
-  package: xpkg.upbound.io/upcloud/provider-upcloud:v0.0.7
+  package: xpkg.upbound.io/upcloud/provider-upcloud:v0.1.0
