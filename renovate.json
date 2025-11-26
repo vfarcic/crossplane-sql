@@ -11,6 +11,16 @@
         "matchManagers": ["crossplane"],
         "matchFileNames": ["providers/**"],
         "groupName": "providers"
+    },
+    {
+        "matchManagers": ["github-actions"],
+        "commitMessageSuffix": "[skip ci]",
+        "automerge": true
+    },
+    {
+        "matchManagers": ["devbox"],
+        "commitMessageSuffix": "[skip ci]",
+        "automerge": true
     }
   ]
 }
