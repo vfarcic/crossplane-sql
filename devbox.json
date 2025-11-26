@@ -11,7 +11,7 @@
     "kcl@0.11.4",
     "watchexec@2.3.2",
     "git@2.51.2",
-    "upcloud-cli@3.24.1",
+    "upcloud-cli@3.25.0",
     "awscli2@2.31.11",
     "ripgrep@15.1.0",
     "eksctl@0.217.0",
