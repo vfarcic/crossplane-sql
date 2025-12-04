@@ -15,12 +15,14 @@
     {
         "matchManagers": ["github-actions"],
         "commitMessageSuffix": "[skip ci]",
-        "automerge": true
+        "automerge": true,
+        "platformAutomerge": false
     },
     {
         "matchManagers": ["devbox"],
         "commitMessageSuffix": "[skip ci]",
-        "automerge": true
+        "automerge": true,
+        "platformAutomerge": false
     }
   ]
 }
