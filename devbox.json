@@ -14,7 +14,7 @@
     "awscli2@2.31.39",
     "upcloud-cli@3.25.0",
     "ripgrep@15.1.0",
-    "eksctl@0.217.0",
+    "eksctl@0.218.0",
     "jq@1.8.1",
     "yq-go@4.49.2"
   ],
