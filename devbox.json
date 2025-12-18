@@ -11,7 +11,7 @@
     "kyverno-chainsaw@0.2.13",
     "watchexec@2.3.2",
     "git@2.51.2",
-    "awscli2@2.31.39",
+    "awscli2@2.32.15",
     "upcloud-cli@3.26.0",
     "ripgrep@15.1.0",
     "eksctl@0.220.0",
