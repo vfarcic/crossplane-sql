@@ -1,9 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(kubectl:*)",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs("
-    ]
+    "allow": ["Bash(kubectl:*)"]
   }
 }

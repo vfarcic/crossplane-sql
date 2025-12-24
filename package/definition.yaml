@@ -5,7 +5,7 @@ metadata:
   annotations:
     database.type: postgresql
     database.engines: PostgreSQL
-    providers.supported: AWS, GCP, Google Cloud, Azure, UpCloud
+    providers.supported: AWS, GCP, Google Cloud, Azure
     crossplane.io/description: Multi-cloud managed PostgreSQL database service
     description: Multi-cloud managed publicly accessible PostgreSQL database service with schema management.
     capabilities: Managed Database, Multi Region, Schema Management, Publicly Accessible
@@ -36,7 +36,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        description: Multi-cloud publicly accessible PostgreSQL database service with cross-cloud portability in AWS, Azure, GCP, Google Cloud, and UpCloud
+        description: Multi-cloud publicly accessible PostgreSQL database service with cross-cloud portability in AWS, Azure, GCP, and Google Cloud
         properties:
           spec:
             type: object
@@ -72,14 +72,6 @@ spec:
                     sql:
                       description: The SQL to apply.
                       type: string
-              upcloud:
-                description: UpCloud specific parameters.
-                type: object
-                properties:
-                  networkAddress:
-                    description: The address to use for network that will be created for the database server.
-                    type: string
-                    default: "10.0.0.0/24"
             required:
               - size
           status:

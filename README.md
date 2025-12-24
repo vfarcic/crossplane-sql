@@ -5,7 +5,6 @@ A Crossplane Configuration package that defines a SQL custom resource type (`SQL
 - AWS (using both Crossplane provider and ACK)
 - Google Cloud Platform
 - Azure (using both Crossplane provider and ASO)
-- UpCloud
 - Local in-cluster CNPG (CloudNativePG)
 
 [![Kubernetes AI: The Good, The Bad, and The Disappointing (kubectl-ai)](https://img.youtube.com/vi/gNpCDKH0BTA/0.jpg)](https://youtu.be/gNpCDKH0BTA)
@@ -55,7 +54,6 @@ The `examples/` directory contains example configurations for different cloud pr
 - AWS: [Standard Provider](examples/aws.yaml) | [AWS Controllers for Kubernetes (ACK)](examples/aws-ack.yaml) | [Documentation](examples/aws.md)
 - Azure: [Standard Provider](examples/azure.yaml) | [Azure Service Operator (ASO)](examples/azure-aso.yaml) | [Documentation](examples/azure.md)
 - Google Cloud: [Standard Provider](examples/google.yaml) | [Documentation](examples/google.md)
-- UpCloud: [Configuration](examples/upcloud.yaml) | [Documentation](examples/upcloud.md)
 
 Example usage:
 

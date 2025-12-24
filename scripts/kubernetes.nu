@@ -36,71 +36,6 @@ def --env "main create kubernetes" [
                 --min_nodes $min_nodes --max_nodes $max_nodes
         )
 
-    } else if $provider == "upcloud" {
-
-    print $"
-Visit https://signup.upcloud.com/?promo=devops50 to (ansi yellow_bold)sign up(ansi reset) and get $50+ credits.
-Make sure that (ansi yellow_bold)Allow API connections from all networks(ansi reset) is checked inside the https://hub.upcloud.com/account/overview page.
-Install `(ansi yellow_bold)upctl(ansi reset)` from https://upcloudltd.github.io/upcloud-cli if you do not have it already.
-Press (ansi yellow_bold)any key(ansi reset) to continue.
-"
-        input
-
-        mut upcloud_username = ""
-        if UPCLOUD_USERNAME in $env {
-            $upcloud_username = $env.UPCLOUD_USERNAME
-        } else {
-            $upcloud_username = input $"(ansi green_bold)Enter UpCloud username: (ansi reset)"
-            $env.UPCLOUD_USERNAME = $upcloud_username
-        }
-        $"export UPCLOUD_USERNAME=($upcloud_username)\n"
-            | save --append .env
-    
-        mut upcloud_password = ""
-        if UPCLOUD_PASSWORD in $env {
-            $upcloud_password = $env.UPCLOUD_PASSWORD
-        } else {
-            $upcloud_password = input $"(ansi green_bold)Enter UpCloud password: (ansi reset)" --suppress-output
-            $env.UPCLOUD_PASSWORD = $upcloud_password
-        }
-        $"export UPCLOUD_PASSWORD=($upcloud_password)\n"
-            | save --append .env
-        print ""
-
-        mut vm_size = "2xCPU-4GB"
-        if $node_size == "medium" {
-            $vm_size = "4xCPU-8GB"
-        } else if $node_size == "large" {
-            $vm_size = "8xCPU-32GB"
-        }
-
-        print $"Creating (ansi yellow_bold)network(ansi reset)..."
-
-        do --ignore-errors {(
-            upctl network create --name $name --zone us-nyc1
-                --ip-network address="10.0.1.0/24,dhcp=true"
-        )}
-
-        print $"Creating (ansi yellow_bold)Kubernetes(ansi reset) cluster..."
-
-        (
-            upctl kubernetes create --name $name --zone us-nyc1
-                --node-group $"count=($min_nodes),name=dot,plan=($vm_size)"
-                --plan dev-md  --network $name --version "1.30"
-                --kubernetes-api-allow-ip "0.0.0.0/0" --wait
-        )
-
-        print $"Getting (ansi yellow_bold)kubeconfig(ansi reset)..."
-
-        (
-            upctl kubernetes config $name --output yaml
-                --write $env.KUBECONFIG
-        )
-
-        print $"Waiting for (ansi yellow_bold)5 minutes(ansi reset) to fully set up the cluster..."
-
-        sleep 300sec
-
     } else if $provider == "kind" {
 
         mut config = {
@@ -199,20 +134,6 @@ def "main destroy kubernetes" [
             az group delete --name $env.RESOURCE_GROUP --yes
 
         }
-
-    } else if $provider == "upcloud" {
-
-        print $"Deleting (ansi yellow_bold)Kubernetes(ansi reset)..."
-
-        upctl kubernetes delete $name
-
-        print $"Waiting for (ansi yellow_bold)10 minutes(ansi reset) to fully clean up the cluster..."
-
-        sleep 600sec
-
-        print $"Deleting (ansi yellow_bold)network(ansi reset)..."
-
-        upctl network delete $name
 
     } else if $provider == "kind" {
 

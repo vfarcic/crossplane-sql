@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 def "main get provider" [
-    --providers = [aws azure google kind upcloud]
+    --providers = [aws azure google kind]
 ] {
 
     let message = $"

@@ -6,7 +6,7 @@
 # > main apply ingress contour --provider aws
 def --env "main apply ingress" [
     class = "contour"   # The class of Ingress controller to apply. Available options: traefik, contour, nginx
-    --provider = "none" # The cloud provider. Available options: aws, azure, google, upcloud, kind
+    --provider = "none" # The cloud provider. Available options: aws, azure, google, kind
     --env_prefix = ""   # Prefix to add to environment variables
 ] {
 
@@ -65,7 +65,7 @@ def --env "main apply ingress" [
 # > main get ingress nginx --provider kind --env_prefix TEST_
 def "main get ingress" [
     class = "traefik" # The class of Ingress controller to apply. Available options: traefik, contour, nginx
-    --provider: string # The cloud provider. Available options: aws, azure, google, upcloud, kind
+    --provider: string # The cloud provider. Available options: aws, azure, google, kind
     --env_prefix = ""  # Prefix to add to environment variables
 ] {
 
@@ -77,7 +77,7 @@ def "main get ingress" [
     
     mut ingress_ip = ""
   
-    if $provider == "aws" or $provider == "upcloud" {
+    if $provider == "aws" {
 
         sleep 30sec
 

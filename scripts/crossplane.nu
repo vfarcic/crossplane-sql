@@ -38,8 +38,6 @@ def --env "main apply crossplane" [
         setup aws
     } else if $provider == "azure" {
         setup azure --skip-login $skip_login
-    } else if $provider == "upcloud" {
-        setup upcloud
     }
 
     if $app_config {
@@ -454,24 +452,6 @@ def "apply providerconfig" [
             }
         } | to yaml | kubectl apply --filename -
 
-    } else if $provider == "upcloud" {
-
-        {
-            apiVersion: "provider.upcloud.com/v1beta1"
-            kind: "ProviderConfig"
-            metadata: { name: default }
-            spec: {
-                credentials: {
-                    source: "Secret"
-                    secretRef: {
-                        namespace: "crossplane-system"
-                        name: "upcloud-creds"
-                        key: "creds"
-                    }
-                }
-            }
-        } | to yaml | kubectl apply --filename -
-
     }
 
 }
@@ -659,32 +639,3 @@ def "setup azure" [
 
 }
 
-def "setup upcloud" [] {
-
-    print $"\nInstalling (ansi green_bold)Crossplane UpCloud Provider(ansi reset)...\n"
-
-    if UPCLOUD_USERNAME not-in $env {
-        $env.UPCLOUD_USERNAME = input $"(ansi yellow_bold)UpCloud Username: (ansi reset)"
-    }
-    $"export UPCLOUD_USERNAME=($env.UPCLOUD_USERNAME)\n"
-        | save --append .env
-
-    if UPCLOUD_PASSWORD not-in $env {
-        $env.UPCLOUD_PASSWORD = input $"(ansi yellow_bold)UpCloud Password: (ansi reset)"
-    }
-    $"export UPCLOUD_PASSWORD=($env.UPCLOUD_PASSWORD)\n"
-        | save --append .env
-
-    {
-        apiVersion: "v1"
-        kind: "Secret"
-        metadata: {
-            name: "upcloud-creds"
-        }
-        type: "Opaque"
-        stringData: {
-            creds: $"{\"username\": \"($env.UPCLOUD_USERNAME)\", \"password\": \"($env.UPCLOUD_PASSWORD)\"}"
-        }
-    } | to yaml | kubectl --namespace crossplane-system apply --filename -
-
-}

@@ -38,8 +38,6 @@ _items = [
           source = "PostgreSQLConnectionSecret"
           connectionSecretRef.name = _name
         }
-        if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-            defaultDatabase = "defaultdb"
         sslMode = "require"
     }
 }]
@@ -82,10 +80,7 @@ if oxr.spec.schemas:
                     key = "endpoint"
                     name = _name
                 }
-                if oxr.spec.crossplane.compositionSelector.matchLabels.provider == "upcloud":
-                    port = 11569
-                if oxr.spec.crossplane.compositionSelector.matchLabels.provider != "upcloud":
-                    port = 5432
+                port = 5432
                 userFrom.secretKeyRef = {
                     key = "username"
                     name = _name

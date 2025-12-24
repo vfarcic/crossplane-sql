@@ -43,7 +43,6 @@ def --env "main setup" [
         "google.yaml"
         "provider-kubernetes-incluster.yaml"
         "sql.yaml"
-        "upcloud.yaml"
     ]  
     for file in $provider_files {
         kubectl apply --filename $"providers/($file)"
@@ -70,8 +69,6 @@ def --env "main setup" [
         setup azure
     } else if $provider == "google" {
         setup google
-    } else if $provider == "upcloud" {
-        setup upcloud
     }
     if $provider != "" {
         apply providerconfig $provider
@@ -129,7 +126,6 @@ def --env "main test full" [] {
         "azure"
         "azure-aso"
         "google"
-        "upcloud"
     ]  
     for dir in $dirs {
         chainsaw test $"tests/($dir)"

@@ -2,7 +2,6 @@ import file
 import .awsstatuses
 import .googlestatuses
 import .azurestatuses
-import .upcloudstatuses
 import .commonstatuses
 
 schema composition:
@@ -111,19 +110,9 @@ schema composition:
     composition {
         _provider = "local"
         _source = file.read("kcl/cnpg.k")
-        _serverApiVersion = "database.upcloud.com/v1alpha1"
-        _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "network", upcloudstatuses.upcloudDataList
-        )
-        _serverKind = "ManagedDatabasePostgresql"
-    }
-
-    composition {
-        _provider = "upcloud"
-        _source = file.read("kcl/upcloud.k")
         _serverApiVersion = "postgresql.cnpg.io/v1"
         _statusConditionHooks = commonstatuses.statusConditionHooks(
-            "cluster", upcloudstatuses.upcloudDataList
+            "network", googlestatuses.googleDataList
         )
         _serverKind = "Cluster"
     }
