@@ -11,7 +11,7 @@
     "kyverno-chainsaw@0.2.15",
     "watchexec@2.3.2",
     "git@2.51.2",
-    "awscli2@2.32.15",
+    "awscli2@2.35.11",
     "ripgrep@15.1.0",
     "eksctl@0.221.0",
     "jq@1.8.2",
