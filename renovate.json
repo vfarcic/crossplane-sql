@@ -14,13 +14,13 @@
     },
     {
         "matchManagers": ["github-actions"],
-        "commitMessageSuffix": "[skip ci]",
+        "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
         "automerge": true,
         "platformAutomerge": false
     },
     {
         "matchManagers": ["devbox"],
-        "commitMessageSuffix": "[skip ci]",
+        "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
         "automerge": true,
         "platformAutomerge": false
     }
