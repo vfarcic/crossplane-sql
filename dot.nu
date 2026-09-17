@@ -120,6 +120,13 @@ def --env "main test full" [] {
 
     main package apply
 
+    # Newer providers do not reconcile managed resources (no status,
+    # no external name) when the referenced ProviderConfig is missing.
+    # Tests run without cloud credentials, so placeholders are enough.
+    apply providerconfig aws
+    apply providerconfig azure
+    apply providerconfig google --google-project-id test
+
     # FIXME: "cnpg"
     let dirs = [
         "aws"
