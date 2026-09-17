@@ -20,6 +20,7 @@
   "shell": {
     "init_hook": [],
     "scripts": {
+      "agent":           ["claude"],
       "cluster-create":  ["./dot.nu setup --preview true"],
       "cluster-destroy": ["./dot.nu destroy"],
       "package-publish": ["./dot.nu publish crossplane sql"],
