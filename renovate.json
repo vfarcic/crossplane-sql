@@ -4,7 +4,7 @@
     "config:recommended"
   ],
   "crossplane": {
-    "fileMatch": ["providers/.+\\.yaml$"]
+    "managerFilePatterns": ["/providers/.+\\.yaml$/"]
   },
   "packageRules": [
     {
