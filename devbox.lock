@@ -101,51 +101,41 @@
         }
       }
     },
-    "eksctl@0.221.0": {
-      "last_modified": "2025-12-21T10:48:17Z",
-      "resolved": "github:NixOS/nixpkgs/306ea70f9eb0fb4e040f8540e2deab32ed7e2055#eksctl",
+    "eksctl@0.230.0": {
+      "last_modified": "2026-08-27T07:16:00Z",
+      "resolved": "github:NixOS/nixpkgs/c27cdad491a991b11ed731760aa2ef8db0cb0410#eksctl",
       "source": "devbox-search",
-      "version": "0.221.0",
+      "version": "0.230.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/c68cy83v72g2kxj1p5r1c90ircc2n28g-eksctl-0.221.0",
+              "path": "/nix/store/hpzgl2ra4nxsxr75p7kld2w3hpxfmppr-eksctl-0.230.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/c68cy83v72g2kxj1p5r1c90ircc2n28g-eksctl-0.221.0"
+          "store_path": "/nix/store/hpzgl2ra4nxsxr75p7kld2w3hpxfmppr-eksctl-0.230.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/irz5pcvv32wkdv8z02lwg81y8vjpjv3l-eksctl-0.221.0",
+              "path": "/nix/store/05n5w9szi24q2s413z40fzhlaqps1zlb-eksctl-0.230.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/irz5pcvv32wkdv8z02lwg81y8vjpjv3l-eksctl-0.221.0"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/ilpic9h494wwh9kcwgz1sq0b6333k4f6-eksctl-0.221.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/ilpic9h494wwh9kcwgz1sq0b6333k4f6-eksctl-0.221.0"
+          "store_path": "/nix/store/05n5w9szi24q2s413z40fzhlaqps1zlb-eksctl-0.230.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/pkmhpw64qh0hvn6mpi7r4fx2qp1rxn6a-eksctl-0.221.0",
+              "path": "/nix/store/0ra6ss47hq9zkg8cdpy8fgm1n16h1cih-eksctl-0.230.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/pkmhpw64qh0hvn6mpi7r4fx2qp1rxn6a-eksctl-0.221.0"
+          "store_path": "/nix/store/0ra6ss47hq9zkg8cdpy8fgm1n16h1cih-eksctl-0.230.0"
         }
       }
     },
