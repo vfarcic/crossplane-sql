@@ -15,7 +15,7 @@
     "ripgrep@15.2.0",
     "eksctl@0.230.0",
     "jq@1.8.2",
-    "yq-go@4.50.1"
+    "yq-go@4.53.3"
   ],
   "shell": {
     "init_hook": [],
