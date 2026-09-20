@@ -91,7 +91,7 @@ spec:
         key: username
         name: (join('-', ['my-db', $provider]))
   schema:
-    sql: |
+    sql: |-
       create table videos (
         id varchar(50) not null,
         description text,
