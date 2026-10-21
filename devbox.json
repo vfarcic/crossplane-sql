@@ -10,7 +10,7 @@
     "kcl@0.13.0",
     "kyverno-chainsaw@0.2.15",
     "watchexec@2.5.1",
-    "git@2.55.0",
+    "git@2.56.0",
     "awscli2@2.36.31",
     "ripgrep@15.2.0",
     "eksctl@0.231.0",
