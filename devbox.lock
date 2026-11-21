@@ -101,41 +101,41 @@
         }
       }
     },
-    "eksctl@0.231.0": {
-      "last_modified": "2026-10-08T19:21:32Z",
-      "resolved": "github:NixOS/nixpkgs/8edc0c72e3a38faf5434e40d1f19431125fe4b30#eksctl",
+    "eksctl@0.232.0": {
+      "last_modified": "2026-11-20T15:12:34Z",
+      "resolved": "github:NixOS/nixpkgs/9996594bd38077de6a018ec17453ba3d99182787#eksctl",
       "source": "devbox-search",
-      "version": "0.231.0",
+      "version": "0.232.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/b11nz8dfsm7scqd69w72mzzn0aqiwiw4-eksctl-0.231.0",
+              "path": "/nix/store/21m8xs5xj90q1b1pa5rg032ppv2q841p-eksctl-0.232.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/b11nz8dfsm7scqd69w72mzzn0aqiwiw4-eksctl-0.231.0"
+          "store_path": "/nix/store/21m8xs5xj90q1b1pa5rg032ppv2q841p-eksctl-0.232.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/88kk4apsf9vp1d2yqmf3qmdgjf1vi2nj-eksctl-0.231.0",
+              "path": "/nix/store/zhl5qbqgs7b5rapybm133bl4v7d8gij0-eksctl-0.232.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/88kk4apsf9vp1d2yqmf3qmdgjf1vi2nj-eksctl-0.231.0"
+          "store_path": "/nix/store/zhl5qbqgs7b5rapybm133bl4v7d8gij0-eksctl-0.232.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/3i77j3z6hnskil49j82s5fvlk6d87xnr-eksctl-0.231.0",
+              "path": "/nix/store/8a2wijd7076byqwy3lrh2c6mymy6az8v-eksctl-0.232.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/3i77j3z6hnskil49j82s5fvlk6d87xnr-eksctl-0.231.0"
+          "store_path": "/nix/store/8a2wijd7076byqwy3lrh2c6mymy6az8v-eksctl-0.232.0"
         }
       }
     },
